@@ -9,7 +9,13 @@ The [old python project](https://github.com/skieffer/hola) for hola may also be 
 
 ## Usage
 
-Use the included Makefile to compile the pybind11 extension.
+You will need `pybind11` installed:
+
+```
+pip install pybind11
+```
+
+Then use the included Makefile to compile the pybind11 extension.
 
 ```bash
 
