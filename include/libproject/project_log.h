@@ -192,7 +192,7 @@ inline std::string NowTime()
     tm r = {0};
     strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
     struct timeval tv;
-    gettimeofday(&tv, 0);
+    //gettimeofday(&tv, 0);
     std::stringstream result;
     result << buffer << "." << std::setfill('0') << std::setw(3) << ((long)tv.tv_usec / 1000);
     return result.str();
