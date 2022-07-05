@@ -6,7 +6,18 @@ PYBIND_INCLUDES := $(shell python3 -m pybind11 --includes)
 PYBIND_EXTENSION := $(shell python3-config --extension-suffix)
 EXTENSION := $(NAME)$(PYBIND_EXTENSION)
 
+SYS_CPP_INCLUDE=/Library/Developer/CommandLineTools/usr/include/c++/v1
+SYS_C_INCLUDE=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include
+PWD=$(shell pwd)
+
+ALL_INCLUDES=all_includes.hpp
+CONFIG_FILE=config.txt
+NAMESPACE_TO_BIND=dialect
+NAMESPACE_TO_SKIP=''
+
+
 all: pyhola
+
 
 pyhola:
 	@c++ -O3 -Wall -shared $(STDVER) -fPIC \
@@ -21,6 +32,25 @@ pyhola:
 		libs/libvpsc.a \
 		-o $(EXTENSION)
 
+
+
+bind:
+	@mkdir -p bind
+	@binder \
+		--root-module $(NAME) \
+		--prefix $(PWD)/bind \
+		--config=$(CONFIG_FILE) \
+		--bind $(NAMESPACE_TO_BIND) \
+		--skip $(NAMESPACE_TO_SKIP) \
+		$(ALL_INCLUDES) \
+		-- $(STDVER) \
+		-isystem $(SYS_C_INCLUDE) \
+		-I/usr/local/include \
+		-I$(SYS_C_INCLUDE) \
+		-I$(SYS_CPP_INCLUDE) \
+		-I$(PWD)/include \
+		-DNDEBUG
+
 test:
 	@pytest
 
@@ -29,7 +59,16 @@ clean:
 	@rm -rf .pytest_cache
 	@rm -rf __pycache__
 	@rm -rf outputs
+	@rm -rf bind build
 
 
-.PHONY: all clean test
+.PHONY: all build clean regen test
+
+
+setup:
+	python3 setup.py build_ext --inplace
+
+build: setup
+
+regen: clean bind
 

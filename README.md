@@ -6,6 +6,32 @@ The HOLA algorithm is part of the [libdialect](http://www.adaptagrams.org/docume
 
 The [old python project](https://github.com/skieffer/hola) for hola may also be useful for reference.
 
+## Status
+
+The objective is to wrap as much of libdialect as possible
+
+- [x] libdialect/aca.h
+- [ ] libdialect/chains.h
+- [ ] libdialect/commontypes.h
+- [ ] libdialect/constraints.h
+- [ ] libdialect/expansion.h
+- [ ] libdialect/faces.h
+- [x] libdialect/graphs.h
+- [x] libdialect/hola.h
+- [ ] libdialect/io.h
+- [ ] libdialect/libdialect.h
+- [ ] libdialect/logging.h
+- [ ] libdialect/nearalign.h
+- [ ] libdialect/nodeconfig.h
+- [x] libdialect/opts.h
+- [ ] libdialect/ortho.h
+- [ ] libdialect/peeling.h
+- [ ] libdialect/planarize.h
+- [ ] libdialect/quadaction.h
+- [ ] libdialect/treeplacement.h
+- [x] libdialect/trees.h
+- [ ] libdialect/util.h
+
 
 ## Usage
 
@@ -49,6 +75,24 @@ make clean
 
 
 The compiled static `lib` files (compiled on 64bit macOS Catalina) and `include` files for the `adaptagrams` library are only included for convenience.
+
+
+## Implementation
+
+Uses [binder](https://github.com/RosettaCommons/binder), a tool to autogenerate [pybind11](https://github.com/pybind/pybind11) bindings for c++ code. The generated code is then manually fixed and tweaked to create the current library.
+
+To build and test binder
+
+1. `brew install cmake ninja pybind11`
+
+2. build binder using the `build.py` script in the `binder` repo. Ignore the documentation
+   since it has dated installation instructions.
+
+3. copy or move the resulting `build` binder directory to `~/.binder` and
+   symlink as follows: `~/.binder/bin/binder` to `/usr/local/bin/binder`
+
+4. run `./build.sh` in this directory and a demo python extension should be in the `build` directory
+
 
 
 ## Credits and Licensing

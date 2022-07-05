@@ -1,0 +1,15 @@
+#+include <pybind11/stl.h>
+
+#-namespace std
+
+-class std::vector
+
++namespace Avoid
++namespace cola
++namespace vpsc
++namespace project
++namespace topology
++namespace straightener
+
+
+
