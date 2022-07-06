@@ -18,7 +18,6 @@
 #include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -50,8 +49,5 @@ void bind_libavoid_scanline(std::function< pybind11::module &(std::string const 
 
 	// Avoid::clearConnectorRouteCheckpointCache(class Avoid::Router *) file:libavoid/scanline.h line:129
 	M("Avoid").def("clearConnectorRouteCheckpointCache", (void (*)(class Avoid::Router *)) &Avoid::clearConnectorRouteCheckpointCache, "C++: Avoid::clearConnectorRouteCheckpointCache(class Avoid::Router *) --> void", pybind11::arg("router"));
-
-	// Avoid::buildOrthogonalChannelInfo(class Avoid::Router *, const unsigned long, class std::list<class Avoid::ShiftSegment *, class std::allocator<class Avoid::ShiftSegment *> > &) file:libavoid/scanline.h line:130
-	M("Avoid").def("buildOrthogonalChannelInfo", (void (*)(class Avoid::Router *, const unsigned long, class std::list<class Avoid::ShiftSegment *, class std::allocator<class Avoid::ShiftSegment *> > &)) &Avoid::buildOrthogonalChannelInfo, "C++: Avoid::buildOrthogonalChannelInfo(class Avoid::Router *, const unsigned long, class std::list<class Avoid::ShiftSegment *, class std::allocator<class Avoid::ShiftSegment *> > &) --> void", pybind11::arg("router"), pybind11::arg("dim"), pybind11::arg("segmentList"));
 
 }

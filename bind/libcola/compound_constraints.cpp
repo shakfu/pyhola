@@ -6,7 +6,6 @@
 #include <memory>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>
@@ -24,19 +23,6 @@
 struct PyCallBack_cola_SeparationConstraint : public cola::SeparationConstraint {
 	using cola::SeparationConstraint::SeparationConstraint;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::SeparationConstraint *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return SeparationConstraint::toString();
-	}
 	void printCreationCode(struct __sFILE * a0) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::SeparationConstraint *>(this), "printCreationCode");
@@ -134,19 +120,6 @@ struct PyCallBack_cola_OrthogonalEdgeConstraint : public cola::OrthogonalEdgeCon
 		}
 		return OrthogonalEdgeConstraint::printCreationCode(a0);
 	}
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::OrthogonalEdgeConstraint *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return OrthogonalEdgeConstraint::toString();
-	}
 	void updatePosition(const enum vpsc::Dim a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::OrthogonalEdgeConstraint *>(this), "updatePosition");
@@ -218,19 +191,6 @@ struct PyCallBack_cola_OrthogonalEdgeConstraint : public cola::OrthogonalEdgeCon
 struct PyCallBack_cola_MultiSeparationConstraint : public cola::MultiSeparationConstraint {
 	using cola::MultiSeparationConstraint::MultiSeparationConstraint;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::MultiSeparationConstraint *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return MultiSeparationConstraint::toString();
-	}
 	void printCreationCode(struct __sFILE * a0) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::MultiSeparationConstraint *>(this), "printCreationCode");
@@ -315,19 +275,6 @@ struct PyCallBack_cola_MultiSeparationConstraint : public cola::MultiSeparationC
 struct PyCallBack_cola_DistributionConstraint : public cola::DistributionConstraint {
 	using cola::DistributionConstraint::DistributionConstraint;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::DistributionConstraint *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return DistributionConstraint::toString();
-	}
 	void printCreationCode(struct __sFILE * a0) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::DistributionConstraint *>(this), "printCreationCode");
@@ -412,19 +359,6 @@ struct PyCallBack_cola_DistributionConstraint : public cola::DistributionConstra
 struct PyCallBack_cola_FixedRelativeConstraint : public cola::FixedRelativeConstraint {
 	using cola::FixedRelativeConstraint::FixedRelativeConstraint;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::FixedRelativeConstraint *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return FixedRelativeConstraint::toString();
-	}
 	void printCreationCode(struct __sFILE * a0) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::FixedRelativeConstraint *>(this), "printCreationCode");
@@ -509,19 +443,6 @@ struct PyCallBack_cola_FixedRelativeConstraint : public cola::FixedRelativeConst
 struct PyCallBack_cola_PageBoundaryConstraints : public cola::PageBoundaryConstraints {
 	using cola::PageBoundaryConstraints::PageBoundaryConstraints;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::PageBoundaryConstraints *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return PageBoundaryConstraints::toString();
-	}
 	void updatePosition(const enum vpsc::Dim a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::PageBoundaryConstraints *>(this), "updatePosition");
@@ -616,7 +537,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		cl.def( pybind11::init( [](cola::SeparationConstraint const &o){ return new cola::SeparationConstraint(o); } ) );
 		cl.def_readwrite("gap", &cola::SeparationConstraint::gap);
 		cl.def_readwrite("equality", &cola::SeparationConstraint::equality);
-		cl.def("toString", (std::string (cola::SeparationConstraint::*)() const) &cola::SeparationConstraint::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::SeparationConstraint::toString() const --> std::string");
 		cl.def("setSeparation", (void (cola::SeparationConstraint::*)(double)) &cola::SeparationConstraint::setSeparation, "C++: cola::SeparationConstraint::setSeparation(double) --> void", pybind11::arg("gap"));
 		cl.def("left", (unsigned int (cola::SeparationConstraint::*)() const) &cola::SeparationConstraint::left, "C++: cola::SeparationConstraint::left() const --> unsigned int");
 		cl.def("right", (unsigned int (cola::SeparationConstraint::*)() const) &cola::SeparationConstraint::right, "C++: cola::SeparationConstraint::right() const --> unsigned int");
@@ -632,7 +552,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		cl.def_readwrite("left", &cola::OrthogonalEdgeConstraint::left);
 		cl.def_readwrite("right", &cola::OrthogonalEdgeConstraint::right);
 		cl.def("printCreationCode", (void (cola::OrthogonalEdgeConstraint::*)(struct __sFILE *) const) &cola::OrthogonalEdgeConstraint::printCreationCode, "C++: cola::OrthogonalEdgeConstraint::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
-		cl.def("toString", (std::string (cola::OrthogonalEdgeConstraint::*)() const) &cola::OrthogonalEdgeConstraint::toString, "C++: cola::OrthogonalEdgeConstraint::toString() const --> std::string");
 		cl.def("assign", (class cola::OrthogonalEdgeConstraint & (cola::OrthogonalEdgeConstraint::*)(const class cola::OrthogonalEdgeConstraint &)) &cola::OrthogonalEdgeConstraint::operator=, "C++: cola::OrthogonalEdgeConstraint::operator=(const class cola::OrthogonalEdgeConstraint &) --> class cola::OrthogonalEdgeConstraint &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
 	{ // cola::MultiSeparationConstraint file:libcola/compound_constraints.h line:534
@@ -648,7 +567,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		cl.def_readwrite("equality", &cola::MultiSeparationConstraint::equality);
 		cl.def("addAlignmentPair", (void (cola::MultiSeparationConstraint::*)(class cola::AlignmentConstraint *, class cola::AlignmentConstraint *)) &cola::MultiSeparationConstraint::addAlignmentPair, "Mark a pair of alignment constraints as being part of this \n        multi separation constraint.\n\n You will often specify spacing beteen a set of alignments (e.g., \n {1, 2, 3, 4}) by calling this method with each neighbouring pair \n (e.g., {(1, 2), (2, 3), (3, 4)}), but you can also specify \n non-neighbouring alignment constraints, if you wish them to have \n equal exact or minimum separation.\n\n \n  A pointer to the left AlignmentConstraint object\n                 of the pair.\n \n\n  A pointer to the right AlignmentConstraint object\n                 of the pair.\n\nC++: cola::MultiSeparationConstraint::addAlignmentPair(class cola::AlignmentConstraint *, class cola::AlignmentConstraint *) --> void", pybind11::arg("ac1"), pybind11::arg("ac2"));
 		cl.def("setSeparation", (void (cola::MultiSeparationConstraint::*)(double)) &cola::MultiSeparationConstraint::setSeparation, "Alter the minimum or exact spacing between each pair of\n        alignment constraints.\n\n \n  The minimum or exact distance to separate the\n                 alignment constraints.\n\nC++: cola::MultiSeparationConstraint::setSeparation(double) --> void", pybind11::arg("sep"));
-		cl.def("toString", (std::string (cola::MultiSeparationConstraint::*)() const) &cola::MultiSeparationConstraint::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::MultiSeparationConstraint::toString() const --> std::string");
 		cl.def("printCreationCode", (void (cola::MultiSeparationConstraint::*)(struct __sFILE *) const) &cola::MultiSeparationConstraint::printCreationCode, "C++: cola::MultiSeparationConstraint::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("assign", (class cola::MultiSeparationConstraint & (cola::MultiSeparationConstraint::*)(const class cola::MultiSeparationConstraint &)) &cola::MultiSeparationConstraint::operator=, "C++: cola::MultiSeparationConstraint::operator=(const class cola::MultiSeparationConstraint &) --> class cola::MultiSeparationConstraint &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
@@ -662,7 +580,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		cl.def_readwrite("sep", &cola::DistributionConstraint::sep);
 		cl.def("addAlignmentPair", (void (cola::DistributionConstraint::*)(class cola::AlignmentConstraint *, class cola::AlignmentConstraint *)) &cola::DistributionConstraint::addAlignmentPair, "Mark a pair of alignment constraints as being part of this \n        distribution constraint.\n\n You should specify spacing beteen a set of alignments (e.g., \n {1, 2, 3, 4}) by calling this method with each neighbouring pair \n (e.g., {(1, 2), (2, 3), (3, 4)}).\n\n \n  A pointer to the left AlignmentConstraint object \n                 of the pair.\n \n\n  A pointer to the right AlignmentConstraint object\n                 of the pair.\n\nC++: cola::DistributionConstraint::addAlignmentPair(class cola::AlignmentConstraint *, class cola::AlignmentConstraint *) --> void", pybind11::arg("ac1"), pybind11::arg("ac2"));
 		cl.def("setSeparation", (void (cola::DistributionConstraint::*)(double)) &cola::DistributionConstraint::setSeparation, "Alter the exact spacing between each pair of alignment \n        constraints.\n\n \n  The exact distance to separate the alignment\n                 constraints.\n\nC++: cola::DistributionConstraint::setSeparation(double) --> void", pybind11::arg("sep"));
-		cl.def("toString", (std::string (cola::DistributionConstraint::*)() const) &cola::DistributionConstraint::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::DistributionConstraint::toString() const --> std::string");
 		cl.def("printCreationCode", (void (cola::DistributionConstraint::*)(struct __sFILE *) const) &cola::DistributionConstraint::printCreationCode, "C++: cola::DistributionConstraint::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("assign", (class cola::DistributionConstraint & (cola::DistributionConstraint::*)(const class cola::DistributionConstraint &)) &cola::DistributionConstraint::operator=, "C++: cola::DistributionConstraint::operator=(const class cola::DistributionConstraint &) --> class cola::DistributionConstraint &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
@@ -670,7 +587,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		pybind11::class_<cola::FixedRelativeConstraint, std::shared_ptr<cola::FixedRelativeConstraint>, PyCallBack_cola_FixedRelativeConstraint, cola::CompoundConstraint> cl(M("cola"), "FixedRelativeConstraint", "A fixed-relative constraint specifies that a group of nodes are\n        constrained to be fixed in position relative to each other.  \n\n These nodes are fixed relative to each other in both the x- and y-dimensions\n but still free to move as a group.\n\n Optionally, this compound constraint can be marked as desiring a fixed\n position.  If this is specified, the group of nodes will attempt to stay\n close to its current position.");
 		cl.def( pybind11::init( [](PyCallBack_cola_FixedRelativeConstraint const &o){ return new PyCallBack_cola_FixedRelativeConstraint(o); } ) );
 		cl.def( pybind11::init( [](cola::FixedRelativeConstraint const &o){ return new cola::FixedRelativeConstraint(o); } ) );
-		cl.def("toString", (std::string (cola::FixedRelativeConstraint::*)() const) &cola::FixedRelativeConstraint::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::FixedRelativeConstraint::toString() const --> std::string");
 		cl.def("printCreationCode", (void (cola::FixedRelativeConstraint::*)(struct __sFILE *) const) &cola::FixedRelativeConstraint::printCreationCode, "C++: cola::FixedRelativeConstraint::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("updateVarIDsWithMapping", [](cola::FixedRelativeConstraint &o, const class cola::VariableIDMap & a0) -> void { return o.updateVarIDsWithMapping(a0); }, "", pybind11::arg("idMap"));
 		cl.def("updateVarIDsWithMapping", (void (cola::FixedRelativeConstraint::*)(const class cola::VariableIDMap &, bool)) &cola::FixedRelativeConstraint::updateVarIDsWithMapping, "C++: cola::FixedRelativeConstraint::updateVarIDsWithMapping(const class cola::VariableIDMap &, bool) --> void", pybind11::arg("idMap"), pybind11::arg("forward"));
@@ -684,7 +600,6 @@ void bind_libcola_compound_constraints(std::function< pybind11::module &(std::st
 		cl.def( pybind11::init( [](PyCallBack_cola_PageBoundaryConstraints const &o){ return new PyCallBack_cola_PageBoundaryConstraints(o); } ) );
 		cl.def( pybind11::init( [](cola::PageBoundaryConstraints const &o){ return new cola::PageBoundaryConstraints(o); } ) );
 		cl.def("addShape", (void (cola::PageBoundaryConstraints::*)(unsigned int, double, double)) &cola::PageBoundaryConstraints::addShape, "Mark a node as being contained within this page boundary.\n\n \n   The index of the node in the Rectangles vector.\n \n\n   Half of the width of the node.  Needed because\n                    node position variables represent their centre.\n \n\n   Half of the height of the node.  \n\nC++: cola::PageBoundaryConstraints::addShape(unsigned int, double, double) --> void", pybind11::arg("index"), pybind11::arg("halfW"), pybind11::arg("halfH"));
-		cl.def("toString", (std::string (cola::PageBoundaryConstraints::*)() const) &cola::PageBoundaryConstraints::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::PageBoundaryConstraints::toString() const --> std::string");
 		cl.def("updatePosition", (void (cola::PageBoundaryConstraints::*)(const enum vpsc::Dim)) &cola::PageBoundaryConstraints::updatePosition, "C++: cola::PageBoundaryConstraints::updatePosition(const enum vpsc::Dim) --> void", pybind11::arg("dim"));
 		cl.def("getActualLeftMargin", (double (cola::PageBoundaryConstraints::*)(const enum vpsc::Dim)) &cola::PageBoundaryConstraints::getActualLeftMargin, "C++: cola::PageBoundaryConstraints::getActualLeftMargin(const enum vpsc::Dim) --> double", pybind11::arg("dim"));
 		cl.def("getActualRightMargin", (double (cola::PageBoundaryConstraints::*)(const enum vpsc::Dim)) &cola::PageBoundaryConstraints::getActualRightMargin, "C++: cola::PageBoundaryConstraints::getActualRightMargin(const enum vpsc::Dim) --> double", pybind11::arg("dim"));

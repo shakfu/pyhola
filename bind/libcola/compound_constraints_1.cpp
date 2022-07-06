@@ -9,7 +9,6 @@
 #include <memory>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>
@@ -27,19 +26,6 @@
 struct PyCallBack_cola_ClusterContainmentConstraints : public cola::ClusterContainmentConstraints {
 	using cola::ClusterContainmentConstraints::ClusterContainmentConstraints;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::ClusterContainmentConstraints *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return ClusterContainmentConstraints::toString();
-	}
 	void updatePosition(const enum vpsc::Dim a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const cola::ClusterContainmentConstraints *>(this), "updatePosition");
@@ -130,13 +116,11 @@ void bind_libcola_compound_constraints_1(std::function< pybind11::module &(std::
 		cl.def_readwrite("rightVarIndex", &cola::UnsatisfiableConstraintInfo::rightVarIndex);
 		cl.def_readwrite("separation", &cola::UnsatisfiableConstraintInfo::separation);
 		cl.def_readwrite("equality", &cola::UnsatisfiableConstraintInfo::equality);
-		cl.def("toString", (std::string (cola::UnsatisfiableConstraintInfo::*)() const) &cola::UnsatisfiableConstraintInfo::toString, "C++: cola::UnsatisfiableConstraintInfo::toString() const --> std::string");
 	}
 	{ // cola::ClusterContainmentConstraints file:libcola/cc_clustercontainmentconstraints.h line:35
 		pybind11::class_<cola::ClusterContainmentConstraints, std::shared_ptr<cola::ClusterContainmentConstraints>, PyCallBack_cola_ClusterContainmentConstraints, cola::CompoundConstraint> cl(M("cola"), "ClusterContainmentConstraints", "");
 		cl.def( pybind11::init( [](PyCallBack_cola_ClusterContainmentConstraints const &o){ return new PyCallBack_cola_ClusterContainmentConstraints(o); } ) );
 		cl.def( pybind11::init( [](cola::ClusterContainmentConstraints const &o){ return new cola::ClusterContainmentConstraints(o); } ) );
-		cl.def("toString", (std::string (cola::ClusterContainmentConstraints::*)() const) &cola::ClusterContainmentConstraints::toString, "C++: cola::ClusterContainmentConstraints::toString() const --> std::string");
 		cl.def("assign", (class cola::ClusterContainmentConstraints & (cola::ClusterContainmentConstraints::*)(const class cola::ClusterContainmentConstraints &)) &cola::ClusterContainmentConstraints::operator=, "C++: cola::ClusterContainmentConstraints::operator=(const class cola::ClusterContainmentConstraints &) --> class cola::ClusterContainmentConstraints &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
 }

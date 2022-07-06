@@ -17,7 +17,6 @@
 #include <sstream>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <sys/_types/_timeval64.h>
 #include <sys/time.h>
 #include <utility>
@@ -96,19 +95,6 @@ struct PyCallBack_cola_NonOverlapConstraints : public cola::NonOverlapConstraint
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return NonOverlapConstraints::subConstraintsRemaining();
-	}
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::NonOverlapConstraints *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return NonOverlapConstraints::toString();
 	}
 	void updatePosition(const enum vpsc::Dim a0) override {
 		pybind11::gil_scoped_acquire gil;
@@ -192,7 +178,6 @@ void bind_libcola_cola(std::function< pybind11::module &(std::string const &name
 		cl.def( pybind11::init( [](){ return new cola::NonOverlapConstraintExemptions(); } ) );
 		cl.def( pybind11::init( [](cola::NonOverlapConstraintExemptions const &o){ return new cola::NonOverlapConstraintExemptions(o); } ) );
 		cl.def("shapePairIsExempt", (bool (cola::NonOverlapConstraintExemptions::*)(class cola::ShapePair) const) &cola::NonOverlapConstraintExemptions::shapePairIsExempt, "C++: cola::NonOverlapConstraintExemptions::shapePairIsExempt(class cola::ShapePair) const --> bool", pybind11::arg("shapePair"));
-		cl.def("getExemptPairs", (class std::set<class cola::ShapePair, struct std::less<class cola::ShapePair>, class std::allocator<class cola::ShapePair> > (cola::NonOverlapConstraintExemptions::*)()) &cola::NonOverlapConstraintExemptions::getExemptPairs, "C++: cola::NonOverlapConstraintExemptions::getExemptPairs() --> class std::set<class cola::ShapePair, struct std::less<class cola::ShapePair>, class std::allocator<class cola::ShapePair> >");
 	}
 	{ // cola::NonOverlapConstraints file:libcola/cc_nonoverlapconstraints.h line:136
 		pybind11::class_<cola::NonOverlapConstraints, std::shared_ptr<cola::NonOverlapConstraints>, PyCallBack_cola_NonOverlapConstraints, cola::CompoundConstraint> cl(M("cola"), "NonOverlapConstraints", "");
@@ -201,22 +186,14 @@ void bind_libcola_cola(std::function< pybind11::module &(std::string const &name
 
 		cl.def( pybind11::init( [](PyCallBack_cola_NonOverlapConstraints const &o){ return new PyCallBack_cola_NonOverlapConstraints(o); } ) );
 		cl.def( pybind11::init( [](cola::NonOverlapConstraints const &o){ return new cola::NonOverlapConstraints(o); } ) );
-		cl.def("addShape", [](cola::NonOverlapConstraints &o, unsigned int const & a0, double const & a1, double const & a2) -> void { return o.addShape(a0, a1, a2); }, "", pybind11::arg("id"), pybind11::arg("halfW"), pybind11::arg("halfH"));
-		cl.def("addShape", [](cola::NonOverlapConstraints &o, unsigned int const & a0, double const & a1, double const & a2, unsigned int const & a3) -> void { return o.addShape(a0, a1, a2, a3); }, "", pybind11::arg("id"), pybind11::arg("halfW"), pybind11::arg("halfH"), pybind11::arg("group"));
-		cl.def("addShape", (void (cola::NonOverlapConstraints::*)(unsigned int, double, double, unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >)) &cola::NonOverlapConstraints::addShape, "Use this method to add all the shapes between which you want\n        to prevent overlaps.\n \n\n     This will be used as index into both the vars and\n               boundingBoxes vectors when you call the\n               generateSeparationConstraints method.\n \n\n  If you add two shapes with half-widths hwi and hwj, then\n               if a horizontal separation constraint is generated between\n               them its gap will be hwi + hwj.\n \n\n  Similar to halfW.\n \n\n  Assign a group number to this shape. A separation constraint\n               will be generated between two shapes only if they belong to\n               the same group. This is useful for clusters.\n \n\n  Optional set of IDs of shapes to be skipped, i.e. such that\n                    a separation constraint should /not/ be generated between\n                    that shape and the one being added.\n\nC++: cola::NonOverlapConstraints::addShape(unsigned int, double, double, unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >) --> void", pybind11::arg("id"), pybind11::arg("halfW"), pybind11::arg("halfH"), pybind11::arg("group"), pybind11::arg("exemptions"));
 		cl.def("resizeShape", (void (cola::NonOverlapConstraints::*)(unsigned int, double, double)) &cola::NonOverlapConstraints::resizeShape, "C++: cola::NonOverlapConstraints::resizeShape(unsigned int, double, double) --> void", pybind11::arg("id"), pybind11::arg("halfW"), pybind11::arg("halfH"));
 		cl.def("removeShape", (void (cola::NonOverlapConstraints::*)(unsigned int)) &cola::NonOverlapConstraints::removeShape, "C++: cola::NonOverlapConstraints::removeShape(unsigned int) --> void", pybind11::arg("id"));
 		cl.def("addCluster", (void (cola::NonOverlapConstraints::*)(class cola::Cluster *, unsigned int)) &cola::NonOverlapConstraints::addCluster, "C++: cola::NonOverlapConstraints::addCluster(class cola::Cluster *, unsigned int) --> void", pybind11::arg("cluster"), pybind11::arg("group"));
 		cl.def("markCurrSubConstraintAsActive", (void (cola::NonOverlapConstraints::*)(const bool)) &cola::NonOverlapConstraints::markCurrSubConstraintAsActive, "C++: cola::NonOverlapConstraints::markCurrSubConstraintAsActive(const bool) --> void", pybind11::arg("satisfiable"));
 		cl.def("markAllSubConstraintsAsInactive", (void (cola::NonOverlapConstraints::*)()) &cola::NonOverlapConstraints::markAllSubConstraintsAsInactive, "C++: cola::NonOverlapConstraints::markAllSubConstraintsAsInactive() --> void");
 		cl.def("subConstraintsRemaining", (bool (cola::NonOverlapConstraints::*)() const) &cola::NonOverlapConstraints::subConstraintsRemaining, "C++: cola::NonOverlapConstraints::subConstraintsRemaining() const --> bool");
-		cl.def("toString", (std::string (cola::NonOverlapConstraints::*)() const) &cola::NonOverlapConstraints::toString, "C++: cola::NonOverlapConstraints::toString() const --> std::string");
-		cl.def("setClusterClusterExemptions", (void (cola::NonOverlapConstraints::*)(class std::set<class cola::ShapePair, struct std::less<class cola::ShapePair>, class std::allocator<class cola::ShapePair> >)) &cola::NonOverlapConstraints::setClusterClusterExemptions, "C++: cola::NonOverlapConstraints::setClusterClusterExemptions(class std::set<class cola::ShapePair, struct std::less<class cola::ShapePair>, class std::allocator<class cola::ShapePair> >) --> void", pybind11::arg("exemptions"));
 		cl.def("assign", (class cola::NonOverlapConstraints & (cola::NonOverlapConstraints::*)(const class cola::NonOverlapConstraints &)) &cola::NonOverlapConstraints::operator=, "C++: cola::NonOverlapConstraints::operator=(const class cola::NonOverlapConstraints &) --> class cola::NonOverlapConstraints &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	// cola::NowTime() file:libcola/cola_log.h line:38
-	M("cola").def("NowTime", (std::string (*)()) &cola::NowTime, "C++: cola::NowTime() --> std::string");
-
 	// cola::TLogLevel file:libcola/cola_log.h line:40
 	pybind11::enum_<cola::TLogLevel>(M("cola"), "TLogLevel", pybind11::arithmetic(), "")
 		.value("logERROR", cola::logERROR)
@@ -234,17 +211,12 @@ void bind_libcola_cola(std::function< pybind11::module &(std::string const &name
 	{ // cola::Log file:libcola/cola_log.h line:43
 		pybind11::class_<cola::Log<cola::Output2FILE>, std::shared_ptr<cola::Log<cola::Output2FILE>>> cl(M("cola"), "Log_cola_Output2FILE_t", "");
 		cl.def( pybind11::init( [](){ return new cola::Log<cola::Output2FILE>(); } ) );
-		cl.def("Get", [](cola::Log<cola::Output2FILE> &o) -> std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > & { return o.Get(); }, "", pybind11::return_value_policy::automatic);
-		cl.def("Get", (class std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > & (cola::Log<cola::Output2FILE>::*)(enum cola::TLogLevel)) &cola::Log<cola::Output2FILE>::Get, "C++: cola::Log<cola::Output2FILE>::Get(enum cola::TLogLevel) --> class std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > &", pybind11::return_value_policy::automatic, pybind11::arg("level"));
 		cl.def_static("ReportingLevel", (enum cola::TLogLevel & (*)()) &cola::Log<cola::Output2FILE>::ReportingLevel, "C++: cola::Log<cola::Output2FILE>::ReportingLevel() --> enum cola::TLogLevel &", pybind11::return_value_policy::automatic);
-		cl.def_static("ToString", (std::string (*)(enum cola::TLogLevel)) &cola::Log<cola::Output2FILE>::ToString, "C++: cola::Log<cola::Output2FILE>::ToString(enum cola::TLogLevel) --> std::string", pybind11::arg("level"));
-		cl.def_static("FromString", (enum cola::TLogLevel (*)(const std::string &)) &cola::Log<cola::Output2FILE>::FromString, "C++: cola::Log<cola::Output2FILE>::FromString(const std::string &) --> enum cola::TLogLevel", pybind11::arg("level"));
 	}
 	{ // cola::Output2FILE file:libcola/cola_log.h line:118
 		pybind11::class_<cola::Output2FILE, std::shared_ptr<cola::Output2FILE>> cl(M("cola"), "Output2FILE", "");
 		cl.def( pybind11::init( [](){ return new cola::Output2FILE(); } ) );
 		cl.def_static("Stream", (struct __sFILE *& (*)()) &cola::Output2FILE::Stream, "C++: cola::Output2FILE::Stream() --> struct __sFILE *&", pybind11::return_value_policy::automatic);
-		cl.def_static("Output", (void (*)(const std::string &)) &cola::Output2FILE::Output, "C++: cola::Output2FILE::Output(const std::string &) --> void", pybind11::arg("msg"));
 	}
 	{ // cola::FILELog file:libcola/cola_log.h line:152
 		pybind11::class_<cola::FILELog, std::shared_ptr<cola::FILELog>, cola::Log<cola::Output2FILE>> cl(M("cola"), "FILELog", "");

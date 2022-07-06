@@ -12,12 +12,12 @@
 #include <libavoid/shape.h>
 #include <libavoid/vertices.h>
 #include <libavoid/viscluster.h>
+#include <libavoid/visibility.h>
 #include <list>
 #include <memory>
 #include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -31,6 +31,25 @@
 	PYBIND11_DECLARE_HOLDER_TYPE(T, T*)
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
+
+// Avoid::ShapeRef file:libavoid/shape.h line:81
+struct PyCallBack_Avoid_ShapeRef : public Avoid::ShapeRef {
+	using Avoid::ShapeRef::ShapeRef;
+
+	class Avoid::Point position() const override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ShapeRef *>(this), "position");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<class Avoid::Point>::value) {
+				static pybind11::detail::override_caster_t<class Avoid::Point> caster;
+				return pybind11::detail::cast_ref<class Avoid::Point>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<class Avoid::Point>(std::move(o));
+		}
+		return ShapeRef::position();
+	}
+};
 
 // Avoid::TopologyAddonInterface file:libavoid/router.h line:350
 struct PyCallBack_Avoid_TopologyAddonInterface : public Avoid::TopologyAddonInterface {
@@ -122,8 +141,91 @@ struct PyCallBack_Avoid_Router : public Avoid::Router {
 	}
 };
 
-void bind_libavoid_router(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_shape(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
+	{ // Avoid::ShapeRef file:libavoid/shape.h line:81
+		pybind11::class_<Avoid::ShapeRef, std::shared_ptr<Avoid::ShapeRef>, PyCallBack_Avoid_ShapeRef, Avoid::Obstacle> cl(M("Avoid"), "ShapeRef", "The ShapeRef class represents a shape object.\n\n Shapes are obstacles that connectors must be routed around.  They can be \n placed into a Router scene and can be repositioned or resized (via\n Router::moveShape()).\n\n Usually, it is expected that you would create a ShapeRef for each shape \n in your diagram and keep that reference in your own shape class.");
+		cl.def( pybind11::init( [](class Avoid::Router * a0, class Avoid::Polygon & a1){ return new Avoid::ShapeRef(a0, a1); }, [](class Avoid::Router * a0, class Avoid::Polygon & a1){ return new PyCallBack_Avoid_ShapeRef(a0, a1); } ), "doc");
+		cl.def( pybind11::init<class Avoid::Router *, class Avoid::Polygon &, const unsigned int>(), pybind11::arg("router"), pybind11::arg("poly"), pybind11::arg("id") );
+
+		cl.def( pybind11::init( [](PyCallBack_Avoid_ShapeRef const &o){ return new PyCallBack_Avoid_ShapeRef(o); } ) );
+		cl.def( pybind11::init( [](Avoid::ShapeRef const &o){ return new Avoid::ShapeRef(o); } ) );
+		cl.def("polygon", (const class Avoid::Polygon & (Avoid::ShapeRef::*)() const) &Avoid::ShapeRef::polygon, "Returns a reference to the polygon boundary of this shape.\n \n\n A reference to the polygon boundary of the shape.\n\nC++: Avoid::ShapeRef::polygon() const --> const class Avoid::Polygon &", pybind11::return_value_policy::automatic);
+		cl.def("transformConnectionPinPositions", (void (Avoid::ShapeRef::*)(enum Avoid::ShapeTransformationType)) &Avoid::ShapeRef::transformConnectionPinPositions, "Adjusts all of the shape's connection pin positions and \n         visibility directions for a given transformation type.\n\n \n  A ShapeTransformationType specifying the \n                        type of transform to be applied to all \n                        connection pins for the shape.\n\nC++: Avoid::ShapeRef::transformConnectionPinPositions(enum Avoid::ShapeTransformationType) --> void", pybind11::arg("transform"));
+		cl.def("position", (class Avoid::Point (Avoid::ShapeRef::*)() const) &Avoid::ShapeRef::position, "C++: Avoid::ShapeRef::position() const --> class Avoid::Point");
+		cl.def("assign", (class Avoid::ShapeRef & (Avoid::ShapeRef::*)(const class Avoid::ShapeRef &)) &Avoid::ShapeRef::operator=, "C++: Avoid::ShapeRef::operator=(const class Avoid::ShapeRef &) --> class Avoid::ShapeRef &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
+	// Avoid::vertexVisibility(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool) file:libavoid/visibility.h line:34
+	M("Avoid").def("vertexVisibility", [](class Avoid::VertInf * a0, class Avoid::VertInf * a1, bool const & a2) -> void { return Avoid::vertexVisibility(a0, a1, a2); }, "", pybind11::arg("point"), pybind11::arg("partner"), pybind11::arg("knownNew"));
+	M("Avoid").def("vertexVisibility", (void (*)(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool)) &Avoid::vertexVisibility, "C++: Avoid::vertexVisibility(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool) --> void", pybind11::arg("point"), pybind11::arg("partner"), pybind11::arg("knownNew"), pybind11::arg("gen_contains"));
+
+	{ // Avoid::LineRep file:libavoid/router.h line:50
+		pybind11::class_<Avoid::LineRep, std::shared_ptr<Avoid::LineRep>> cl(M("Avoid"), "LineRep", "");
+		cl.def( pybind11::init( [](){ return new Avoid::LineRep(); } ) );
+		cl.def_readwrite("begin", &Avoid::LineRep::begin);
+		cl.def_readwrite("end", &Avoid::LineRep::end);
+	}
+	// Avoid::RouterFlag file:libavoid/router.h line:70
+	pybind11::enum_<Avoid::RouterFlag>(M("Avoid"), "RouterFlag", pybind11::arithmetic(), "Flags that can be passed to the router during initialisation \n         to specify options.")
+		.value("PolyLineRouting", Avoid::PolyLineRouting)
+		.value("OrthogonalRouting", Avoid::OrthogonalRouting)
+		.export_values();
+
+;
+
+	// Avoid::RoutingParameter file:libavoid/router.h line:88
+	pybind11::enum_<Avoid::RoutingParameter>(M("Avoid"), "RoutingParameter", pybind11::arithmetic(), "Types of routing parameters and penalties that can be used to \n         tailor the style and improve the quality of the connector \n         routes produced.")
+		.value("segmentPenalty", Avoid::segmentPenalty)
+		.value("anglePenalty", Avoid::anglePenalty)
+		.value("crossingPenalty", Avoid::crossingPenalty)
+		.value("clusterCrossingPenalty", Avoid::clusterCrossingPenalty)
+		.value("fixedSharedPathPenalty", Avoid::fixedSharedPathPenalty)
+		.value("portDirectionPenalty", Avoid::portDirectionPenalty)
+		.value("shapeBufferDistance", Avoid::shapeBufferDistance)
+		.value("idealNudgingDistance", Avoid::idealNudgingDistance)
+		.value("reverseDirectionPenalty", Avoid::reverseDirectionPenalty)
+		.value("lastRoutingParameterMarker", Avoid::lastRoutingParameterMarker)
+		.export_values();
+
+;
+
+	// Avoid::RoutingOption file:libavoid/router.h line:174
+	pybind11::enum_<Avoid::RoutingOption>(M("Avoid"), "RoutingOption", pybind11::arithmetic(), "Types of routing options that can be enabled.")
+		.value("nudgeOrthogonalSegmentsConnectedToShapes", Avoid::nudgeOrthogonalSegmentsConnectedToShapes)
+		.value("improveHyperedgeRoutesMovingJunctions", Avoid::improveHyperedgeRoutesMovingJunctions)
+		.value("penaliseOrthogonalSharedPathsAtConnEnds", Avoid::penaliseOrthogonalSharedPathsAtConnEnds)
+		.value("nudgeOrthogonalTouchingColinearSegments", Avoid::nudgeOrthogonalTouchingColinearSegments)
+		.value("performUnifyingNudgingPreprocessingStep", Avoid::performUnifyingNudgingPreprocessingStep)
+		.value("improveHyperedgeRoutesMovingAddingAndDeletingJunctions", Avoid::improveHyperedgeRoutesMovingAddingAndDeletingJunctions)
+		.value("nudgeSharedPathsWithCommonEndPoint", Avoid::nudgeSharedPathsWithCommonEndPoint)
+		.value("lastRoutingOptionMarker", Avoid::lastRoutingOptionMarker)
+		.export_values();
+
+;
+
+	// Avoid::TransactionPhases file:libavoid/router.h line:299
+	pybind11::enum_<Avoid::TransactionPhases>(M("Avoid"), "TransactionPhases", pybind11::arithmetic(), "Types of routing phases reported by \n         Router::shouldContinueTransactionWithProgress().\n\n This phases will occur in the order given here, but each phase may take\n varying amounts of time.")
+		.value("TransactionPhaseOrthogonalVisibilityGraphScanX", Avoid::TransactionPhaseOrthogonalVisibilityGraphScanX)
+		.value("TransactionPhaseOrthogonalVisibilityGraphScanY", Avoid::TransactionPhaseOrthogonalVisibilityGraphScanY)
+		.value("TransactionPhaseRouteSearch", Avoid::TransactionPhaseRouteSearch)
+		.value("TransactionPhaseCrossingDetection", Avoid::TransactionPhaseCrossingDetection)
+		.value("TransactionPhaseRerouteSearch", Avoid::TransactionPhaseRerouteSearch)
+		.value("TransactionPhaseOrthogonalNudgingX", Avoid::TransactionPhaseOrthogonalNudgingX)
+		.value("TransactionPhaseOrthogonalNudgingY", Avoid::TransactionPhaseOrthogonalNudgingY)
+		.value("TransactionPhaseCompleted", Avoid::TransactionPhaseCompleted)
+		.export_values();
+
+;
+
+	{ // Avoid::ConnRerouteFlagDelegate file:libavoid/router.h line:332
+		pybind11::class_<Avoid::ConnRerouteFlagDelegate, std::shared_ptr<Avoid::ConnRerouteFlagDelegate>> cl(M("Avoid"), "ConnRerouteFlagDelegate", "");
+		cl.def( pybind11::init( [](){ return new Avoid::ConnRerouteFlagDelegate(); } ) );
+		cl.def( pybind11::init( [](Avoid::ConnRerouteFlagDelegate const &o){ return new Avoid::ConnRerouteFlagDelegate(o); } ) );
+		cl.def("addConn", (bool * (Avoid::ConnRerouteFlagDelegate::*)(class Avoid::ConnRef *)) &Avoid::ConnRerouteFlagDelegate::addConn, "C++: Avoid::ConnRerouteFlagDelegate::addConn(class Avoid::ConnRef *) --> bool *", pybind11::return_value_policy::automatic, pybind11::arg("conn"));
+		cl.def("removeConn", (void (Avoid::ConnRerouteFlagDelegate::*)(class Avoid::ConnRef *)) &Avoid::ConnRerouteFlagDelegate::removeConn, "C++: Avoid::ConnRerouteFlagDelegate::removeConn(class Avoid::ConnRef *) --> void", pybind11::arg("conn"));
+		cl.def("alertConns", (void (Avoid::ConnRerouteFlagDelegate::*)()) &Avoid::ConnRerouteFlagDelegate::alertConns, "C++: Avoid::ConnRerouteFlagDelegate::alertConns() --> void");
+		cl.def("assign", (class Avoid::ConnRerouteFlagDelegate & (Avoid::ConnRerouteFlagDelegate::*)(const class Avoid::ConnRerouteFlagDelegate &)) &Avoid::ConnRerouteFlagDelegate::operator=, "C++: Avoid::ConnRerouteFlagDelegate::operator=(const class Avoid::ConnRerouteFlagDelegate &) --> class Avoid::ConnRerouteFlagDelegate &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
 	{ // Avoid::TopologyAddonInterface file:libavoid/router.h line:350
 		pybind11::class_<Avoid::TopologyAddonInterface, std::shared_ptr<Avoid::TopologyAddonInterface>, PyCallBack_Avoid_TopologyAddonInterface> cl(M("Avoid"), "TopologyAddonInterface", "");
 		cl.def( pybind11::init( [](){ return new Avoid::TopologyAddonInterface(); }, [](){ return new PyCallBack_Avoid_TopologyAddonInterface(); } ) );
@@ -179,8 +281,6 @@ void bind_libavoid_router(std::function< pybind11::module &(std::string const &n
 		cl.def("setRoutingPenalty", [](Avoid::Router &o, const enum Avoid::RoutingParameter & a0) -> void { return o.setRoutingPenalty(a0); }, "", pybind11::arg("penType"));
 		cl.def("setRoutingPenalty", (void (Avoid::Router::*)(const enum Avoid::RoutingParameter, const double)) &Avoid::Router::setRoutingPenalty, "The type of penalty, a RoutingParameter.\n \n\n   The value to be applied for each occurrence\n                     of the penalty case.  \n\nC++: Avoid::Router::setRoutingPenalty(const enum Avoid::RoutingParameter, const double) --> void", pybind11::arg("penType"), pybind11::arg("penVal"));
 		cl.def("hyperedgeRerouter", (class Avoid::HyperedgeRerouter * (Avoid::Router::*)()) &Avoid::Router::hyperedgeRerouter, "Returns a pointer to the hyperedge rerouter for the router.\n\n \n  A HyperedgeRerouter object that can be used to register\n          hyperedges for rerouting.\n\nC++: Avoid::Router::hyperedgeRerouter() --> class Avoid::HyperedgeRerouter *", pybind11::return_value_policy::automatic);
-		cl.def("outputInstanceToSVG", [](Avoid::Router &o) -> void { return o.outputInstanceToSVG(); }, "");
-		cl.def("outputInstanceToSVG", (void (Avoid::Router::*)(std::string)) &Avoid::Router::outputInstanceToSVG, "Generates an SVG file containing debug output and code that\n         can be used to regenerate the instance.\n\n If transactions are being used, then this method should be called \n after processTransaction() has been called, so that it includes any\n changes being queued by the router.\n\n \n  A string indicating the filename (without \n                      extension) for the output file.  Defaults to\n                      \"libavoid-debug.svg\" if no filename is given.\n\nC++: Avoid::Router::outputInstanceToSVG(std::string) --> void", pybind11::arg("filename"));
 		cl.def("newObjectId", (unsigned int (Avoid::Router::*)() const) &Avoid::Router::newObjectId, "Returns the object ID used for automatically generated \n         objects, such as during hyperedge routing.\n\n Reimplement this in a subclass to set specific IDs for new objects.\n\n \n   Your implementation should return a value that does not \n         fail objectIdIsUnused().\n\n \n  The ID for a new object.\n\nC++: Avoid::Router::newObjectId() const --> unsigned int");
 		cl.def("objectIdIsUnused", (bool (Avoid::Router::*)(const unsigned int) const) &Avoid::Router::objectIdIsUnused, "Returns whether or not the given ID is already used.\n\n You should only need this if you reimplement newObjectId().\n\n \n  An ID to test.\n \n\n  A boolean denoting that the given ID is unused.\n\nC++: Avoid::Router::objectIdIsUnused(const unsigned int) const --> bool", pybind11::arg("id"));
 		cl.def("shouldContinueTransactionWithProgress", (bool (Avoid::Router::*)(unsigned int, unsigned int, unsigned int, double)) &Avoid::Router::shouldContinueTransactionWithProgress, "A method called at regular intervals during transaction \n         processing to report progress and ask if the Router\n         should continue the transaction.\n\n You can subclass the Avoid::Router class to implement your \n own behaviour, such as to show a progress bar or cancel the \n transaction at the user's request.\n\n Note that you can get a sense of progress by looking at the \n phaseNumber divided by the totalPhases and the progress in the \n current phase, but be aware that phases and the intervals and\n proportions at which this method is called will vary, sometime\n unpredictably.\n\n You can return false to request that the Router abort the current\n transaction.  Be aware that it may not abort in some phases. For\n others it may need to clean up some state before it is safe for \n you to interact with it again.  Hence you should wait for a final \n call to this method with the phase Avoid::TransactionPhaseCompleted\n before continuing.\n\n \n  Your implementation of this method should be very fast as\n        it will be called many times.  Also, you should not change\n        or interact with the Router instance at all during these \n        calls.  Wait till you have received a call with the \n        Avoid::TransactionPhaseCompleted phase.\n\n \n  The number of msec spent on the transaction\n                      since it began.\n \n\n  A Router::TransactionPhases representing the\n                      current phase of the transaction.\n \n\n  The total number of phases to be performed \n                      during the transaction.\n \n\n   A double representing the progress in the \n                      current phase.  Value will be between 0--1.\n\n \n  Whether the router should continue the transaction.\n          This is true in the default (empty) implementation.\n\nC++: Avoid::Router::shouldContinueTransactionWithProgress(unsigned int, unsigned int, unsigned int, double) --> bool", pybind11::arg("elapsedTime"), pybind11::arg("phaseNumber"), pybind11::arg("totalPhases"), pybind11::arg("proportion"));
@@ -212,10 +312,6 @@ void bind_libavoid_router(std::function< pybind11::module &(std::string const &n
 		cl.def("existsCrossings", [](Avoid::Router &o) -> int { return o.existsCrossings(); }, "");
 		cl.def("existsCrossings", (int (Avoid::Router::*)(const bool)) &Avoid::Router::existsCrossings, "C++: Avoid::Router::existsCrossings(const bool) --> int", pybind11::arg("optimisedForConnectorType"));
 		cl.def("existsInvalidOrthogonalPaths", (bool (Avoid::Router::*)()) &Avoid::Router::existsInvalidOrthogonalPaths, "C++: Avoid::Router::existsInvalidOrthogonalPaths() --> bool");
-		cl.def("outputDiagramText", [](Avoid::Router &o) -> void { return o.outputDiagramText(); }, "");
-		cl.def("outputDiagramText", (void (Avoid::Router::*)(std::string)) &Avoid::Router::outputDiagramText, "C++: Avoid::Router::outputDiagramText(std::string) --> void", pybind11::arg("instanceName"));
-		cl.def("outputDiagram", [](Avoid::Router &o) -> void { return o.outputDiagram(); }, "");
-		cl.def("outputDiagram", (void (Avoid::Router::*)(std::string)) &Avoid::Router::outputDiagram, "C++: Avoid::Router::outputDiagram(std::string) --> void", pybind11::arg("instanceName"));
 		cl.def("assign", (class Avoid::Router & (Avoid::Router::*)(const class Avoid::Router &)) &Avoid::Router::operator=, "C++: Avoid::Router::operator=(const class Avoid::Router &) --> class Avoid::Router &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
 }

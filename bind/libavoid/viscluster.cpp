@@ -24,7 +24,6 @@
 #include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -73,9 +72,6 @@ void bind_libavoid_viscluster(std::function< pybind11::module &(std::string cons
 	}
 	{ // Avoid::MinimumTerminalSpanningTree file:libavoid/mtst.h line:66
 		pybind11::class_<Avoid::MinimumTerminalSpanningTree, std::shared_ptr<Avoid::MinimumTerminalSpanningTree>> cl(M("Avoid"), "MinimumTerminalSpanningTree", "");
-		cl.def( pybind11::init( [](class Avoid::Router * a0, class std::set<class Avoid::VertInf *, struct std::less<class Avoid::VertInf *>, class std::allocator<class Avoid::VertInf *> > const & a1){ return new Avoid::MinimumTerminalSpanningTree(a0, a1); } ), "doc" , pybind11::arg("router"), pybind11::arg("terminals"));
-		cl.def( pybind11::init<class Avoid::Router *, class std::set<class Avoid::VertInf *, struct std::less<class Avoid::VertInf *>, class std::allocator<class Avoid::VertInf *> >, class std::map<class Avoid::JunctionRef *, struct Avoid::HyperedgeTreeNode *, struct std::less<class Avoid::JunctionRef *>, class std::allocator<struct std::pair<class Avoid::JunctionRef *const, struct Avoid::HyperedgeTreeNode *> > > *>(), pybind11::arg("router"), pybind11::arg("terminals"), pybind11::arg("hyperedgeTreeJunctions") );
-
 		cl.def( pybind11::init( [](Avoid::MinimumTerminalSpanningTree const &o){ return new Avoid::MinimumTerminalSpanningTree(o); } ) );
 		cl.def("constructInterleaved", (void (Avoid::MinimumTerminalSpanningTree::*)()) &Avoid::MinimumTerminalSpanningTree::constructInterleaved, "C++: Avoid::MinimumTerminalSpanningTree::constructInterleaved() --> void");
 		cl.def("constructSequential", (void (Avoid::MinimumTerminalSpanningTree::*)()) &Avoid::MinimumTerminalSpanningTree::constructSequential, "C++: Avoid::MinimumTerminalSpanningTree::constructSequential() --> void");

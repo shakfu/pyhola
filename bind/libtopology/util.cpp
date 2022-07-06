@@ -1,19 +1,35 @@
 #include <_stdio.h>
 #include <functional>
+#include <libavoid/connector.h>
+#include <libavoid/connend.h>
+#include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
+#include <libavoid/graph.h>
+#include <libavoid/hyperedge.h>
+#include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <libcola/cluster.h>
 #include <libcola/cola.h>
+#include <libcola/compound_constraints.h>
 #include <libcola/straightener.h>
 #include <libtopology/cola_topology_addon.h>
+#include <libtopology/orthogonal_topology.h>
 #include <libtopology/topology_constraints.h>
 #include <libtopology/topology_graph.h>
 #include <libtopology/util.h>
 #include <libvpsc/constraint.h>
 #include <libvpsc/rectangle.h>
 #include <libvpsc/variable.h>
+#include <list>
 #include <memory>
+#include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
+#include <utility>
 #include <valarray>
 #include <vector>
 
@@ -86,6 +102,64 @@ struct PyCallBack_topology_ColaTopologyAddon : public topology::ColaTopologyAddo
 	}
 };
 
+// topology::AvoidTopologyAddon file:libtopology/orthogonal_topology.h line:37
+struct PyCallBack_topology_AvoidTopologyAddon : public topology::AvoidTopologyAddon {
+	using topology::AvoidTopologyAddon::AvoidTopologyAddon;
+
+	class Avoid::TopologyAddonInterface * clone() const override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const topology::AvoidTopologyAddon *>(this), "clone");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<class Avoid::TopologyAddonInterface *>::value) {
+				static pybind11::detail::override_caster_t<class Avoid::TopologyAddonInterface *> caster;
+				return pybind11::detail::cast_ref<class Avoid::TopologyAddonInterface *>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<class Avoid::TopologyAddonInterface *>(std::move(o));
+		}
+		return AvoidTopologyAddon::clone();
+	}
+	void improveOrthogonalTopology(class Avoid::Router * a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const topology::AvoidTopologyAddon *>(this), "improveOrthogonalTopology");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return AvoidTopologyAddon::improveOrthogonalTopology(a0);
+	}
+	bool outputCode(struct __sFILE * a0) const override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const topology::AvoidTopologyAddon *>(this), "outputCode");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return AvoidTopologyAddon::outputCode(a0);
+	}
+	bool outputDeletionCode(struct __sFILE * a0) const override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const topology::AvoidTopologyAddon *>(this), "outputDeletionCode");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return AvoidTopologyAddon::outputDeletionCode(a0);
+	}
+};
+
 void bind_libtopology_util(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
 	{ // topology::delete_object file:libtopology/util.h line:26
@@ -148,7 +222,6 @@ void bind_libtopology_util(std::function< pybind11::module &(std::string const &
 		cl.def("reverseIntersection", (double (topology::Segment::*)(enum vpsc::Dim, double, double &) const) &topology::Segment::reverseIntersection, "C++: topology::Segment::reverseIntersection(enum vpsc::Dim, double, double &) const --> double", pybind11::arg("scanDim"), pybind11::arg("pos"), pybind11::arg("p"));
 		cl.def("forwardIntersection", (double (topology::Segment::*)(enum vpsc::Dim, double) const) &topology::Segment::forwardIntersection, "C++: topology::Segment::forwardIntersection(enum vpsc::Dim, double) const --> double", pybind11::arg("scanDim"), pybind11::arg("pos"));
 		cl.def("intersection", (double (topology::Segment::*)(enum vpsc::Dim, const double, const class topology::EdgePoint *, const class topology::EdgePoint *, double &) const) &topology::Segment::intersection, "C++: topology::Segment::intersection(enum vpsc::Dim, const double, const class topology::EdgePoint *, const class topology::EdgePoint *, double &) const --> double", pybind11::arg("scanDim"), pybind11::arg("pos"), pybind11::arg("s"), pybind11::arg("e"), pybind11::arg("p"));
-		cl.def("toString", (std::string (topology::Segment::*)() const) &topology::Segment::toString, "C++: topology::Segment::toString() const --> std::string");
 		cl.def("length", (double (topology::Segment::*)(enum vpsc::Dim) const) &topology::Segment::length, "C++: topology::Segment::length(enum vpsc::Dim) const --> double", pybind11::arg("dim"));
 		cl.def("length", (double (topology::Segment::*)() const) &topology::Segment::length, "C++: topology::Segment::length() const --> double");
 		cl.def("assertNonZeroLength", (void (topology::Segment::*)() const) &topology::Segment::assertNonZeroLength, "C++: topology::Segment::assertNonZeroLength() const --> void");
@@ -171,7 +244,6 @@ void bind_libtopology_util(std::function< pybind11::module &(std::string const &
 		cl.def("getRoute", (struct straightener::Route * (topology::Edge::*)() const) &topology::Edge::getRoute, "C++: topology::Edge::getRoute() const --> struct straightener::Route *", pybind11::return_value_policy::automatic);
 		cl.def("assertConvexBends", (bool (topology::Edge::*)() const) &topology::Edge::assertConvexBends, "C++: topology::Edge::assertConvexBends() const --> bool");
 		cl.def("cycle", (bool (topology::Edge::*)() const) &topology::Edge::cycle, "C++: topology::Edge::cycle() const --> bool");
-		cl.def("toString", (std::string (topology::Edge::*)() const) &topology::Edge::toString, "C++: topology::Edge::toString() const --> std::string");
 	}
 	// topology::crossProduct(double, double, double, double, double, double) file:libtopology/topology_graph.h line:541
 	M("topology").def("crossProduct", (double (*)(double, double, double, double, double, double)) &topology::crossProduct, "C++: topology::crossProduct(double, double, double, double, double, double) --> double", pybind11::arg("x0"), pybind11::arg("y0"), pybind11::arg("x1"), pybind11::arg("y1"), pybind11::arg("x2"), pybind11::arg("y2"));
@@ -183,12 +255,20 @@ void bind_libtopology_util(std::function< pybind11::module &(std::string const &
 		cl.def( pybind11::init( [](topology::ColaTopologyAddon const &o){ return new topology::ColaTopologyAddon(o); } ) );
 		cl.def_readwrite("topologyNodes", &topology::ColaTopologyAddon::topologyNodes);
 		cl.def_readwrite("topologyRoutes", &topology::ColaTopologyAddon::topologyRoutes);
-		cl.def("writeSVGFile", [](topology::ColaTopologyAddon &o) -> void { return o.writeSVGFile(); }, "");
-		cl.def("writeSVGFile", (void (topology::ColaTopologyAddon::*)(std::string)) &topology::ColaTopologyAddon::writeSVGFile, "Writes an SVG file displaying the current topology of \n         the nodes and edges.\n\n \n  A string indicating the filename (without \n                      extension) for the output file.  Defaults to\n                      \"libtopology-cola.svg\" if no filename is given.\n\nC++: topology::ColaTopologyAddon::writeSVGFile(std::string) --> void", pybind11::arg("filename"));
 		cl.def("clone", (class cola::TopologyAddonInterface * (topology::ColaTopologyAddon::*)() const) &topology::ColaTopologyAddon::clone, "C++: topology::ColaTopologyAddon::clone() const --> class cola::TopologyAddonInterface *", pybind11::return_value_policy::automatic);
 		cl.def("freeAssociatedObjects", (void (topology::ColaTopologyAddon::*)()) &topology::ColaTopologyAddon::freeAssociatedObjects, "C++: topology::ColaTopologyAddon::freeAssociatedObjects() --> void");
 		cl.def("computeStress", (double (topology::ColaTopologyAddon::*)() const) &topology::ColaTopologyAddon::computeStress, "C++: topology::ColaTopologyAddon::computeStress() const --> double");
 		cl.def("useTopologySolver", (bool (topology::ColaTopologyAddon::*)() const) &topology::ColaTopologyAddon::useTopologySolver, "C++: topology::ColaTopologyAddon::useTopologySolver() const --> bool");
 		cl.def("assign", (class topology::ColaTopologyAddon & (topology::ColaTopologyAddon::*)(const class topology::ColaTopologyAddon &)) &topology::ColaTopologyAddon::operator=, "C++: topology::ColaTopologyAddon::operator=(const class topology::ColaTopologyAddon &) --> class topology::ColaTopologyAddon &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
+	{ // topology::AvoidTopologyAddon file:libtopology/orthogonal_topology.h line:37
+		pybind11::class_<topology::AvoidTopologyAddon, std::shared_ptr<topology::AvoidTopologyAddon>, PyCallBack_topology_AvoidTopologyAddon, Avoid::TopologyAddonInterface> cl(M("topology"), "AvoidTopologyAddon", "This class can be passed to libavoid to extend it to provide\n          orthogonal topology improvement functionality.\n\n  You should instantiate this class with libcola information about \n  constraints on objects in the diagram and pass it to \n  Avoid::Router::setTopologyAddon().");
+		cl.def( pybind11::init( [](PyCallBack_topology_AvoidTopologyAddon const &o){ return new PyCallBack_topology_AvoidTopologyAddon(o); } ) );
+		cl.def( pybind11::init( [](topology::AvoidTopologyAddon const &o){ return new topology::AvoidTopologyAddon(o); } ) );
+		cl.def("clone", (class Avoid::TopologyAddonInterface * (topology::AvoidTopologyAddon::*)() const) &topology::AvoidTopologyAddon::clone, "C++: topology::AvoidTopologyAddon::clone() const --> class Avoid::TopologyAddonInterface *", pybind11::return_value_policy::automatic);
+		cl.def("improveOrthogonalTopology", (void (topology::AvoidTopologyAddon::*)(class Avoid::Router *)) &topology::AvoidTopologyAddon::improveOrthogonalTopology, "C++: topology::AvoidTopologyAddon::improveOrthogonalTopology(class Avoid::Router *) --> void", pybind11::arg("router"));
+		cl.def("outputCode", (bool (topology::AvoidTopologyAddon::*)(struct __sFILE *) const) &topology::AvoidTopologyAddon::outputCode, "C++: topology::AvoidTopologyAddon::outputCode(struct __sFILE *) const --> bool", pybind11::arg("fp"));
+		cl.def("outputDeletionCode", (bool (topology::AvoidTopologyAddon::*)(struct __sFILE *) const) &topology::AvoidTopologyAddon::outputDeletionCode, "C++: topology::AvoidTopologyAddon::outputDeletionCode(struct __sFILE *) const --> bool", pybind11::arg("fp"));
+		cl.def("assign", (class topology::AvoidTopologyAddon & (topology::AvoidTopologyAddon::*)(const class topology::AvoidTopologyAddon &)) &topology::AvoidTopologyAddon::operator=, "C++: topology::AvoidTopologyAddon::operator=(const class topology::AvoidTopologyAddon &) --> class topology::AvoidTopologyAddon &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
 }
