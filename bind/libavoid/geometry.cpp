@@ -1,7 +1,14 @@
 #include <libavoid/actioninfo.h>
 #include <libavoid/connectionpin.h>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
+#include <libavoid/geometry.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
 #include <list>
 #include <memory>
 #include <sstream> // __str__
@@ -19,58 +26,61 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_24(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_geometry(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// Avoid::angle(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:48
+	// Avoid::totalLength(const class Avoid::Polygon &) file:libavoid/geometry.h line:47
+	M("Avoid").def("totalLength", (double (*)(const class Avoid::Polygon &)) &Avoid::totalLength, "C++: Avoid::totalLength(const class Avoid::Polygon &) --> double", pybind11::arg("poly"));
+
+	// Avoid::angle(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:48
 	M("Avoid").def("angle", (double (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::angle, "C++: Avoid::angle(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> double", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 
-	// Avoid::segmentIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:49
+	// Avoid::segmentIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:49
 	M("Avoid").def("segmentIntersect", (bool (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::segmentIntersect, "C++: Avoid::segmentIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("d"));
 
-	// Avoid::segmentShapeIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, bool &) file: line:51
+	// Avoid::segmentShapeIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, bool &) file:libavoid/geometry.h line:51
 	M("Avoid").def("segmentShapeIntersect", (bool (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, bool &)) &Avoid::segmentShapeIntersect, "C++: Avoid::segmentShapeIntersect(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, bool &) --> bool", pybind11::arg("e1"), pybind11::arg("e2"), pybind11::arg("s1"), pybind11::arg("s2"), pybind11::arg("seenIntersectionAtEndpoint"));
 
-	// Avoid::inPoly(const class Avoid::Polygon &, const class Avoid::Point &, bool) file: line:53
+	// Avoid::inPoly(const class Avoid::Polygon &, const class Avoid::Point &, bool) file:libavoid/geometry.h line:53
 	M("Avoid").def("inPoly", [](const class Avoid::Polygon & a0, const class Avoid::Point & a1) -> bool { return Avoid::inPoly(a0, a1); }, "", pybind11::arg("poly"), pybind11::arg("q"));
 	M("Avoid").def("inPoly", (bool (*)(const class Avoid::Polygon &, const class Avoid::Point &, bool)) &Avoid::inPoly, "C++: Avoid::inPoly(const class Avoid::Polygon &, const class Avoid::Point &, bool) --> bool", pybind11::arg("poly"), pybind11::arg("q"), pybind11::arg("countBorder"));
 
-	// Avoid::inPolyGen(const class Avoid::PolygonInterface &, const class Avoid::Point &) file: line:54
+	// Avoid::inPolyGen(const class Avoid::PolygonInterface &, const class Avoid::Point &) file:libavoid/geometry.h line:54
 	M("Avoid").def("inPolyGen", (bool (*)(const class Avoid::PolygonInterface &, const class Avoid::Point &)) &Avoid::inPolyGen, "C++: Avoid::inPolyGen(const class Avoid::PolygonInterface &, const class Avoid::Point &) --> bool", pybind11::arg("poly"), pybind11::arg("q"));
 
-	// Avoid::inValidRegion(bool, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:55
+	// Avoid::inValidRegion(bool, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:55
 	M("Avoid").def("inValidRegion", (bool (*)(bool, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::inValidRegion, "C++: Avoid::inValidRegion(bool, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> bool", pybind11::arg("IgnoreRegions"), pybind11::arg("a0"), pybind11::arg("a1"), pybind11::arg("a2"), pybind11::arg("b"));
 
-	// Avoid::cornerSide(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:57
+	// Avoid::cornerSide(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:57
 	M("Avoid").def("cornerSide", (int (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::cornerSide, "C++: Avoid::cornerSide(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> int", pybind11::arg("c1"), pybind11::arg("c2"), pybind11::arg("c3"), pybind11::arg("p"));
 
-	// Avoid::pointOnLine(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file: line:59
+	// Avoid::pointOnLine(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file:libavoid/geometry.h line:59
 	M("Avoid").def("pointOnLine", [](const class Avoid::Point & a0, const class Avoid::Point & a1, const class Avoid::Point & a2) -> bool { return Avoid::pointOnLine(a0, a1, a2); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 	M("Avoid").def("pointOnLine", (bool (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double)) &Avoid::pointOnLine, "C++: Avoid::pointOnLine(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("tolerance"));
 
-	// Avoid::colinear(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file: line:61
+	// Avoid::colinear(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file:libavoid/geometry.h line:61
 	M("Avoid").def("colinear", [](const class Avoid::Point & a0, const class Avoid::Point & a1, const class Avoid::Point & a2) -> bool { return Avoid::colinear(a0, a1, a2); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 	M("Avoid").def("colinear", (bool (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double)) &Avoid::colinear, "C++: Avoid::colinear(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("tolerance"));
 
-	// Avoid::inBetween(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:64
+	// Avoid::inBetween(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:64
 	M("Avoid").def("inBetween", (bool (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::inBetween, "C++: Avoid::inBetween(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 
-	// Avoid::vecDir(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file: line:79
+	// Avoid::vecDir(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) file:libavoid/geometry.h line:79
 	M("Avoid").def("vecDir", [](const class Avoid::Point & a0, const class Avoid::Point & a1, const class Avoid::Point & a2) -> int { return Avoid::vecDir(a0, a1, a2); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 	M("Avoid").def("vecDir", (int (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double)) &Avoid::vecDir, "C++: Avoid::vecDir(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const double) --> int", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("maybeZero"));
 
-	// Avoid::projection(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file: line:99
+	// Avoid::projection(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:99
 	M("Avoid").def("projection", (class Avoid::Point (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &)) &Avoid::projection, "C++: Avoid::projection(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &) --> class Avoid::Point", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
 
-	// Avoid::segmentIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) file: line:119
+	// Avoid::segmentIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) file:libavoid/geometry.h line:119
 	M("Avoid").def("segmentIntersectPoint", (int (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *)) &Avoid::segmentIntersectPoint, "C++: Avoid::segmentIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) --> int", pybind11::arg("a1"), pybind11::arg("a2"), pybind11::arg("b1"), pybind11::arg("b2"), pybind11::arg("x"), pybind11::arg("y"));
 
-	// Avoid::rayIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) file: line:121
+	// Avoid::rayIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) file:libavoid/geometry.h line:121
 	M("Avoid").def("rayIntersectPoint", (int (*)(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *)) &Avoid::rayIntersectPoint, "C++: Avoid::rayIntersectPoint(const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, const class Avoid::Point &, double *, double *) --> int", pybind11::arg("a1"), pybind11::arg("a2"), pybind11::arg("b1"), pybind11::arg("b2"), pybind11::arg("x"), pybind11::arg("y"));
 
-	// Avoid::rotationalAngle(const class Avoid::Point &) file: line:123
+	// Avoid::rotationalAngle(const class Avoid::Point &) file:libavoid/geometry.h line:123
 	M("Avoid").def("rotationalAngle", (double (*)(const class Avoid::Point &)) &Avoid::rotationalAngle, "C++: Avoid::rotationalAngle(const class Avoid::Point &) --> double", pybind11::arg("p"));
 
-	// Avoid::ConnDirFlag file: line:62
+	// Avoid::ConnDirFlag file:libavoid/connend.h line:62
 	pybind11::enum_<Avoid::ConnDirFlag>(M("Avoid"), "ConnDirFlag", pybind11::arithmetic(), "Flags that can be passed to the ConnEnd constructor to specify\n         which sides of a shape this point should have visibility to if\n         it is located within the shape's area.\n\n Like SVG, libavoid considers the Y-axis to point downwards, that is, \n like screen coordinates the coordinates increase from left-to-right and \n also from top-to-bottom.")
 		.value("ConnDirNone", Avoid::ConnDirNone)
 		.value("ConnDirUp", Avoid::ConnDirUp)
@@ -82,7 +92,7 @@ void bind_unknown_unknown_24(std::function< pybind11::module &(std::string const
 
 ;
 
-	// Avoid::ConnEndType file: line:89
+	// Avoid::ConnEndType file:libavoid/connend.h line:89
 	pybind11::enum_<Avoid::ConnEndType>(M("Avoid"), "ConnEndType", pybind11::arithmetic(), "Types that describe the kind a connection that a ConnEnd \n         represents.")
 		.value("ConnEndPoint", Avoid::ConnEndPoint)
 		.value("ConnEndShapePin", Avoid::ConnEndShapePin)
@@ -92,7 +102,7 @@ void bind_unknown_unknown_24(std::function< pybind11::module &(std::string const
 
 ;
 
-	{ // Avoid::ConnEnd file: line:110
+	{ // Avoid::ConnEnd file:libavoid/connend.h line:110
 		pybind11::class_<Avoid::ConnEnd, std::shared_ptr<Avoid::ConnEnd>> cl(M("Avoid"), "ConnEnd", "The ConnEnd class represents different possible endpoints for \n         connectors.\n\n ConnEnds may be free-floating points, points attached to junctions (between\n multiple connectors), or points attached to shapes (either to the centre of \n the shape or to particular pin positions on the shape).");
 		cl.def( pybind11::init<const class Avoid::Point &>(), pybind11::arg("point") );
 

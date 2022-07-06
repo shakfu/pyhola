@@ -33,7 +33,7 @@
 #include <vector>
 #include <utility>
 
-#include "libavoid/dllexport.h"
+#include <libavoid/dllexport.h>
 
 
 namespace Avoid

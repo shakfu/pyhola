@@ -1,5 +1,17 @@
 #include <functional>
 #include <iterator>
+#include <libavoid/geomtypes.h>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libdialect/constraints.h>
+#include <libdialect/faces.h>
+#include <libdialect/graphs.h>
+#include <libdialect/opts.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libdialect/treeplacement.h>
+#include <libdialect/trees.h>
+#include <libvpsc/rectangle.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -20,9 +32,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_18(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_faces(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // dialect::Nexus file: line:182
+	{ // dialect::Nexus file:libdialect/faces.h line:182
 		pybind11::class_<dialect::Nexus, std::shared_ptr<dialect::Nexus>> cl(M("dialect"), "Nexus", "Regarded as a member of a Face F, a Node u belongs to certain Sides si\n of F. As we traverse the face in the clockwise direction (i.e. so that the\n interior of the face is always to the /right/), each Side si gets a direction,\n and therefore may stand in one of eight relations to Node u: it may be /entering/\n or /exiting/, and this may be from or to any of the four cardinal compass directions.\n\n A single Side may stand in two such relations, as when the Node lies along\n the middle of the Side, or else in just one such relation, as when a Node\n lies at one end or the other.\n\n A Nexus represents a Node in this capacity as a \"joining point\" of several\n Sides of a Face. It stores eight \"slots\" that are either empty or else occupied by\n a Side object.");
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Node>>(), pybind11::arg("u") );
 
@@ -30,7 +42,7 @@ void bind_unknown_unknown_18(std::function< pybind11::module &(std::string const
 		cl.def("addSide", (void (dialect::Nexus::*)(class std::shared_ptr<class dialect::Side>)) &dialect::Nexus::addSide, "Add a Side to the Nexus.\n\nC++: dialect::Nexus::addSide(class std::shared_ptr<class dialect::Side>) --> void", pybind11::arg("side"));
 		cl.def("toString", (std::string (dialect::Nexus::*)() const) &dialect::Nexus::toString, "Write a string representation.\n\nC++: dialect::Nexus::toString() const --> std::string");
 	}
-	{ // dialect::FaceSet file: line:251
+	{ // dialect::FaceSet file:libdialect/faces.h line:251
 		pybind11::class_<dialect::FaceSet, std::shared_ptr<dialect::FaceSet>> cl(M("dialect"), "FaceSet", "Holds all the Face objects for a given 4-planar, orthogonal layout,\n and provides methods to use and manage them.");
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Graph> &>(), pybind11::arg("G") );
 
@@ -38,7 +50,7 @@ void bind_unknown_unknown_18(std::function< pybind11::module &(std::string const
 		cl.def("getNumFaces", (unsigned long (dialect::FaceSet::*)()) &dialect::FaceSet::getNumFaces, "Check how many faces there are.\n\nC++: dialect::FaceSet::getNumFaces() --> unsigned long");
 		cl.def("getExternalFace", (class std::shared_ptr<class dialect::Face> (dialect::FaceSet::*)()) &dialect::FaceSet::getExternalFace, "Get the external Face.\n\nC++: dialect::FaceSet::getExternalFace() --> class std::shared_ptr<class dialect::Face>");
 	}
-	{ // dialect::Face file: line:306
+	{ // dialect::Face file:libdialect/faces.h line:306
 		pybind11::class_<dialect::Face, std::shared_ptr<dialect::Face>> cl(M("dialect"), "Face", "Represents a single face of a 4-planar, orthogonal layout.");
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Graph> &>(), pybind11::arg("G") );
 
@@ -61,7 +73,7 @@ void bind_unknown_unknown_18(std::function< pybind11::module &(std::string const
 		cl.def("buildBestProjSeq", (class std::shared_ptr<class dialect::ProjSeq> (dialect::Face::*)(class std::shared_ptr<class dialect::TreePlacement>, double, bool, enum dialect::ExpansionEstimateMethod)) &dialect::Face::buildBestProjSeq, "Build the best projection sequence for a given tree placement.\n \n\n  The TreePlacement to be added to this Face.\n \n\n  Optional padding for the new tree box.\n \n\n  See TreePlacement::buildBestProjSeq.\n \n\n  See defn of ExpansionEstimateMethod enum class.\n \n\n  A ProjSeq representing the computed projection sequence.\n\nC++: dialect::Face::buildBestProjSeq(class std::shared_ptr<class dialect::TreePlacement>, double, bool, enum dialect::ExpansionEstimateMethod) --> class std::shared_ptr<class dialect::ProjSeq>", pybind11::arg("tp"), pybind11::arg("padding"), pybind11::arg("doCostlierDimensionFirst"), pybind11::arg("estimateMethod"));
 		cl.def("getSetOfAllTreePlacements", (class std::set<class std::shared_ptr<class dialect::TreePlacement>, struct std::less<class std::shared_ptr<class dialect::TreePlacement> >, class std::allocator<class std::shared_ptr<class dialect::TreePlacement> > > (dialect::Face::*)() const) &dialect::Face::getSetOfAllTreePlacements, "Get the set of all TreePlacements that have been added to this Face.\n \n\n  Set of TreePlacements.\n\nC++: dialect::Face::getSetOfAllTreePlacements() const --> class std::set<class std::shared_ptr<class dialect::TreePlacement>, struct std::less<class std::shared_ptr<class dialect::TreePlacement> >, class std::allocator<class std::shared_ptr<class dialect::TreePlacement> > >");
 	}
-	{ // dialect::Tree file: line:44
+	{ // dialect::Tree file:libdialect/trees.h line:44
 		pybind11::class_<dialect::Tree, std::shared_ptr<dialect::Tree>> cl(M("dialect"), "Tree", "");
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Graph>, class std::shared_ptr<class dialect::Node>>(), pybind11::arg("G"), pybind11::arg("root") );
 

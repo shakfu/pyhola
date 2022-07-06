@@ -27,9 +27,9 @@
 
 #include <list>
 
-#include "libavoid/actioninfo.h"
-#include "libavoid/connend.h"
-#include "libavoid/geomtypes.h"
+#include <libavoid/actioninfo.h>
+#include <libavoid/connend.h>
+#include <libavoid/geomtypes.h>
 
 namespace Avoid {
 

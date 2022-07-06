@@ -1,7 +1,14 @@
 #include <libavoid/connector.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geometry.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -19,7 +26,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// Avoid::PolygonInterface file: line:150
+// Avoid::PolygonInterface file:libavoid/geomtypes.h line:150
 struct PyCallBack_Avoid_PolygonInterface : public Avoid::PolygonInterface {
 	using Avoid::PolygonInterface::PolygonInterface;
 
@@ -90,7 +97,7 @@ struct PyCallBack_Avoid_PolygonInterface : public Avoid::PolygonInterface {
 	}
 };
 
-// Avoid::Polygon file: line:207
+// Avoid::Polygon file:libavoid/geomtypes.h line:207
 struct PyCallBack_Avoid_Polygon : public Avoid::Polygon {
 	using Avoid::Polygon::Polygon;
 
@@ -161,7 +168,7 @@ struct PyCallBack_Avoid_Polygon : public Avoid::Polygon {
 	}
 };
 
-// Avoid::ReferencingPolygon file: line:336
+// Avoid::ReferencingPolygon file:libavoid/geomtypes.h line:336
 struct PyCallBack_Avoid_ReferencingPolygon : public Avoid::ReferencingPolygon {
 	using Avoid::ReferencingPolygon::ReferencingPolygon;
 
@@ -232,7 +239,7 @@ struct PyCallBack_Avoid_ReferencingPolygon : public Avoid::ReferencingPolygon {
 	}
 };
 
-// Avoid::Rectangle file: line:356
+// Avoid::Rectangle file:libavoid/geomtypes.h line:356
 struct PyCallBack_Avoid_Rectangle : public Avoid::Rectangle {
 	using Avoid::Rectangle::Rectangle;
 
@@ -303,9 +310,9 @@ struct PyCallBack_Avoid_Rectangle : public Avoid::Rectangle {
 	}
 };
 
-void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_geomtypes(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Avoid::Point file: line:52
+	{ // Avoid::Point file:libavoid/geomtypes.h line:52
 		pybind11::class_<Avoid::Point, std::shared_ptr<Avoid::Point>> cl(M("Avoid"), "Point", "The Point class defines a point in the plane.\n\n Points consist of an x and y value.  They may also have an ID and vertex\n number associated with them.");
 		cl.def( pybind11::init( [](){ return new Avoid::Point(); } ) );
 		cl.def( pybind11::init<const double, const double>(), pybind11::arg("xv"), pybind11::arg("yv") );
@@ -324,7 +331,7 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 		cl.def("__sub__", (class Avoid::Point (Avoid::Point::*)(const class Avoid::Point &) const) &Avoid::Point::operator-, "C++: Avoid::Point::operator-(const class Avoid::Point &) const --> class Avoid::Point", pybind11::arg("rhs"));
 		cl.def("assign", (class Avoid::Point & (Avoid::Point::*)(const class Avoid::Point &)) &Avoid::Point::operator=, "C++: Avoid::Point::operator=(const class Avoid::Point &) --> class Avoid::Point &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // Avoid::Box file: line:133
+	{ // Avoid::Box file:libavoid/geomtypes.h line:133
 		pybind11::class_<Avoid::Box, std::shared_ptr<Avoid::Box>> cl(M("Avoid"), "Box", "A bounding box, represented by the top-left and\n         bottom-right corners.");
 		cl.def( pybind11::init( [](){ return new Avoid::Box(); } ) );
 		cl.def_readwrite("min", &Avoid::Box::min);
@@ -333,7 +340,7 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 		cl.def("width", (double (Avoid::Box::*)() const) &Avoid::Box::width, "C++: Avoid::Box::width() const --> double");
 		cl.def("height", (double (Avoid::Box::*)() const) &Avoid::Box::height, "C++: Avoid::Box::height() const --> double");
 	}
-	{ // Avoid::PolygonInterface file: line:150
+	{ // Avoid::PolygonInterface file:libavoid/geomtypes.h line:150
 		pybind11::class_<Avoid::PolygonInterface, std::shared_ptr<Avoid::PolygonInterface>, PyCallBack_Avoid_PolygonInterface> cl(M("Avoid"), "PolygonInterface", "A common interface used by the Polygon classes.");
 		cl.def( pybind11::init( [](){ return new PyCallBack_Avoid_PolygonInterface(); } ) );
 		cl.def(pybind11::init<PyCallBack_Avoid_PolygonInterface const &>());
@@ -347,13 +354,13 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 		cl.def("offsetPolygon", (class Avoid::Polygon (Avoid::PolygonInterface::*)(double) const) &Avoid::PolygonInterface::offsetPolygon, "C++: Avoid::PolygonInterface::offsetPolygon(double) const --> class Avoid::Polygon", pybind11::arg("offset"));
 		cl.def("assign", (class Avoid::PolygonInterface & (Avoid::PolygonInterface::*)(const class Avoid::PolygonInterface &)) &Avoid::PolygonInterface::operator=, "C++: Avoid::PolygonInterface::operator=(const class Avoid::PolygonInterface &) --> class Avoid::PolygonInterface &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // Avoid::Edge file: line:188
+	{ // Avoid::Edge file:libavoid/geomtypes.h line:188
 		pybind11::class_<Avoid::Edge, std::shared_ptr<Avoid::Edge>> cl(M("Avoid"), "Edge", "A line between two points. ");
 		cl.def( pybind11::init( [](){ return new Avoid::Edge(); } ) );
 		cl.def_readwrite("a", &Avoid::Edge::a);
 		cl.def_readwrite("b", &Avoid::Edge::b);
 	}
-	{ // Avoid::Polygon file: line:207
+	{ // Avoid::Polygon file:libavoid/geomtypes.h line:207
 		pybind11::class_<Avoid::Polygon, std::shared_ptr<Avoid::Polygon>, PyCallBack_Avoid_Polygon, Avoid::PolygonInterface> cl(M("Avoid"), "Polygon", "A dynamic Polygon, to which points can be easily added and removed.\n\n \n The Rectangle class can be used as an easy way of constructing a\n       square or rectangular polygon.");
 		cl.def( pybind11::init( [](){ return new Avoid::Polygon(); }, [](){ return new PyCallBack_Avoid_Polygon(); } ) );
 		cl.def( pybind11::init<const int>(), pybind11::arg("n") );
@@ -378,7 +385,7 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 		cl.def("translate", (void (Avoid::Polygon::*)(const double, const double)) &Avoid::Polygon::translate, "Translates the polygon position by a relative amount.\n\n \n  Distance to move polygon in the x dimension.\n \n\n  Distance to move polygon in the y dimension.\n\nC++: Avoid::Polygon::translate(const double, const double) --> void", pybind11::arg("xDist"), pybind11::arg("yDist"));
 		cl.def("assign", (class Avoid::Polygon & (Avoid::Polygon::*)(const class Avoid::Polygon &)) &Avoid::Polygon::operator=, "C++: Avoid::Polygon::operator=(const class Avoid::Polygon &) --> class Avoid::Polygon &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // Avoid::ReferencingPolygon file: line:336
+	{ // Avoid::ReferencingPolygon file:libavoid/geomtypes.h line:336
 		pybind11::class_<Avoid::ReferencingPolygon, std::shared_ptr<Avoid::ReferencingPolygon>, PyCallBack_Avoid_ReferencingPolygon, Avoid::PolygonInterface> cl(M("Avoid"), "ReferencingPolygon", "A Polygon which just references its points from other Polygons.\n\n This type of Polygon is used to accurately represent cluster boundaries \n made up from the corner points of shapes.");
 		cl.def( pybind11::init( [](){ return new Avoid::ReferencingPolygon(); }, [](){ return new PyCallBack_Avoid_ReferencingPolygon(); } ) );
 		cl.def( pybind11::init<const class Avoid::Polygon &, const class Avoid::Router *>(), pybind11::arg("poly"), pybind11::arg("router") );
@@ -395,7 +402,7 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 		cl.def("at", (const class Avoid::Point & (Avoid::ReferencingPolygon::*)(unsigned long) const) &Avoid::ReferencingPolygon::at, "C++: Avoid::ReferencingPolygon::at(unsigned long) const --> const class Avoid::Point &", pybind11::return_value_policy::automatic, pybind11::arg("index"));
 		cl.def("assign", (class Avoid::ReferencingPolygon & (Avoid::ReferencingPolygon::*)(const class Avoid::ReferencingPolygon &)) &Avoid::ReferencingPolygon::operator=, "C++: Avoid::ReferencingPolygon::operator=(const class Avoid::ReferencingPolygon &) --> class Avoid::ReferencingPolygon &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // Avoid::Rectangle file: line:356
+	{ // Avoid::Rectangle file:libavoid/geomtypes.h line:356
 		pybind11::class_<Avoid::Rectangle, std::shared_ptr<Avoid::Rectangle>, PyCallBack_Avoid_Rectangle, Avoid::Polygon> cl(M("Avoid"), "Rectangle", "A Rectangle, a simpler way to define the polygon for square or\n         rectangular shapes.");
 		cl.def( pybind11::init<const class Avoid::Point &, const class Avoid::Point &>(), pybind11::arg("topLeft"), pybind11::arg("bottomRight") );
 
@@ -403,13 +410,10 @@ void bind_unknown_unknown_23(std::function< pybind11::module &(std::string const
 
 		cl.def("assign", (class Avoid::Rectangle & (Avoid::Rectangle::*)(const class Avoid::Rectangle &)) &Avoid::Rectangle::operator=, "C++: Avoid::Rectangle::operator=(const class Avoid::Rectangle &) --> class Avoid::Rectangle &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	// Avoid::euclideanDist(const class Avoid::Point &, const class Avoid::Point &) file: line:45
+	// Avoid::euclideanDist(const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:45
 	M("Avoid").def("euclideanDist", (double (*)(const class Avoid::Point &, const class Avoid::Point &)) &Avoid::euclideanDist, "C++: Avoid::euclideanDist(const class Avoid::Point &, const class Avoid::Point &) --> double", pybind11::arg("a"), pybind11::arg("b"));
 
-	// Avoid::manhattanDist(const class Avoid::Point &, const class Avoid::Point &) file: line:46
+	// Avoid::manhattanDist(const class Avoid::Point &, const class Avoid::Point &) file:libavoid/geometry.h line:46
 	M("Avoid").def("manhattanDist", (double (*)(const class Avoid::Point &, const class Avoid::Point &)) &Avoid::manhattanDist, "C++: Avoid::manhattanDist(const class Avoid::Point &, const class Avoid::Point &) --> double", pybind11::arg("a"), pybind11::arg("b"));
-
-	// Avoid::totalLength(const class Avoid::Polygon &) file: line:47
-	M("Avoid").def("totalLength", (double (*)(const class Avoid::Polygon &)) &Avoid::totalLength, "C++: Avoid::totalLength(const class Avoid::Polygon &) --> double", pybind11::arg("poly"));
 
 }

@@ -1,5 +1,8 @@
 #include <ios>
+#include <libvpsc/block.h>
 #include <libvpsc/blocks.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/variable.h>
 #include <locale>
 #include <memory>
 #include <ostream>
@@ -20,9 +23,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_4(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libvpsc_block(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // vpsc::PositionStats file: line:42
+	{ // vpsc::PositionStats file:libvpsc/block.h line:42
 		pybind11::class_<vpsc::PositionStats, std::shared_ptr<vpsc::PositionStats>> cl(M("vpsc"), "PositionStats", "");
 		cl.def( pybind11::init( [](){ return new vpsc::PositionStats(); } ) );
 		cl.def_readwrite("scale", &vpsc::PositionStats::scale);
@@ -31,7 +34,7 @@ void bind_unknown_unknown_4(std::function< pybind11::module &(std::string const 
 		cl.def_readwrite("A2", &vpsc::PositionStats::A2);
 		cl.def("addVariable", (void (vpsc::PositionStats::*)(class vpsc::Variable *const)) &vpsc::PositionStats::addVariable, "C++: vpsc::PositionStats::addVariable(class vpsc::Variable *const) --> void", pybind11::arg("v"));
 	}
-	{ // vpsc::Block file: line:51
+	{ // vpsc::Block file:libvpsc/block.h line:51
 		pybind11::class_<vpsc::Block, std::shared_ptr<vpsc::Block>> cl(M("vpsc"), "Block", "");
 		cl.def( pybind11::init( [](class vpsc::Blocks * a0){ return new vpsc::Block(a0); } ), "doc" , pybind11::arg("blocks"));
 		cl.def( pybind11::init<class vpsc::Blocks *, class vpsc::Variable *const>(), pybind11::arg("blocks"), pybind11::arg("v") );
@@ -60,7 +63,7 @@ void bind_unknown_unknown_4(std::function< pybind11::module &(std::string const 
 
 		cl.def("__str__", [](vpsc::Block const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	{ // vpsc::Variable file: line:44
+	{ // vpsc::Variable file:libvpsc/variable.h line:44
 		pybind11::class_<vpsc::Variable, std::shared_ptr<vpsc::Variable>> cl(M("vpsc"), "Variable", "A variable is comprised of an ideal position, final position and \n        a weight.\n\n When creating a variable you specify an ideal value, and a weight---how \n much the variable wants to be at its ideal position.  After solving the \n problem you can read back the final position for the variable.");
 		cl.def( pybind11::init( [](const int & a0){ return new vpsc::Variable(a0); } ), "doc" , pybind11::arg("id"));
 		cl.def( pybind11::init( [](const int & a0, const double & a1){ return new vpsc::Variable(a0, a1); } ), "doc" , pybind11::arg("id"), pybind11::arg("desiredPos"));
@@ -83,7 +86,7 @@ void bind_unknown_unknown_4(std::function< pybind11::module &(std::string const 
 
 		cl.def("__str__", [](vpsc::Variable const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	{ // vpsc::Constraint file: line:44
+	{ // vpsc::Constraint file:libvpsc/constraint.h line:44
 		pybind11::class_<vpsc::Constraint, std::shared_ptr<vpsc::Constraint>> cl(M("vpsc"), "Constraint", "A constraint determines a minimum or exact spacing required between\n        two Variable objects.");
 		cl.def( pybind11::init( [](class vpsc::Variable * a0, class vpsc::Variable * a1, double const & a2){ return new vpsc::Constraint(a0, a1, a2); } ), "doc" , pybind11::arg("left"), pybind11::arg("right"), pybind11::arg("gap"));
 		cl.def( pybind11::init<class vpsc::Variable *, class vpsc::Variable *, double, bool>(), pybind11::arg("left"), pybind11::arg("right"), pybind11::arg("gap"), pybind11::arg("equality") );
@@ -101,7 +104,7 @@ void bind_unknown_unknown_4(std::function< pybind11::module &(std::string const 
 
 		cl.def("__str__", [](vpsc::Constraint const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	{ // vpsc::CompareConstraints file: line:119
+	{ // vpsc::CompareConstraints file:libvpsc/constraint.h line:119
 		pybind11::class_<vpsc::CompareConstraints, std::shared_ptr<vpsc::CompareConstraints>> cl(M("vpsc"), "CompareConstraints", "");
 		cl.def( pybind11::init( [](){ return new vpsc::CompareConstraints(); } ) );
 		cl.def("__call__", (bool (vpsc::CompareConstraints::*)(class vpsc::Constraint *const &, class vpsc::Constraint *const &) const) &vpsc::CompareConstraints::operator(), "C++: vpsc::CompareConstraints::operator()(class vpsc::Constraint *const &, class vpsc::Constraint *const &) const --> bool", pybind11::arg("l"), pybind11::arg("r"));

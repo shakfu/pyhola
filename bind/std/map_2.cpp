@@ -1,5 +1,7 @@
 #include <functional>
 #include <iterator>
+#include <libdialect/ortho.h>
+#include <libvpsc/rectangle.h>
 #include <map>
 #include <memory>
 #include <set>

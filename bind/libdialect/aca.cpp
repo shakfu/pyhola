@@ -1,7 +1,16 @@
 #include <_stdio.h>
 #include <functional>
 #include <iterator>
+#include <libcola/cluster.h>
+#include <libcola/cola.h>
+#include <libcola/compound_constraints.h>
 #include <libdialect/aca.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/ortho.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>

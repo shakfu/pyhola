@@ -1,7 +1,15 @@
 #include <_stdio.h>
 #include <functional>
+#include <libcola/cluster.h>
+#include <libcola/cola.h>
+#include <libcola/straightener.h>
 #include <libtopology/cola_topology_addon.h>
 #include <libtopology/topology_constraints.h>
+#include <libtopology/topology_graph.h>
+#include <libtopology/util.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -78,16 +86,16 @@ struct PyCallBack_topology_ColaTopologyAddon : public topology::ColaTopologyAddo
 	}
 };
 
-void bind_unknown_unknown_22(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libtopology_util(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // topology::delete_object file: line:26
+	{ // topology::delete_object file:libtopology/util.h line:26
 		pybind11::class_<topology::delete_object, std::shared_ptr<topology::delete_object>> cl(M("topology"), "delete_object", "");
 		cl.def( pybind11::init( [](){ return new topology::delete_object(); } ) );
 		cl.def( pybind11::init( [](topology::delete_object const &o){ return new topology::delete_object(o); } ) );
 		cl.def("__call__", (void (topology::delete_object::*)(class topology::EdgePoint *)) &topology::delete_object::operator()<topology::EdgePoint>, "C++: topology::delete_object::operator()(class topology::EdgePoint *) --> void", pybind11::arg("ptr"));
 		cl.def("__call__", (void (topology::delete_object::*)(class topology::Segment *)) &topology::delete_object::operator()<topology::Segment>, "C++: topology::delete_object::operator()(class topology::Segment *) --> void", pybind11::arg("ptr"));
 	}
-	{ // topology::Node file: line:58
+	{ // topology::Node file:libtopology/topology_graph.h line:58
 		pybind11::class_<topology::Node, std::shared_ptr<topology::Node>> cl(M("topology"), "Node", "Topology representation for a node.\n\n Each node is associated with a rectangle and solver variables\n for the x and y axes.\n\n \n You shouldn't need to create these yourself, but you may\n       extract them from an existing ColaTopologyAddon and construct\n       a new ColaTopologyAddon with that same topology information.");
 		cl.def( pybind11::init( [](unsigned int const & a0, class vpsc::Rectangle * a1){ return new topology::Node(a0, a1); } ), "doc" , pybind11::arg("id"), pybind11::arg("r"));
 		cl.def( pybind11::init<unsigned int, class vpsc::Rectangle *, class vpsc::Variable *>(), pybind11::arg("id"), pybind11::arg("r"), pybind11::arg("v") );
@@ -100,7 +108,7 @@ void bind_unknown_unknown_22(std::function< pybind11::module &(std::string const
 		cl.def("posOnLine", (double (topology::Node::*)(enum vpsc::Dim, double) const) &topology::Node::posOnLine, "C++: topology::Node::posOnLine(enum vpsc::Dim, double) const --> double", pybind11::arg("scanDim"), pybind11::arg("alpha"));
 		cl.def("getVar", (class vpsc::Variable * (topology::Node::*)() const) &topology::Node::getVar, "C++: topology::Node::getVar() const --> class vpsc::Variable *", pybind11::return_value_policy::automatic);
 	}
-	{ // topology::EdgePoint file: line:93
+	{ // topology::EdgePoint file:libtopology/topology_graph.h line:93
 		pybind11::class_<topology::EdgePoint, std::shared_ptr<topology::EdgePoint>> cl(M("topology"), "EdgePoint", "");
 		cl.def( pybind11::init<class topology::Node *, enum topology::EdgePoint::RectIntersect>(), pybind11::arg("n"), pybind11::arg("i") );
 
@@ -126,7 +134,7 @@ void bind_unknown_unknown_22(std::function< pybind11::module &(std::string const
 		cl.def("offset", (double (topology::EdgePoint::*)(enum vpsc::Dim) const) &topology::EdgePoint::offset, "C++: topology::EdgePoint::offset(enum vpsc::Dim) const --> double", pybind11::arg("scanDim"));
 		cl.def("prune", (class topology::Segment * (topology::EdgePoint::*)(enum vpsc::Dim)) &topology::EdgePoint::prune, "C++: topology::EdgePoint::prune(enum vpsc::Dim) --> class topology::Segment *", pybind11::return_value_policy::automatic, pybind11::arg("scanDim"));
 	}
-	{ // topology::Segment file: line:203
+	{ // topology::Segment file:libtopology/topology_graph.h line:203
 		pybind11::class_<topology::Segment, std::shared_ptr<topology::Segment>> cl(M("topology"), "Segment", "");
 		cl.def( pybind11::init<class topology::Edge *, class topology::EdgePoint *, class topology::EdgePoint *>(), pybind11::arg("edge"), pybind11::arg("start"), pybind11::arg("end") );
 
@@ -146,11 +154,11 @@ void bind_unknown_unknown_22(std::function< pybind11::module &(std::string const
 		cl.def("assertNonZeroLength", (void (topology::Segment::*)() const) &topology::Segment::assertNonZeroLength, "C++: topology::Segment::assertNonZeroLength() const --> void");
 		cl.def("connectedToNode", (bool (topology::Segment::*)(const class topology::Node *) const) &topology::Segment::connectedToNode, "C++: topology::Segment::connectedToNode(const class topology::Node *) const --> bool", pybind11::arg("v"));
 	}
-	// topology::ForEach(class topology::Edge *, struct topology::delete_object, struct topology::delete_object, bool) file: line:369
+	// topology::ForEach(class topology::Edge *, struct topology::delete_object, struct topology::delete_object, bool) file:libtopology/topology_graph.h line:369
 	M("topology").def("ForEach", [](class topology::Edge * a0, struct topology::delete_object const & a1, struct topology::delete_object const & a2) -> void { return topology::ForEach(a0, a1, a2); }, "", pybind11::arg("e"), pybind11::arg("po"), pybind11::arg("so"));
 	M("topology").def("ForEach", (void (*)(class topology::Edge *, struct topology::delete_object, struct topology::delete_object, bool)) &topology::ForEach<topology::Edge *,topology::delete_object,topology::delete_object>, "C++: topology::ForEach(class topology::Edge *, struct topology::delete_object, struct topology::delete_object, bool) --> void", pybind11::arg("e"), pybind11::arg("po"), pybind11::arg("so"), pybind11::arg("noCycle"));
 
-	{ // topology::Edge file: line:396
+	{ // topology::Edge file:libtopology/topology_graph.h line:396
 		pybind11::class_<topology::Edge, std::shared_ptr<topology::Edge>> cl(M("topology"), "Edge", "Topology representation of an edge.\n\n An edge provides a doubly linked list of segments, each involving a pair\n of EdgePoints.  \n\n \n You shouldn't need to create these yourself, but you may\n       extract them from an existing ColaTopologyAddon and construct\n       a new ColaTopologyAddon with that same topology information.");
 		cl.def_readwrite("id", &topology::Edge::id);
 		cl.def_readwrite("idealLength", &topology::Edge::idealLength);
@@ -165,7 +173,7 @@ void bind_unknown_unknown_22(std::function< pybind11::module &(std::string const
 		cl.def("cycle", (bool (topology::Edge::*)() const) &topology::Edge::cycle, "C++: topology::Edge::cycle() const --> bool");
 		cl.def("toString", (std::string (topology::Edge::*)() const) &topology::Edge::toString, "C++: topology::Edge::toString() const --> std::string");
 	}
-	// topology::crossProduct(double, double, double, double, double, double) file: line:541
+	// topology::crossProduct(double, double, double, double, double, double) file:libtopology/topology_graph.h line:541
 	M("topology").def("crossProduct", (double (*)(double, double, double, double, double, double)) &topology::crossProduct, "C++: topology::crossProduct(double, double, double, double, double, double) --> double", pybind11::arg("x0"), pybind11::arg("y0"), pybind11::arg("x1"), pybind11::arg("y1"), pybind11::arg("x2"), pybind11::arg("y2"));
 
 	{ // topology::ColaTopologyAddon file:libtopology/cola_topology_addon.h line:44

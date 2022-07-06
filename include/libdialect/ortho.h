@@ -34,10 +34,10 @@
 #include <algorithm>
 #include <utility>
 
-#include "libvpsc/rectangle.h"
-#include "libavoid/libavoid.h"
+#include <libvpsc/rectangle.h>
+#include <libavoid/libavoid.h>
 
-#include "libdialect/commontypes.h"
+#include <libdialect/commontypes.h>
 
 namespace dialect {
 

@@ -1,6 +1,9 @@
 #include <functional>
 #include <ios>
 #include <iterator>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <locale>
 #include <memory>
 #include <ostream>
@@ -23,9 +26,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_3(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libvpsc_rectangle(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// vpsc::Dim file: line:41
+	// vpsc::Dim file:libvpsc/rectangle.h line:41
 	pybind11::enum_<vpsc::Dim>(M("vpsc"), "Dim", pybind11::arithmetic(), "Indicates the x- or y-dimension.")
 		.value("HORIZONTAL", vpsc::HORIZONTAL)
 		.value("XDIM", vpsc::XDIM)
@@ -36,10 +39,10 @@ void bind_unknown_unknown_3(std::function< pybind11::module &(std::string const 
 
 ;
 
-	// vpsc::conjugate(enum vpsc::Dim) file: line:54
+	// vpsc::conjugate(enum vpsc::Dim) file:libvpsc/rectangle.h line:54
 	M("vpsc").def("conjugate", (enum vpsc::Dim (*)(enum vpsc::Dim)) &vpsc::conjugate, "C++: vpsc::conjugate(enum vpsc::Dim) --> enum vpsc::Dim", pybind11::arg("d"));
 
-	{ // vpsc::RectangleIntersections file: line:59
+	{ // vpsc::RectangleIntersections file:libvpsc/rectangle.h line:59
 		pybind11::class_<vpsc::RectangleIntersections, std::shared_ptr<vpsc::RectangleIntersections>> cl(M("vpsc"), "RectangleIntersections", "");
 		cl.def( pybind11::init( [](){ return new vpsc::RectangleIntersections(); } ) );
 		cl.def_readwrite("intersects", &vpsc::RectangleIntersections::intersects);
@@ -59,7 +62,7 @@ void bind_unknown_unknown_3(std::function< pybind11::module &(std::string const 
 		cl.def("printIntersections", (void (vpsc::RectangleIntersections::*)()) &vpsc::RectangleIntersections::printIntersections, "C++: vpsc::RectangleIntersections::printIntersections() --> void");
 		cl.def("nearest", (void (vpsc::RectangleIntersections::*)(double, double, double &, double &)) &vpsc::RectangleIntersections::nearest, "C++: vpsc::RectangleIntersections::nearest(double, double, double &, double &) --> void", pybind11::arg("x"), pybind11::arg("y"), pybind11::arg("xi"), pybind11::arg("yi"));
 	}
-	{ // vpsc::Rectangle file: line:78
+	{ // vpsc::Rectangle file:libvpsc/rectangle.h line:78
 		pybind11::class_<vpsc::Rectangle, std::shared_ptr<vpsc::Rectangle>> cl(M("vpsc"), "Rectangle", "A rectangle represents a fixed-size shape in the diagram that may\n         be moved to prevent overlaps and satisfy constraints.");
 		cl.def( pybind11::init( [](double const & a0, double const & a1, double const & a2, double const & a3){ return new vpsc::Rectangle(a0, a1, a2, a3); } ), "doc" , pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y"));
 		cl.def( pybind11::init<double, double, double, double, bool>(), pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y"), pybind11::arg("allowOverlap") );
@@ -105,7 +108,7 @@ void bind_unknown_unknown_3(std::function< pybind11::module &(std::string const 
 
 		cl.def("__str__", [](vpsc::Rectangle const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	{ // vpsc::delete_object file: line:295
+	{ // vpsc::delete_object file:libvpsc/rectangle.h line:295
 		pybind11::class_<vpsc::delete_object, std::shared_ptr<vpsc::delete_object>> cl(M("vpsc"), "delete_object", "");
 		cl.def( pybind11::init( [](){ return new vpsc::delete_object(); } ) );
 	}

@@ -1,5 +1,7 @@
 #include <functional>
 #include <iterator>
+#include <libdialect/faces.h>
+#include <libdialect/graphs.h>
 #include <map>
 #include <memory>
 #include <sstream> // __str__

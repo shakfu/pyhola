@@ -1,5 +1,7 @@
 #include <functional>
 #include <iterator>
+#include <libdialect/constraints.h>
+#include <libdialect/treeplacement.h>
 #include <libproject/project.h>
 #include <memory>
 #include <set>

@@ -1,10 +1,17 @@
 #include <_stdio.h>
 #include <functional>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <list>
 #include <memory>
 #include <set>
@@ -25,7 +32,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// Avoid::TopologyAddonInterface file: line:350
+// Avoid::TopologyAddonInterface file:libavoid/router.h line:350
 struct PyCallBack_Avoid_TopologyAddonInterface : public Avoid::TopologyAddonInterface {
 	using Avoid::TopologyAddonInterface::TopologyAddonInterface;
 
@@ -83,7 +90,7 @@ struct PyCallBack_Avoid_TopologyAddonInterface : public Avoid::TopologyAddonInte
 	}
 };
 
-// Avoid::Router file: line:386
+// Avoid::Router file:libavoid/router.h line:386
 struct PyCallBack_Avoid_Router : public Avoid::Router {
 	using Avoid::Router::Router;
 
@@ -115,9 +122,9 @@ struct PyCallBack_Avoid_Router : public Avoid::Router {
 	}
 };
 
-void bind_unknown_unknown_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_router(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Avoid::TopologyAddonInterface file: line:350
+	{ // Avoid::TopologyAddonInterface file:libavoid/router.h line:350
 		pybind11::class_<Avoid::TopologyAddonInterface, std::shared_ptr<Avoid::TopologyAddonInterface>, PyCallBack_Avoid_TopologyAddonInterface> cl(M("Avoid"), "TopologyAddonInterface", "");
 		cl.def( pybind11::init( [](){ return new Avoid::TopologyAddonInterface(); }, [](){ return new PyCallBack_Avoid_TopologyAddonInterface(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Avoid_TopologyAddonInterface const &o){ return new PyCallBack_Avoid_TopologyAddonInterface(o); } ) );
@@ -128,7 +135,7 @@ void bind_unknown_unknown_1(std::function< pybind11::module &(std::string const 
 		cl.def("outputDeletionCode", (bool (Avoid::TopologyAddonInterface::*)(struct __sFILE *) const) &Avoid::TopologyAddonInterface::outputDeletionCode, "C++: Avoid::TopologyAddonInterface::outputDeletionCode(struct __sFILE *) const --> bool", pybind11::arg("fp"));
 		cl.def("assign", (class Avoid::TopologyAddonInterface & (Avoid::TopologyAddonInterface::*)(const class Avoid::TopologyAddonInterface &)) &Avoid::TopologyAddonInterface::operator=, "C++: Avoid::TopologyAddonInterface::operator=(const class Avoid::TopologyAddonInterface &) --> class Avoid::TopologyAddonInterface &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // Avoid::Router file: line:386
+	{ // Avoid::Router file:libavoid/router.h line:386
 		pybind11::class_<Avoid::Router, std::shared_ptr<Avoid::Router>, PyCallBack_Avoid_Router> cl(M("Avoid"), "Router", "The Router class represents a libavoid router instance.\n\n Usually you would keep a separate Router instance for each diagram\n or layout you have open in your application.");
 		cl.def( pybind11::init<const unsigned int>(), pybind11::arg("flags") );
 

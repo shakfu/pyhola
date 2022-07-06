@@ -33,7 +33,7 @@
 #include <cassert>
 #include <cmath>
 
-#include "libvpsc/assertions.h"
+#include <libvpsc/assertions.h>
 
 namespace vpsc {
 

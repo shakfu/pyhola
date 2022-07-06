@@ -1,3 +1,5 @@
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
 #include <libdialect/planarise.h>
 #include <memory>
 #include <sstream> // __str__

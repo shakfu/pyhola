@@ -32,11 +32,11 @@
 #include <utility>
 #include <memory>
 
-#include "libvpsc/rectangle.h"
-#include "libcola/compound_constraints.h"
+#include <libvpsc/rectangle.h>
+#include <libcola/compound_constraints.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/ortho.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/ortho.h>
 
 namespace dialect {
 

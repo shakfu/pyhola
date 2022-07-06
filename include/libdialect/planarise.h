@@ -28,10 +28,10 @@
 #include <vector>
 #include <utility>
 
-#include "libvpsc/rectangle.h"
+#include <libvpsc/rectangle.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/constraints.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/constraints.h>
 
 namespace dialect {
 

@@ -30,8 +30,8 @@
 
 #include <list>
 
-#include "libavoid/geometry.h"
-#include "libavoid/dllexport.h"
+#include <libavoid/geometry.h>
+#include <libavoid/dllexport.h>
 
 namespace Avoid {
 

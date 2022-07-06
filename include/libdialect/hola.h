@@ -28,9 +28,9 @@
 #include <string>
 #include <vector>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/opts.h"
-#include "libdialect/logging.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/opts.h>
+#include <libdialect/logging.h>
 
 namespace dialect {
 

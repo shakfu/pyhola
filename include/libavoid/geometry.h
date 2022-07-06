@@ -36,8 +36,8 @@
 #ifndef AVOID_GEOMETRY_H
 #define AVOID_GEOMETRY_H
 
-#include "libavoid/geomtypes.h"
-#include "libavoid/assertions.h"
+#include <libavoid/geomtypes.h>
+#include <libavoid/assertions.h>
 
 namespace Avoid {
 

@@ -30,7 +30,7 @@
 #include <iostream>
 #include <limits>
 
-#include "libcola/commondefs.h"
+#include <libcola/commondefs.h>
 #include <libvpsc/pairing_heap.h>
 #include <libvpsc/assertions.h>
 

@@ -1,6 +1,13 @@
 #include <functional>
 #include <iterator>
+#include <libavoid/geomtypes.h>
 #include <libdialect/chains.h>
+#include <libdialect/constraints.h>
+#include <libdialect/faces.h>
+#include <libdialect/graphs.h>
+#include <libdialect/ortho.h>
+#include <libdialect/treeplacement.h>
+#include <libvpsc/rectangle.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -69,7 +76,7 @@ void bind_libdialect_chains(std::function< pybind11::module &(std::string const 
 		cl.def("takeShapeBasedConfiguration", (void (dialect::Chain::*)()) &dialect::Chain::takeShapeBasedConfiguration, "Give this chain an orthogonal configuration best fitting its present geometric shape.\n\n         This means we put the bend points in the most natural places, including the possibility\n         that they go where edges are (meaning a new bend point is constructed).\n\n         Thus, constraints at least are added to the underlying Graph's SepMatrix.\n         New Nodes (bend points) may also be added.\n\nC++: dialect::Chain::takeShapeBasedConfiguration() --> void");
 		cl.def("addAestheticBendsToEdges", (void (dialect::Chain::*)()) &dialect::Chain::addAestheticBendsToEdges, "Add any aesthetic bends that were chosen during shape-based configuration, to the\n         Edges to which they belong.\n\nC++: dialect::Chain::addAestheticBendsToEdges() --> void");
 	}
-	{ // dialect::Side file: line:43
+	{ // dialect::Side file:libdialect/faces.h line:43
 		pybind11::class_<dialect::Side, std::shared_ptr<dialect::Side>> cl(M("dialect"), "Side", "A side of a Face. E.g. a rectangular Face has four Sides: north, south, east, and west.");
 		cl.def( pybind11::init( [](dialect::Side const &o){ return new dialect::Side(o); } ) );
 		cl.def("containsNode", (bool (dialect::Side::*)(unsigned int) const) &dialect::Side::containsNode, "Check whether this Side contains a Node of the given ID.\n\nC++: dialect::Side::containsNode(unsigned int) const --> bool", pybind11::arg("id"));
@@ -93,7 +100,7 @@ void bind_libdialect_chains(std::function< pybind11::module &(std::string const 
 		cl.def("halfWidthOppositeSegment", (double (dialect::Side::*)(struct dialect::LineSegment &) const) &dialect::Side::halfWidthOppositeSegment, "Given a LineSegment, find that portion of this Side that lies opposite it,\n         (if any) and report the maximum half-width of the near half.\n \n\n  The LineSegment in question.\n \n\n  The desired half-width. Will be equal to -1 if the Side's interval does not intersect\n          that of the segment, or if it does but the two are in-line with one another.\n \n\n  The Edges of the Side are given the thickness value set for aligned edges in the underlying Graph.\n\nC++: dialect::Side::halfWidthOppositeSegment(struct dialect::LineSegment &) const --> double", pybind11::arg("seg"));
 		cl.def("getTreePlacements", (const class std::set<class std::shared_ptr<class dialect::TreePlacement>, struct std::less<class std::shared_ptr<class dialect::TreePlacement> >, class std::allocator<class std::shared_ptr<class dialect::TreePlacement> > > & (dialect::Side::*)() const) &dialect::Side::getTreePlacements, "Read-only access to the set of TreePlacements that have been attached to this Side.\n\nC++: dialect::Side::getTreePlacements() const --> const class std::set<class std::shared_ptr<class dialect::TreePlacement>, struct std::less<class std::shared_ptr<class dialect::TreePlacement> >, class std::allocator<class std::shared_ptr<class dialect::TreePlacement> > > &", pybind11::return_value_policy::automatic);
 	}
-	// dialect::NexusPolarity file: line:164
+	// dialect::NexusPolarity file:libdialect/faces.h line:164
 	pybind11::enum_<dialect::NexusPolarity>(M("dialect"), "NexusPolarity", "")
 		.value("ENTER_FROM", dialect::NexusPolarity::ENTER_FROM)
 		.value("EXIT_TO", dialect::NexusPolarity::EXIT_TO);

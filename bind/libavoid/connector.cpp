@@ -2,11 +2,18 @@
 #include <functional>
 #include <iterator>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
 #include <libavoid/debug.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <memory>
 #include <set>
 #include <sstream> // __str__

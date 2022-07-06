@@ -1,6 +1,19 @@
 #include <_stdio.h>
 #include <functional>
 #include <iterator>
+#include <libavoid/connend.h>
+#include <libavoid/geomtypes.h>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/logging.h>
+#include <libdialect/opts.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -21,9 +34,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_16(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_routing(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // dialect::LeaflessOrthoRouter file: line:102
+	{ // dialect::LeaflessOrthoRouter file:libdialect/routing.h line:102
 		pybind11::class_<dialect::LeaflessOrthoRouter, std::shared_ptr<dialect::LeaflessOrthoRouter>> cl(M("dialect"), "LeaflessOrthoRouter", "Does a special orthogonal routing in a graph having no leaves,\n         ensuring that at least two distinct sides of every node are\n         used as connection points. This is useful if we later wish to\n         planarise the layout, since it ensures that no node will become\n         a leaf in that process.");
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Graph>, const struct dialect::HolaOpts &>(), pybind11::arg("G"), pybind11::arg("opts") );
 
@@ -34,7 +47,7 @@ void bind_unknown_unknown_16(std::function< pybind11::module &(std::string const
 		cl.def("route", (void (dialect::LeaflessOrthoRouter::*)(struct dialect::Logger *)) &dialect::LeaflessOrthoRouter::route, "Do the routing.\n\nC++: dialect::LeaflessOrthoRouter::route(struct dialect::Logger *) --> void", pybind11::arg("logger"));
 		cl.def("setShapeBufferDistanceIELScalar", (void (dialect::LeaflessOrthoRouter::*)(double)) &dialect::LeaflessOrthoRouter::setShapeBufferDistanceIELScalar, "Set the Router's shapeBufferDistance parameter as a scalar multiple of the\n         ideal edge length read from the Graph.\n \n\n  This is provided only as a convenience for testing. In the HOLA algorithm\n           for which this is designed, shapeBufferDistance should always be zero.\n           Positive values there may result in failures to route.\n           HOLA uses its own node padding instead, for this purpose.\n\nC++: dialect::LeaflessOrthoRouter::setShapeBufferDistanceIELScalar(double) --> void", pybind11::arg("a"));
 	}
-	{ // dialect::BoundingBox file: line:52
+	{ // dialect::BoundingBox file:libdialect/graphs.h line:52
 		pybind11::class_<dialect::BoundingBox, std::shared_ptr<dialect::BoundingBox>> cl(M("dialect"), "BoundingBox", "A bounding box, given by the extreme coordinates.");
 		cl.def( pybind11::init<double, double, double, double>(), pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y") );
 
@@ -53,7 +66,7 @@ void bind_unknown_unknown_16(std::function< pybind11::module &(std::string const
 		cl.def("buildSideSegment", (class std::shared_ptr<struct dialect::LineSegment> (dialect::BoundingBox::*)(enum dialect::CardinalDir) const) &dialect::BoundingBox::buildSideSegment, "Build a LineSegment representing a side of the box.\n\nC++: dialect::BoundingBox::buildSideSegment(enum dialect::CardinalDir) const --> class std::shared_ptr<struct dialect::LineSegment>", pybind11::arg("side"));
 		cl.def("perimeter", (double (dialect::BoundingBox::*)() const) &dialect::BoundingBox::perimeter, "Compute the perimeter of the box.\n\nC++: dialect::BoundingBox::perimeter() const --> double");
 	}
-	{ // dialect::ColaOptions file: line:105
+	{ // dialect::ColaOptions file:libdialect/graphs.h line:105
 		pybind11::class_<dialect::ColaOptions, std::shared_ptr<dialect::ColaOptions>> cl(M("dialect"), "ColaOptions", "Provides a simple way to set any or all of the various\n         optional arguments to libcola layout methods.");
 		cl.def( pybind11::init( [](){ return new dialect::ColaOptions(); } ) );
 		cl.def( pybind11::init( [](dialect::ColaOptions const &o){ return new dialect::ColaOptions(o); } ) );
@@ -74,7 +87,7 @@ void bind_unknown_unknown_16(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("nodeClusters", &dialect::ColaOptions::nodeClusters);
 		cl.def_readwrite("eLengths", &dialect::ColaOptions::eLengths);
 	}
-	{ // dialect::ColaGraphRep file: line:157
+	{ // dialect::ColaGraphRep file:libdialect/graphs.h line:157
 		pybind11::class_<dialect::ColaGraphRep, std::shared_ptr<dialect::ColaGraphRep>> cl(M("dialect"), "ColaGraphRep", "Bundles those data structures required in order to represent\n         a Graph in libcola, and to map infomration between the libcola\n         and libdialect representations.");
 		cl.def( pybind11::init( [](dialect::ColaGraphRep const &o){ return new dialect::ColaGraphRep(o); } ) );
 		cl.def( pybind11::init( [](){ return new dialect::ColaGraphRep(); } ) );
@@ -84,13 +97,13 @@ void bind_unknown_unknown_16(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("ix2id", &dialect::ColaGraphRep::ix2id);
 		cl.def("assign", (struct dialect::ColaGraphRep & (dialect::ColaGraphRep::*)(const struct dialect::ColaGraphRep &)) &dialect::ColaGraphRep::operator=, "C++: dialect::ColaGraphRep::operator=(const struct dialect::ColaGraphRep &) --> struct dialect::ColaGraphRep &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // dialect::NodeIdCmp file: line:169
+	{ // dialect::NodeIdCmp file:libdialect/graphs.h line:169
 		pybind11::class_<dialect::NodeIdCmp, std::shared_ptr<dialect::NodeIdCmp>> cl(M("dialect"), "NodeIdCmp", "Useful for set operations on Node lookups.\n \n\n  Thanks to https://stackoverflow.com/a/15579928");
 		cl.def( pybind11::init( [](){ return new dialect::NodeIdCmp(); } ) );
 		cl.def("__call__", (bool (dialect::NodeIdCmp::*)(unsigned int, const struct std::pair<unsigned int, class std::shared_ptr<class dialect::Node> > &) const) &dialect::NodeIdCmp::operator(), "C++: dialect::NodeIdCmp::operator()(unsigned int, const struct std::pair<unsigned int, class std::shared_ptr<class dialect::Node> > &) const --> bool", pybind11::arg("i"), pybind11::arg("p"));
 		cl.def("__call__", (bool (dialect::NodeIdCmp::*)(const struct std::pair<unsigned int, class std::shared_ptr<class dialect::Node> > &, unsigned int) const) &dialect::NodeIdCmp::operator(), "C++: dialect::NodeIdCmp::operator()(const struct std::pair<unsigned int, class std::shared_ptr<class dialect::Node> > &, unsigned int) const --> bool", pybind11::arg("p"), pybind11::arg("i"));
 	}
-	{ // dialect::Graph file: line:180
+	{ // dialect::Graph file:libdialect/graphs.h line:180
 		pybind11::class_<dialect::Graph, std::shared_ptr<dialect::Graph>> cl(M("dialect"), "Graph", "The Graph class represents graphs consisting of nodes and edges.");
 		cl.def( pybind11::init( [](){ return new dialect::Graph(); } ) );
 		cl.def( pybind11::init( [](dialect::Graph const &o){ return new dialect::Graph(o); } ) );

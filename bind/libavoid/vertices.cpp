@@ -1,10 +1,17 @@
 #include <_stdio.h>
 #include <ios>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <locale>
 #include <memory>
 #include <ostream>
@@ -26,9 +33,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_vertices(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Avoid::VertID file: line:51
+	{ // Avoid::VertID file:libavoid/vertices.h line:51
 		pybind11::class_<Avoid::VertID, std::shared_ptr<Avoid::VertID>> cl(M("Avoid"), "VertID", "");
 		cl.def( pybind11::init( [](){ return new Avoid::VertID(); } ) );
 		cl.def( pybind11::init( [](unsigned int const & a0, unsigned short const & a1){ return new Avoid::VertID(a0, a1); } ), "doc" , pybind11::arg("id"), pybind11::arg("n"));
@@ -55,7 +62,7 @@ void bind_unknown_unknown(std::function< pybind11::module &(std::string const &n
 
 		cl.def("__str__", [](Avoid::VertID const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	{ // Avoid::VertInf file: line:115
+	{ // Avoid::VertInf file:libavoid/vertices.h line:115
 		pybind11::class_<Avoid::VertInf, std::shared_ptr<Avoid::VertInf>> cl(M("Avoid"), "VertInf", "");
 		cl.def( pybind11::init( [](class Avoid::Router * a0, const class Avoid::VertID & a1, const class Avoid::Point & a2){ return new Avoid::VertInf(a0, a1, a2); } ), "doc" , pybind11::arg("router"), pybind11::arg("vid"), pybind11::arg("vpoint"));
 		cl.def( pybind11::init<class Avoid::Router *, const class Avoid::VertID &, const class Avoid::Point &, const bool>(), pybind11::arg("router"), pybind11::arg("vid"), pybind11::arg("vpoint"), pybind11::arg("addToRouter") );
@@ -89,10 +96,10 @@ void bind_unknown_unknown(std::function< pybind11::module &(std::string const &n
 		cl.def("setSPTFRoot", (void (Avoid::VertInf::*)(class Avoid::VertInf *)) &Avoid::VertInf::setSPTFRoot, "C++: Avoid::VertInf::setSPTFRoot(class Avoid::VertInf *) --> void", pybind11::arg("root"));
 		cl.def("sptfRoot", (class Avoid::VertInf * (Avoid::VertInf::*)() const) &Avoid::VertInf::sptfRoot, "C++: Avoid::VertInf::sptfRoot() const --> class Avoid::VertInf *", pybind11::return_value_policy::automatic);
 	}
-	// Avoid::directVis(class Avoid::VertInf *, class Avoid::VertInf *) file: line:186
+	// Avoid::directVis(class Avoid::VertInf *, class Avoid::VertInf *) file:libavoid/vertices.h line:186
 	M("Avoid").def("directVis", (bool (*)(class Avoid::VertInf *, class Avoid::VertInf *)) &Avoid::directVis, "C++: Avoid::directVis(class Avoid::VertInf *, class Avoid::VertInf *) --> bool", pybind11::arg("src"), pybind11::arg("dst"));
 
-	{ // Avoid::VertInfList file: line:194
+	{ // Avoid::VertInfList file:libavoid/vertices.h line:194
 		pybind11::class_<Avoid::VertInfList, std::shared_ptr<Avoid::VertInfList>> cl(M("Avoid"), "VertInfList", "");
 		cl.def( pybind11::init( [](){ return new Avoid::VertInfList(); } ) );
 		cl.def( pybind11::init( [](Avoid::VertInfList const &o){ return new Avoid::VertInfList(o); } ) );

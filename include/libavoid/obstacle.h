@@ -35,8 +35,8 @@
 
 #include <cstdio>
 
-#include "libavoid/geometry.h"
-#include "libavoid/connectionpin.h"
+#include <libavoid/geometry.h>
+#include <libavoid/connectionpin.h>
 
 
 namespace Avoid {

@@ -4,7 +4,17 @@
 #include <functional>
 #include <iterator>
 #include <libavoid/connector.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/hyperedgetree.h>
+#include <libavoid/shape.h>
+#include <libdialect/constraints.h>
+#include <libdialect/faces.h>
+#include <libdialect/graphs.h>
+#include <libdialect/ortho.h>
+#include <libdialect/treeplacement.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <new>

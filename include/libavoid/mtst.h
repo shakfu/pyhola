@@ -30,8 +30,8 @@
 #include <list>
 #include <utility>
 
-#include "libavoid/vertices.h"
-#include "libavoid/hyperedgetree.h"
+#include <libavoid/vertices.h>
+#include <libavoid/hyperedgetree.h>
 
 
 namespace Avoid {

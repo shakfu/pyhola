@@ -1,5 +1,17 @@
 #include <functional>
 #include <iterator>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libcola/compound_constraints.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/logging.h>
+#include <libdialect/opts.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -20,9 +32,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_constraints_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // dialect::SepCo file: line:422
+	{ // dialect::SepCo file:libdialect/constraints.h line:422
 		pybind11::class_<dialect::SepCo, std::shared_ptr<dialect::SepCo>> cl(M("dialect"), "SepCo", "Simple struct to represent separation constraints in one dimension, in terms\n of Nodes (rather than Rectangle indices).\n\n Also supports separation constraints with negative gaps (unlike VPSC).\n Such constraints are perhaps better called \"containment constraints\". To illustrate,\n in the figure below\n\n             ---\n            | a |  ------|\n             ---         |\n                         |\n             ---         |\n            | b |        |\n             ---         |\n\n the separation constraint b.x - 100 <= a.x might mean that node b is constrained to\n stay to the left of the dashed line (which moves with node a).");
 		cl.def( pybind11::init( [](enum vpsc::Dim const & a0, class std::shared_ptr<class dialect::Node> const & a1, class std::shared_ptr<class dialect::Node> const & a2, double const & a3){ return new dialect::SepCo(a0, a1, a2, a3); } ), "doc" , pybind11::arg("dim"), pybind11::arg("left"), pybind11::arg("right"), pybind11::arg("gap"));
 		cl.def( pybind11::init<enum vpsc::Dim, class std::shared_ptr<class dialect::Node>, class std::shared_ptr<class dialect::Node>, double, bool>(), pybind11::arg("dim"), pybind11::arg("left"), pybind11::arg("right"), pybind11::arg("gap"), pybind11::arg("exact") );
@@ -38,7 +50,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 		cl.def("violation", (double (dialect::SepCo::*)() const) &dialect::SepCo::violation, "Determine the extent to which this separation constraint is currently violated.\n\nC++: dialect::SepCo::violation() const --> double");
 		cl.def("toString", (std::string (dialect::SepCo::*)() const) &dialect::SepCo::toString, "Write a string representation.\n\nC++: dialect::SepCo::toString() const --> std::string");
 	}
-	{ // dialect::Projection file: line:466
+	{ // dialect::Projection file:libdialect/constraints.h line:466
 		pybind11::class_<dialect::Projection, std::shared_ptr<dialect::Projection>> cl(M("dialect"), "Projection", "A Projection represents a set of constraints (given by SepCos), together\n with a dimension in which to project.");
 		cl.def( pybind11::init<class std::set<class std::shared_ptr<struct dialect::SepCo>, struct std::less<class std::shared_ptr<struct dialect::SepCo> >, class std::allocator<class std::shared_ptr<struct dialect::SepCo> > >, enum vpsc::Dim>(), pybind11::arg("s"), pybind11::arg("d") );
 
@@ -48,7 +60,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 		cl.def("size", (unsigned long (dialect::Projection::*)()) &dialect::Projection::size, "Check how many SepCos are in the projection.\n\nC++: dialect::Projection::size() --> unsigned long");
 		cl.def("toString", (std::string (dialect::Projection::*)() const) &dialect::Projection::toString, "Write a string representation.\n\nC++: dialect::Projection::toString() const --> std::string");
 	}
-	{ // dialect::ProjSeq file: line:492
+	{ // dialect::ProjSeq file:libdialect/constraints.h line:492
 		pybind11::class_<dialect::ProjSeq, std::shared_ptr<dialect::ProjSeq>> cl(M("dialect"), "ProjSeq", "Projection Sequence. Manages a sequence of VPSC projections onto a monotonially\n increasing set of separation constraints.");
 		cl.def( pybind11::init( [](){ return new dialect::ProjSeq(); } ) );
 		cl.def( pybind11::init( [](dialect::ProjSeq const &o){ return new dialect::ProjSeq(o); } ) );
@@ -61,7 +73,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 		cl.def("reset", (void (dialect::ProjSeq::*)()) &dialect::ProjSeq::reset, "Reset to start of sequence.\n\nC++: dialect::ProjSeq::reset() --> void");
 		cl.def("violation", (double (dialect::ProjSeq::*)() const) &dialect::ProjSeq::violation, "Sum the violations of all SepCos in the final sets.\n\nC++: dialect::ProjSeq::violation() const --> double");
 	}
-	// dialect::AspectRatioClass file: line:32
+	// dialect::AspectRatioClass file:libdialect/opts.h line:32
 	pybind11::enum_<dialect::AspectRatioClass>(M("dialect"), "AspectRatioClass", "")
 		.value("NONE", dialect::AspectRatioClass::NONE)
 		.value("PORTRAIT", dialect::AspectRatioClass::PORTRAIT)
@@ -69,7 +81,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 
 ;
 
-	// dialect::TreeRoutingType file: line:50
+	// dialect::TreeRoutingType file:libdialect/opts.h line:50
 	pybind11::enum_<dialect::TreeRoutingType>(M("dialect"), "TreeRoutingType", "When routing connectors for Trees, the set of allowed connection directions\n depends on the application.\n\n In, for example, a NORTH-growing tree, an edge between ranks i and i + 1\n will always be allowed to connect only to the south (S) port of a node in\n rank i + 1.\n\n The TreeRoutingType controls the directions allowed for connection to nodes in\n rank i, as follows:\n\n STRICT:  only N is allowed.\n CORE_ATTACHMENT:  N, E, W are allowed for the root node if it has exactly one child and\n                   is transversely displaced from its one child; otherwise only N.\n MONOTONIC:  N, E, W are allowed for all nodes on rank i.")
 		.value("STRICT", dialect::TreeRoutingType::STRICT)
 		.value("CORE_ATTACHMENT", dialect::TreeRoutingType::CORE_ATTACHMENT)
@@ -77,14 +89,14 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 
 ;
 
-	// dialect::ExpansionEstimateMethod file: line:62
+	// dialect::ExpansionEstimateMethod file:libdialect/opts.h line:62
 	pybind11::enum_<dialect::ExpansionEstimateMethod>(M("dialect"), "ExpansionEstimateMethod", "When expanding faces in order to make room to place the trees, there are different\n ways to estimate which is the best dimension in which to operate first.\n\n SPACE: Look at the available space in each dimension.\n CONSTRAINTS: Compute the separation constraints you would use in each dimension, and\n              sum their violations.")
 		.value("SPACE", dialect::ExpansionEstimateMethod::SPACE)
 		.value("CONSTRAINTS", dialect::ExpansionEstimateMethod::CONSTRAINTS);
 
 ;
 
-	{ // dialect::HolaOpts file: line:67
+	{ // dialect::HolaOpts file:libdialect/opts.h line:67
 		pybind11::class_<dialect::HolaOpts, std::shared_ptr<dialect::HolaOpts>> cl(M("dialect"), "HolaOpts", "");
 		cl.def( pybind11::init( [](){ return new dialect::HolaOpts(); } ) );
 		cl.def_readwrite("defaultTreeGrowthDir", &dialect::HolaOpts::defaultTreeGrowthDir);
@@ -111,7 +123,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("preferredTreeGrowthDir", &dialect::HolaOpts::preferredTreeGrowthDir);
 		cl.def_readwrite("putUlcAtOrigin", &dialect::HolaOpts::putUlcAtOrigin);
 	}
-	{ // dialect::Logger file: line:35
+	{ // dialect::Logger file:libdialect/logging.h line:35
 		pybind11::class_<dialect::Logger, std::shared_ptr<dialect::Logger>> cl(M("dialect"), "Logger", "");
 		cl.def( pybind11::init( [](){ return new dialect::Logger(); } ), "doc" );
 		cl.def( pybind11::init( [](std::string const & a0){ return new dialect::Logger(a0); } ), "doc" , pybind11::arg("outputDir"));
@@ -133,7 +145,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 		cl.def("log", (void (dialect::Logger::*)(class dialect::Graph &, std::string)) &dialect::Logger::log, "Convenience method to log the TGLF for a Graph.\n \n\n  The Graph whose TGLF is to be logged.\n \n\n  The filename for the TGLF file WITHOUT the \".tglf\" suffix. The suffix\n                  is automatically added for you.\n\nC++: dialect::Logger::log(class dialect::Graph &, std::string) --> void", pybind11::arg("G"), pybind11::arg("name"));
 		cl.def("writeFullPathForFilename", (std::string (dialect::Logger::*)(std::string)) &dialect::Logger::writeFullPathForFilename, "Given a filename, prepend the output directory and prefix (if given) in order\n         to write the full path.\n \n\n The full path.\n\nC++: dialect::Logger::writeFullPathForFilename(std::string) --> std::string", pybind11::arg("name"));
 	}
-	// dialect::RouteProcessing file: line:46
+	// dialect::RouteProcessing file:libdialect/routing.h line:46
 	pybind11::enum_<dialect::RouteProcessing>(M("dialect"), "RouteProcessing", "Control how much processing should be done on connector routes by the RoutingAdapter.")
 		.value("NONE", dialect::RouteProcessing::NONE)
 		.value("RECORD", dialect::RouteProcessing::RECORD)
@@ -141,7 +153,7 @@ void bind_unknown_unknown_15(std::function< pybind11::module &(std::string const
 
 ;
 
-	{ // dialect::RoutingAdapter file: line:57
+	{ // dialect::RoutingAdapter file:libdialect/routing.h line:57
 		pybind11::class_<dialect::RoutingAdapter, std::shared_ptr<dialect::RoutingAdapter>> cl(M("dialect"), "RoutingAdapter", "Adapter to easily apply libavoid::Routers to libdialect::Graphs.");
 		cl.def( pybind11::init<enum Avoid::RouterFlag>(), pybind11::arg("flag") );
 

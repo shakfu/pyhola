@@ -1,6 +1,16 @@
 #include <_stdio.h>
 #include <functional>
 #include <iterator>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libcola/compound_constraints.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -21,7 +31,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// dialect::SepPairSubConstraintInfo file: line:176
+// dialect::SepPairSubConstraintInfo file:libdialect/constraints.h line:176
 struct PyCallBack_dialect_SepPairSubConstraintInfo : public dialect::SepPairSubConstraintInfo {
 	using dialect::SepPairSubConstraintInfo::SepPairSubConstraintInfo;
 
@@ -40,7 +50,7 @@ struct PyCallBack_dialect_SepPairSubConstraintInfo : public dialect::SepPairSubC
 	}
 };
 
-// dialect::SepMatrix file: line:185
+// dialect::SepMatrix file:libdialect/constraints.h line:185
 struct PyCallBack_dialect_SepMatrix : public dialect::SepMatrix {
 	using dialect::SepMatrix::SepMatrix;
 
@@ -137,16 +147,16 @@ struct PyCallBack_dialect_SepMatrix : public dialect::SepMatrix {
 	}
 };
 
-void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_constraints(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// dialect::GapType file: line:48
+	// dialect::GapType file:libdialect/constraints.h line:48
 	pybind11::enum_<dialect::GapType>(M("dialect"), "GapType", "")
 		.value("CENTRE", dialect::GapType::CENTRE)
 		.value("BDRY", dialect::GapType::BDRY);
 
 ;
 
-	// dialect::SepDir file: line:55
+	// dialect::SepDir file:libdialect/constraints.h line:55
 	pybind11::enum_<dialect::SepDir>(M("dialect"), "SepDir", "")
 		.value("EAST", dialect::SepDir::EAST)
 		.value("SOUTH", dialect::SepDir::SOUTH)
@@ -159,7 +169,7 @@ void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const
 
 ;
 
-	// dialect::SepType file: line:62
+	// dialect::SepType file:libdialect/constraints.h line:62
 	pybind11::enum_<dialect::SepType>(M("dialect"), "SepType", "")
 		.value("NONE", dialect::SepType::NONE)
 		.value("EQ", dialect::SepType::EQ)
@@ -167,25 +177,25 @@ void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const
 
 ;
 
-	// dialect::negateSepDir(enum dialect::SepDir) file: line:71
+	// dialect::negateSepDir(enum dialect::SepDir) file:libdialect/constraints.h line:71
 	M("dialect").def("negateSepDir", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::negateSepDir, "C++: dialect::negateSepDir(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
 
-	// dialect::sepDirIsCardinal(enum dialect::SepDir) file: line:73
+	// dialect::sepDirIsCardinal(enum dialect::SepDir) file:libdialect/constraints.h line:73
 	M("dialect").def("sepDirIsCardinal", (bool (*)(enum dialect::SepDir)) &dialect::sepDirIsCardinal, "C++: dialect::sepDirIsCardinal(enum dialect::SepDir) --> bool", pybind11::arg("sd"));
 
-	// dialect::sepDirToCardinalDir(enum dialect::SepDir) file: line:75
+	// dialect::sepDirToCardinalDir(enum dialect::SepDir) file:libdialect/constraints.h line:75
 	M("dialect").def("sepDirToCardinalDir", (enum dialect::CardinalDir (*)(enum dialect::SepDir)) &dialect::sepDirToCardinalDir, "C++: dialect::sepDirToCardinalDir(enum dialect::SepDir) --> enum dialect::CardinalDir", pybind11::arg("sd"));
 
-	// dialect::cardinalDirToSepDir(enum dialect::CardinalDir) file: line:77
+	// dialect::cardinalDirToSepDir(enum dialect::CardinalDir) file:libdialect/constraints.h line:77
 	M("dialect").def("cardinalDirToSepDir", (enum dialect::SepDir (*)(enum dialect::CardinalDir)) &dialect::cardinalDirToSepDir, "C++: dialect::cardinalDirToSepDir(enum dialect::CardinalDir) --> enum dialect::SepDir", pybind11::arg("dir"));
 
-	// dialect::lateralWeakening(enum dialect::SepDir) file: line:79
+	// dialect::lateralWeakening(enum dialect::SepDir) file:libdialect/constraints.h line:79
 	M("dialect").def("lateralWeakening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::lateralWeakening, "C++: dialect::lateralWeakening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
 
-	// dialect::cardinalStrengthening(enum dialect::SepDir) file: line:81
+	// dialect::cardinalStrengthening(enum dialect::SepDir) file:libdialect/constraints.h line:81
 	M("dialect").def("cardinalStrengthening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::cardinalStrengthening, "C++: dialect::cardinalStrengthening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
 
-	// dialect::SepTransform file: line:83
+	// dialect::SepTransform file:libdialect/constraints.h line:83
 	pybind11::enum_<dialect::SepTransform>(M("dialect"), "SepTransform", "")
 		.value("ROTATE90CW", dialect::SepTransform::ROTATE90CW)
 		.value("ROTATE90ACW", dialect::SepTransform::ROTATE90ACW)
@@ -197,7 +207,7 @@ void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const
 
 ;
 
-	{ // dialect::SepPair file: line:104
+	{ // dialect::SepPair file:libdialect/constraints.h line:104
 		pybind11::class_<dialect::SepPair, std::shared_ptr<dialect::SepPair>> cl(M("dialect"), "SepPair", "");
 		cl.def( pybind11::init( [](){ return new dialect::SepPair(); } ) );
 		cl.def_readwrite("src", &dialect::SepPair::src);
@@ -222,7 +232,7 @@ void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const
 		cl.def("writeTglf", (std::string (dialect::SepPair::*)(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >, const class dialect::SepMatrix &) const) &dialect::SepPair::writeTglf, "Write a representation of this constraint in the format of\n         the SEPCO'S section of the TGLF file format.\n \n\n  Mapping from internal Node IDs to external IDs for the TGLF output.\n\nC++: dialect::SepPair::writeTglf(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >, const class dialect::SepMatrix &) const --> std::string", pybind11::arg("id2ext"), pybind11::arg("m"));
 		cl.def("hasConstraintInDim", (bool (dialect::SepPair::*)(enum vpsc::Dim) const) &dialect::SepPair::hasConstraintInDim, "Check whether there is a constraint in a given dimension.\n\nC++: dialect::SepPair::hasConstraintInDim(enum vpsc::Dim) const --> bool", pybind11::arg("dim"));
 	}
-	{ // dialect::SepPairSubConstraintInfo file: line:176
+	{ // dialect::SepPairSubConstraintInfo file:libdialect/constraints.h line:176
 		pybind11::class_<dialect::SepPairSubConstraintInfo, std::shared_ptr<dialect::SepPairSubConstraintInfo>, PyCallBack_dialect_SepPairSubConstraintInfo, cola::SubConstraintInfo> cl(M("dialect"), "SepPairSubConstraintInfo", "Since each SepPair may represent up to two VPSC constraints (one in each dimension), we need a simple wrapper\n struct to represent each dimension.");
 		cl.def( pybind11::init<class std::shared_ptr<struct dialect::SepPair>, enum vpsc::Dim>(), pybind11::arg("sp"), pybind11::arg("dim") );
 
@@ -232,7 +242,7 @@ void bind_unknown_unknown_14(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("dim", &dialect::SepPairSubConstraintInfo::dim);
 		cl.def("assign", (struct dialect::SepPairSubConstraintInfo & (dialect::SepPairSubConstraintInfo::*)(const struct dialect::SepPairSubConstraintInfo &)) &dialect::SepPairSubConstraintInfo::operator=, "C++: dialect::SepPairSubConstraintInfo::operator=(const struct dialect::SepPairSubConstraintInfo &) --> struct dialect::SepPairSubConstraintInfo &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // dialect::SepMatrix file: line:185
+	{ // dialect::SepMatrix file:libdialect/constraints.h line:185
 		pybind11::class_<dialect::SepMatrix, std::shared_ptr<dialect::SepMatrix>, PyCallBack_dialect_SepMatrix, cola::CompoundConstraint> cl(M("dialect"), "SepMatrix", "");
 		cl.def( pybind11::init<class dialect::Graph *>(), pybind11::arg("G") );
 

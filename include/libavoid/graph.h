@@ -30,7 +30,7 @@
 #include <cassert>
 #include <list>
 #include <utility>
-#include "libavoid/vertices.h"
+#include <libavoid/vertices.h>
 
 namespace Avoid {
 
