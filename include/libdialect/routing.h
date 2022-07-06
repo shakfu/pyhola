@@ -30,12 +30,12 @@
 #include <vector>
 #include <utility>
 
-#include "libavoid/libavoid.h"
+#include <libavoid/libavoid.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/opts.h"
-#include "libdialect/ortho.h"
-#include "libdialect/logging.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/opts.h>
+#include <libdialect/ortho.h>
+#include <libdialect/logging.h>
 
 namespace dialect {
 

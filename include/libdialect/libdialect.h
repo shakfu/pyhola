@@ -35,8 +35,8 @@
 #ifndef DIALECT_LIBDIALECT_H
 #define DIALECT_LIBDIALECT_H
 
-#include "libdialect/aca.h"
-#include "libdialect/hola.h"
+#include <libdialect/aca.h>
+#include <libdialect/hola.h>
 
 #endif
 

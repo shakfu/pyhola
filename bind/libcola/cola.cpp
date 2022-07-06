@@ -3,7 +3,15 @@
 #include <iterator>
 #include <libcola/box.h>
 #include <libcola/cc_nonoverlapconstraints.h>
+#include <libcola/cluster.h>
+#include <libcola/cola.h>
 #include <libcola/cola_log.h>
+#include <libcola/compound_constraints.h>
+#include <libcola/shapepair.h>
+#include <libcola/straightener.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <set>
 #include <sstream>
@@ -143,9 +151,9 @@ struct PyCallBack_cola_NonOverlapConstraints : public cola::NonOverlapConstraint
 	}
 };
 
-void bind_unknown_unknown_12(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libcola_cola(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // cola::ProjectionResult file: line:925
+	{ // cola::ProjectionResult file:libcola/cola.h line:925
 		pybind11::class_<cola::ProjectionResult, std::shared_ptr<cola::ProjectionResult>> cl(M("cola"), "ProjectionResult", "");
 		cl.def( pybind11::init( [](){ return new cola::ProjectionResult(); } ) );
 		cl.def( pybind11::init( [](cola::ProjectionResult const &o){ return new cola::ProjectionResult(o); } ) );

@@ -1,9 +1,22 @@
 #include <_stdio.h>
 #include <functional>
 #include <iterator>
+#include <libavoid/connend.h>
+#include <libavoid/geomtypes.h>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/logging.h>
 #include <libdialect/nodeconfig.h>
+#include <libdialect/ortho.h>
 #include <libdialect/peeling.h>
 #include <libdialect/planarise.h>
+#include <libdialect/quadaction.h>
+#include <libdialect/routing.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -43,9 +56,9 @@ struct PyCallBack_dialect_PeeledNode : public dialect::PeeledNode {
 	}
 };
 
-void bind_unknown_unknown_20(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_quadaction(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // dialect::Nbr file: line:65
+	{ // dialect::Nbr file:libdialect/quadaction.h line:65
 		pybind11::class_<dialect::Nbr, std::shared_ptr<dialect::Nbr>> cl(M("dialect"), "Nbr", "Represents a neighbouring node to a central node.");
 		cl.def( pybind11::init<unsigned int, double, double>(), pybind11::arg("id"), pybind11::arg("dx"), pybind11::arg("dy") );
 
@@ -55,7 +68,7 @@ void bind_unknown_unknown_20(std::function< pybind11::module &(std::string const
 		cl.def("octalCode", (unsigned int (dialect::Nbr::*)() const) &dialect::Nbr::octalCode, "A code number from 0 to 7, indicating where this neighbour\n         lies relative to the central node:\n             Semiaxes 0,1,2,3 get octal codes 0,2,4,6;\n             Quadrants 0,1,2,3 get octal codes 1,3,5,7.\n\nC++: dialect::Nbr::octalCode() const --> unsigned int");
 		cl.def("deflection", (double (dialect::Nbr::*)() const) &dialect::Nbr::deflection, "A measure of how far into its quadrant this nbr lies, in the\n         clockwise direction.\n\n \n If this nbr lies in quadrant n or on semiaxis n, then return\n         the squared sine of the angle that this nbr makes with semiaxis n.\n\nC++: dialect::Nbr::deflection() const --> double");
 	}
-	{ // dialect::Assignment file: line:95
+	{ // dialect::Assignment file:libdialect/quadaction.h line:95
 		pybind11::class_<dialect::Assignment, std::shared_ptr<dialect::Assignment>> cl(M("dialect"), "Assignment", "Represents an assignment of nbrs to semiaxes, and records the\n         cost of this assignment.");
 		cl.def( pybind11::init( [](){ return new dialect::Assignment(); } ) );
 		cl.def( pybind11::init( [](dialect::Assignment const &o){ return new dialect::Assignment(o); } ) );
@@ -65,7 +78,7 @@ void bind_unknown_unknown_20(std::function< pybind11::module &(std::string const
 		cl.def("makeUnion", (struct dialect::Assignment (dialect::Assignment::*)(const struct dialect::Assignment &) const) &dialect::Assignment::makeUnion, "Create union of two Assignments.\n\n \n  A new Assignment representing the union of this one with\n          the other.\n\n \n  This function assumes you never try to put more than one\n        Nbr on a given semiaxis. If you do, you will get an incorrect\n        result; an exception will not be raised.\n\nC++: dialect::Assignment::makeUnion(const struct dialect::Assignment &) const --> struct dialect::Assignment", pybind11::arg("other"));
 		cl.def("toString", (std::string (dialect::Assignment::*)() const) &dialect::Assignment::toString, "Write a string representation, listing the id of the Nbr\n         assigned to each semiaxis. For example if Nbrs 3, 7, 8 are\n         assigned to semiaxes E, S, N resp., represent this as \"3 7 - 8\".\n\n \n  string representation.\n\nC++: dialect::Assignment::toString() const --> std::string");
 	}
-	{ // dialect::Quad file: line:139
+	{ // dialect::Quad file:libdialect/quadaction.h line:139
 		pybind11::class_<dialect::Quad, std::shared_ptr<dialect::Quad>> cl(M("dialect"), "Quad", "Represents a quadrant, relative to a central node.");
 		cl.def( pybind11::init<unsigned int>(), pybind11::arg("num") );
 
@@ -79,7 +92,7 @@ void bind_unknown_unknown_20(std::function< pybind11::module &(std::string const
 		cl.def("sortAndComputeCosts", (void (dialect::Quad::*)()) &dialect::Quad::sortAndComputeCosts, "To be called after all nbrs have been added.\n         Sorts the nbrs into clockwise order, and then computes\n         and stores the costs associated with the clockwise and\n         anticlockwise actions.\n\nC++: dialect::Quad::sortAndComputeCosts() --> void");
 		cl.def("constructAssignmentForAction", (struct dialect::Assignment (dialect::Quad::*)(char) const) &dialect::Quad::constructAssignmentForAction, "Construct an Assignment indicating which Nbr(s) were assigned\n         to which semiaxes, and representing the cost.\n\n \n  an action code letter, in {A, B, C, D}:\n                         A: Anticlockwise\n                         B: Both\n                         C: Clockwise\n                         D: Do nothing\n\n \n  the Assignment\n\nC++: dialect::Quad::constructAssignmentForAction(char) const --> struct dialect::Assignment", pybind11::arg("action"));
 	}
-	{ // dialect::Arrangement file: line:181
+	{ // dialect::Arrangement file:libdialect/quadaction.h line:181
 		pybind11::class_<dialect::Arrangement, std::shared_ptr<dialect::Arrangement>> cl(M("dialect"), "Arrangement", "Represents the arrangement of all Nbrs around a centre node.");
 		cl.def( pybind11::init( [](dialect::Arrangement const &o){ return new dialect::Arrangement(o); } ) );
 		cl.def_readwrite("nbrs", &dialect::Arrangement::nbrs);

@@ -30,12 +30,12 @@
 #include <string>
 #include <deque>
 
-#include "libvpsc/rectangle.h"
-#include "libavoid/geomtypes.h"
+#include <libvpsc/rectangle.h>
+#include <libavoid/geomtypes.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/treeplacement.h"
-#include "libdialect/ortho.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/treeplacement.h>
+#include <libdialect/ortho.h>
 
 namespace dialect {
 

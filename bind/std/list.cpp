@@ -1,9 +1,15 @@
 #include <libavoid/actioninfo.h>
 #include <libavoid/connectionpin.h>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
 #include <libavoid/scanline.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
 #include <list>
 #include <memory>
 #include <sstream> // __str__

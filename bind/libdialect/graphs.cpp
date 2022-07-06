@@ -1,6 +1,17 @@
 #include <_stdio.h>
 #include <functional>
 #include <iterator>
+#include <libavoid/connend.h>
+#include <libavoid/geomtypes.h>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -21,7 +32,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// dialect::Node file: line:713
+// dialect::Node file:libdialect/graphs.h line:713
 struct PyCallBack_dialect_Node : public dialect::Node {
 	using dialect::Node::Node;
 
@@ -40,7 +51,7 @@ struct PyCallBack_dialect_Node : public dialect::Node {
 	}
 };
 
-// dialect::GhostNode file: line:939
+// dialect::GhostNode file:libdialect/graphs.h line:939
 struct PyCallBack_dialect_GhostNode : public dialect::GhostNode {
 	using dialect::GhostNode::GhostNode;
 
@@ -59,12 +70,12 @@ struct PyCallBack_dialect_GhostNode : public dialect::GhostNode {
 	}
 };
 
-void bind_unknown_unknown_17(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_graphs(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// dialect::swap(class dialect::Graph &, class dialect::Graph &) file: line:192
+	// dialect::swap(class dialect::Graph &, class dialect::Graph &) file:libdialect/graphs.h line:192
 	M("dialect").def("swap", (void (*)(class dialect::Graph &, class dialect::Graph &)) &dialect::swap, "Swap operator.\n\nC++: dialect::swap(class dialect::Graph &, class dialect::Graph &) --> void", pybind11::arg("first"), pybind11::arg("second"));
 
-	{ // dialect::Node file: line:713
+	{ // dialect::Node file:libdialect/graphs.h line:713
 		pybind11::class_<dialect::Node, std::shared_ptr<dialect::Node>, PyCallBack_dialect_Node> cl(M("dialect"), "Node", "The Node class represents nodes in a graph.");
 		cl.def_static("allocate", (class std::shared_ptr<class dialect::Node> (*)()) &dialect::Node::allocate, "Factory function, to get a shared pointer to a Node\n         allocated on the heap. We make the constructors protected,\n         in order to ensure that Nodes always come with a control block.\n \n\n  A shared_ptr to Node (Node_SP).\n\nC++: dialect::Node::allocate() --> class std::shared_ptr<class dialect::Node>");
 		cl.def_static("allocate", (class std::shared_ptr<class dialect::Node> (*)(double, double)) &dialect::Node::allocate, "Convenience factory function to set dimensions.\n\nC++: dialect::Node::allocate(double, double) --> class std::shared_ptr<class dialect::Node>", pybind11::arg("w"), pybind11::arg("h"));
@@ -104,14 +115,14 @@ void bind_unknown_unknown_17(std::function< pybind11::module &(std::string const
 		cl.def("writeSvg", [](dialect::Node const &o) -> std::string { return o.writeSvg(); }, "");
 		cl.def("writeSvg", (std::string (dialect::Node::*)(bool) const) &dialect::Node::writeSvg, "Write SVG to represent this Node.\n \n\n  If true, write external ID as label; otherwise write\n                           internal unique ID.\n \n\n  A string containing the SVG.\n\nC++: dialect::Node::writeSvg(bool) const --> std::string", pybind11::arg("useExternalId"));
 	}
-	{ // dialect::GhostNode file: line:939
+	{ // dialect::GhostNode file:libdialect/graphs.h line:939
 		pybind11::class_<dialect::GhostNode, std::shared_ptr<dialect::GhostNode>, PyCallBack_dialect_GhostNode, dialect::Node> cl(M("dialect"), "GhostNode", "A GhostNode represents another Node.\n\n When working with techniques that involve decomposing a graph into parts,\n and then reassembling those parts, it is often useful to have a node in one\n part represent a node in another part. For example this can be a useful way\n to manage the nodes where the two parts intersect. The GhostNode class\n supports this by representing a given Node.");
 		cl.def_static("allocate", (class std::shared_ptr<class dialect::GhostNode> (*)(const class dialect::Node &)) &dialect::GhostNode::allocate, "Factory function.\n\n \n  A shared_ptr to GhostNode (GhostNode_SP).\n\nC++: dialect::GhostNode::allocate(const class dialect::Node &) --> class std::shared_ptr<class dialect::GhostNode>", pybind11::arg("node"));
 		cl.def("id", (unsigned int (dialect::GhostNode::*)() const) &dialect::GhostNode::id, "Return an appropriate ID number.\n\n Whether the GhostNode's actual ID is returned, or that of the\n Node it represents, depends whether it is set to masquerade.\n\nC++: dialect::GhostNode::id() const --> unsigned int");
 		cl.def("trueID", (unsigned int (dialect::GhostNode::*)() const) &dialect::GhostNode::trueID, "Simple way to get the true ID of this GhostNode, even\n         if it is currently set to masquerade as the Node it represents.\n\nC++: dialect::GhostNode::trueID() const --> unsigned int");
 		cl.def("setMasquerade", (void (dialect::GhostNode::*)(bool)) &dialect::GhostNode::setMasquerade, "Say whether the GhostNode should masquerade as the original Node.\n\nC++: dialect::GhostNode::setMasquerade(bool) --> void", pybind11::arg("doMasquerade"));
 	}
-	{ // dialect::Edge file: line:1006
+	{ // dialect::Edge file:libdialect/graphs.h line:1006
 		pybind11::class_<dialect::Edge, std::shared_ptr<dialect::Edge>> cl(M("dialect"), "Edge", "The Edge class represents edges in a graph.");
 		cl.def( pybind11::init( [](dialect::Edge const &o){ return new dialect::Edge(o); } ) );
 		cl.def_static("allocate", (class std::shared_ptr<class dialect::Edge> (*)(const class std::shared_ptr<class dialect::Node> &, const class std::shared_ptr<class dialect::Node> &)) &dialect::Edge::allocate, "Factory function.\n\n We make all constructors private and offer a factory function\n instead, in order to ensure that instances are allocated on the\n heap, and always come with a shared ptr control block.\n\n \n  A shared_ptr to Node (Node_SP).\n\nC++: dialect::Edge::allocate(const class std::shared_ptr<class dialect::Node> &, const class std::shared_ptr<class dialect::Node> &) --> class std::shared_ptr<class dialect::Edge>", pybind11::arg("src"), pybind11::arg("tgt"));

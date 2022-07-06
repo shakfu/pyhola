@@ -34,17 +34,17 @@
 #include <deque>
 #include <functional>
 
-#include "libvpsc/rectangle.h"
-#include "libcola/compound_constraints.h"
-#include "libcola/cluster.h"
-#include "libcola/cola.h"
-#include "libavoid/libavoid.h"
+#include <libvpsc/rectangle.h>
+#include <libcola/compound_constraints.h>
+#include <libcola/cluster.h>
+#include <libcola/cola.h>
+#include <libavoid/libavoid.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/constraints.h"
-#include "libdialect/routing.h"
-#include "libdialect/ortho.h"
-#include "libdialect/logging.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/constraints.h>
+#include <libdialect/routing.h>
+#include <libdialect/ortho.h>
+#include <libdialect/logging.h>
 
 namespace dialect {
 

@@ -1,6 +1,7 @@
 #include <_stdio.h>
 #include <libproject/project.h>
 #include <libproject/project_log.h>
+#include <libproject/util.h>
 #include <memory>
 #include <sstream>
 #include <sstream> // __str__
@@ -38,16 +39,16 @@ struct PyCallBack_project_ExternalAlphaCheck : public project::ExternalAlphaChec
 	}
 };
 
-void bind_unknown_unknown_21(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libproject_util(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // project::delete_object file: line:55
+	{ // project::delete_object file:libproject/util.h line:55
 		pybind11::class_<project::delete_object, std::shared_ptr<project::delete_object>> cl(M("project"), "delete_object", "templated delete functor for use in for_each loop over vector");
 		cl.def( pybind11::init( [](){ return new project::delete_object(); } ) );
 	}
-	{ // project::Uncopyable file: line:78
+	{ // project::Uncopyable file:libproject/util.h line:78
 		pybind11::class_<project::Uncopyable, project::Uncopyable*> cl(M("project"), "Uncopyable", "Item 6 in Meyers' Effective C++: \n Explicitly disallow the use of compiler-generated functions you do not want");
 	}
-	// project::approx_equals(double, double) file: line:88
+	// project::approx_equals(double, double) file:libproject/util.h line:88
 	M("project").def("approx_equals", (bool (*)(double, double)) &project::approx_equals, "C++: project::approx_equals(double, double) --> bool", pybind11::arg("a"), pybind11::arg("b"));
 
 	{ // project::Initial file:libproject/project.h line:46

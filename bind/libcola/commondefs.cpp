@@ -1,8 +1,13 @@
 #include <_stdio.h>
 #include <libcola/box.h>
+#include <libcola/cluster.h>
+#include <libcola/commondefs.h>
+#include <libcola/gradient_projection.h>
+#include <libcola/shapepair.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
-#include <valarray>
 #include <vector>
 
 #include <functional>
@@ -16,7 +21,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// cola::RootCluster file: line:172
+// cola::RootCluster file:libcola/cluster.h line:172
 struct PyCallBack_cola_RootCluster : public cola::RootCluster {
 	using cola::RootCluster::RootCluster;
 
@@ -100,7 +105,7 @@ struct PyCallBack_cola_RootCluster : public cola::RootCluster {
 	}
 };
 
-// cola::RectangularCluster file: line:218
+// cola::RectangularCluster file:libcola/cluster.h line:218
 struct PyCallBack_cola_RectangularCluster : public cola::RectangularCluster {
 	using cola::RectangularCluster::RectangularCluster;
 
@@ -184,7 +189,7 @@ struct PyCallBack_cola_RectangularCluster : public cola::RectangularCluster {
 	}
 };
 
-// cola::ConvexCluster file: line:358
+// cola::ConvexCluster file:libcola/cluster.h line:358
 struct PyCallBack_cola_ConvexCluster : public cola::ConvexCluster {
 	using cola::ConvexCluster::ConvexCluster;
 
@@ -268,9 +273,9 @@ struct PyCallBack_cola_ConvexCluster : public cola::ConvexCluster {
 	}
 };
 
-void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libcola_commondefs(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// cola::NonOverlapConstraintsMode file: line:47
+	// cola::NonOverlapConstraintsMode file:libcola/commondefs.h line:47
 	pybind11::enum_<cola::NonOverlapConstraintsMode>(M("cola"), "NonOverlapConstraintsMode", pybind11::arithmetic(), "")
 		.value("None", cola::None)
 		.value("Horizontal", cola::Horizontal)
@@ -279,7 +284,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 
 ;
 
-	{ // cola::FixedList file: line:49
+	{ // cola::FixedList file:libcola/commondefs.h line:49
 		pybind11::class_<cola::FixedList, std::shared_ptr<cola::FixedList>> cl(M("cola"), "FixedList", "");
 		cl.def( pybind11::init<const unsigned int>(), pybind11::arg("n") );
 
@@ -290,11 +295,11 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("unsetAll", (void (cola::FixedList::*)()) &cola::FixedList::unsetAll, "C++: cola::FixedList::unsetAll() --> void");
 		cl.def("fixAll", (void (cola::FixedList::*)(bool)) &cola::FixedList::fixAll, "C++: cola::FixedList::fixAll(bool) --> void", pybind11::arg("val"));
 	}
-	{ // cola::delete_object file: line:79
+	{ // cola::delete_object file:libcola/commondefs.h line:79
 		pybind11::class_<cola::delete_object, std::shared_ptr<cola::delete_object>> cl(M("cola"), "delete_object", "");
 		cl.def( pybind11::init( [](){ return new cola::delete_object(); } ) );
 	}
-	{ // cola::ShapePair file: line:32
+	{ // cola::ShapePair file:libcola/shapepair.h line:32
 		pybind11::class_<cola::ShapePair, std::shared_ptr<cola::ShapePair>> cl(M("cola"), "ShapePair", "");
 		cl.def( pybind11::init<unsigned int, unsigned int>(), pybind11::arg("ind1"), pybind11::arg("ind2") );
 
@@ -303,7 +308,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("index2", (unsigned short (cola::ShapePair::*)() const) &cola::ShapePair::index2, "C++: cola::ShapePair::index2() const --> unsigned short");
 		cl.def("assign", (class cola::ShapePair & (cola::ShapePair::*)(const class cola::ShapePair &)) &cola::ShapePair::operator=, "C++: cola::ShapePair::operator=(const class cola::ShapePair &) --> class cola::ShapePair &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::Cluster file: line:50
+	{ // cola::Cluster file:libcola/cluster.h line:50
 		pybind11::class_<cola::Cluster, std::shared_ptr<cola::Cluster>> cl(M("cola"), "Cluster", "A cluster defines a hierarchical partitioning over the nodes\n         which should be kept disjoint by the layout somehow.\n\n You should not use this directly.  This is an abstract base class.  \n At the top level you should be using RootCluster, and then below that \n either RectangualarCLuster or ConvexCluster.");
 		cl.def_readwrite("bounds", &cola::Cluster::bounds);
 		cl.def_readwrite("varRect", &cola::Cluster::varRect);
@@ -326,7 +331,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("updateBounds", (void (cola::Cluster::*)(const enum vpsc::Dim)) &cola::Cluster::updateBounds, "C++: cola::Cluster::updateBounds(const enum vpsc::Dim) --> void", pybind11::arg("dim"));
 		cl.def("assign", (class cola::Cluster & (cola::Cluster::*)(const class cola::Cluster &)) &cola::Cluster::operator=, "C++: cola::Cluster::operator=(const class cola::Cluster &) --> class cola::Cluster &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::RootCluster file: line:172
+	{ // cola::RootCluster file:libcola/cluster.h line:172
 		pybind11::class_<cola::RootCluster, std::shared_ptr<cola::RootCluster>, PyCallBack_cola_RootCluster, cola::Cluster> cl(M("cola"), "RootCluster", "Holds the cluster hierarchy specification for a diagram.\n\n This is not considered a cluster itself, but it records all the nodes in \n the diagram not contained within any clusters, as well as optionally a \n hierarchy of clusters.\n\n You can add clusters via addChildCluster() and nodes via addChildNode().\n\n You can specify just the shapes contained in clusters, but not the nodes \n at this top level---the library will add any remaining nodes not appearing \n in the cluster hierarchy as children of the root cluster.\n\n It is possible to add a node as the child of two parent clusters.  In this \n case, the clusters will overlap to contain this (and possibly other nodes).\n The library will warn you if you do this unless you have called the method\n setAllowsMultipleParents() to mark this intention.\n\n Be careful not to create cycles in the cluster hierarchy (i.e., to mark \n two clusters as children of each other.  The library does not check for \n this and strange things may occur.");
 		cl.def( pybind11::init( [](){ return new cola::RootCluster(); }, [](){ return new PyCallBack_cola_RootCluster(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_cola_RootCluster const &o){ return new PyCallBack_cola_RootCluster(o); } ) );
@@ -338,7 +343,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("setAllowsMultipleParents", (void (cola::RootCluster::*)(const bool)) &cola::RootCluster::setAllowsMultipleParents, "Set whether the cluster hierarchy should allow multiple parents.\n\n \n New value for this setting.\n\n sa allowsMultipleParents()\n\nC++: cola::RootCluster::setAllowsMultipleParents(const bool) --> void", pybind11::arg("value"));
 		cl.def("assign", (class cola::RootCluster & (cola::RootCluster::*)(const class cola::RootCluster &)) &cola::RootCluster::operator=, "C++: cola::RootCluster::operator=(const class cola::RootCluster &) --> class cola::RootCluster &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::RectangularCluster file: line:218
+	{ // cola::RectangularCluster file:libcola/cluster.h line:218
 		pybind11::class_<cola::RectangularCluster, std::shared_ptr<cola::RectangularCluster>, PyCallBack_cola_RectangularCluster, cola::Cluster> cl(M("cola"), "RectangularCluster", "Defines a rectangular cluster, either variable-sized with floating \n         sides or a fixed size based on a particular rectangle.\n\n The chosen constructor decides the type and behaviour of the cluster.");
 		cl.def( pybind11::init( [](){ return new cola::RectangularCluster(); }, [](){ return new PyCallBack_cola_RectangularCluster(); } ) );
 		cl.def( pybind11::init<unsigned int>(), pybind11::arg("rectIndex") );
@@ -360,7 +365,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("rectangleIndex", (int (cola::RectangularCluster::*)() const) &cola::RectangularCluster::rectangleIndex, "C++: cola::RectangularCluster::rectangleIndex() const --> int");
 		cl.def("assign", (class cola::RectangularCluster & (cola::RectangularCluster::*)(const class cola::RectangularCluster &)) &cola::RectangularCluster::operator=, "C++: cola::RectangularCluster::operator=(const class cola::RectangularCluster &) --> class cola::RectangularCluster &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::ConvexCluster file: line:358
+	{ // cola::ConvexCluster file:libcola/cluster.h line:358
 		pybind11::class_<cola::ConvexCluster, std::shared_ptr<cola::ConvexCluster>, PyCallBack_cola_ConvexCluster, cola::Cluster> cl(M("cola"), "ConvexCluster", "Defines a cluster that will be treated as a convex boundary around\n         the child nodes and clusters.");
 		cl.def( pybind11::init( [](){ return new cola::ConvexCluster(); }, [](){ return new PyCallBack_cola_ConvexCluster(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_cola_ConvexCluster const &o){ return new PyCallBack_cola_ConvexCluster(o); } ) );
@@ -371,7 +376,7 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 		cl.def("outputToSVG", (void (cola::ConvexCluster::*)(struct __sFILE *) const) &cola::ConvexCluster::outputToSVG, "C++: cola::ConvexCluster::outputToSVG(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("assign", (class cola::ConvexCluster & (cola::ConvexCluster::*)(const class cola::ConvexCluster &)) &cola::ConvexCluster::operator=, "C++: cola::ConvexCluster::operator=(const class cola::ConvexCluster &) --> class cola::ConvexCluster &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	// cola::SolveWithMosek file: line:45
+	// cola::SolveWithMosek file:libcola/gradient_projection.h line:45
 	pybind11::enum_<cola::SolveWithMosek>(M("cola"), "SolveWithMosek", pybind11::arithmetic(), "")
 		.value("Off", cola::Off)
 		.value("Inner", cola::Inner)
@@ -380,15 +385,4 @@ void bind_unknown_unknown_9(std::function< pybind11::module &(std::string const 
 
 ;
 
-	{ // cola::GradientProjection file: line:47
-		pybind11::class_<cola::GradientProjection, std::shared_ptr<cola::GradientProjection>> cl(M("cola"), "GradientProjection", "");
-		cl.def( pybind11::init( [](cola::GradientProjection const &o){ return new cola::GradientProjection(o); } ) );
-		cl.def_static("dumpSquareMatrix", (void (*)(const class std::valarray<double> &)) &cola::GradientProjection::dumpSquareMatrix, "C++: cola::GradientProjection::dumpSquareMatrix(const class std::valarray<double> &) --> void", pybind11::arg("L"));
-		cl.def("getNumStaticVars", (unsigned int (cola::GradientProjection::*)() const) &cola::GradientProjection::getNumStaticVars, "C++: cola::GradientProjection::getNumStaticVars() const --> unsigned int");
-		cl.def("solve", (unsigned int (cola::GradientProjection::*)(const class std::valarray<double> &, class std::valarray<double> &)) &cola::GradientProjection::solve, "C++: cola::GradientProjection::solve(const class std::valarray<double> &, class std::valarray<double> &) --> unsigned int", pybind11::arg("b"), pybind11::arg("x"));
-		cl.def("unfixPos", (void (cola::GradientProjection::*)(unsigned int)) &cola::GradientProjection::unfixPos, "C++: cola::GradientProjection::unfixPos(unsigned int) --> void", pybind11::arg("i"));
-		cl.def("fixPos", (void (cola::GradientProjection::*)(const unsigned int, const double)) &cola::GradientProjection::fixPos, "C++: cola::GradientProjection::fixPos(const unsigned int, const double) --> void", pybind11::arg("i"), pybind11::arg("pos"));
-		cl.def("getDimension", (enum vpsc::Dim (cola::GradientProjection::*)() const) &cola::GradientProjection::getDimension, "C++: cola::GradientProjection::getDimension() const --> enum vpsc::Dim");
-		cl.def("getFullResult", (const class std::valarray<double> & (cola::GradientProjection::*)() const) &cola::GradientProjection::getFullResult, "C++: cola::GradientProjection::getFullResult() const --> const class std::valarray<double> &", pybind11::return_value_policy::automatic);
-	}
 }

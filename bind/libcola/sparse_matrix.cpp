@@ -1,4 +1,9 @@
 #include <_stdio.h>
+#include <libcola/compound_constraints.h>
+#include <libcola/sparse_matrix.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -18,7 +23,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// cola::SubConstraintInfo file: line:116
+// cola::SubConstraintInfo file:libcola/compound_constraints.h line:116
 struct PyCallBack_cola_SubConstraintInfo : public cola::SubConstraintInfo {
 	using cola::SubConstraintInfo::SubConstraintInfo;
 
@@ -37,7 +42,7 @@ struct PyCallBack_cola_SubConstraintInfo : public cola::SubConstraintInfo {
 	}
 };
 
-// cola::BoundaryConstraint file: line:288
+// cola::BoundaryConstraint file:libcola/compound_constraints.h line:288
 struct PyCallBack_cola_BoundaryConstraint : public cola::BoundaryConstraint {
 	using cola::BoundaryConstraint::BoundaryConstraint;
 
@@ -134,7 +139,7 @@ struct PyCallBack_cola_BoundaryConstraint : public cola::BoundaryConstraint {
 	}
 };
 
-// cola::AlignmentConstraint file: line:345
+// cola::AlignmentConstraint file:libcola/compound_constraints.h line:345
 struct PyCallBack_cola_AlignmentConstraint : public cola::AlignmentConstraint {
 	using cola::AlignmentConstraint::AlignmentConstraint;
 
@@ -231,9 +236,9 @@ struct PyCallBack_cola_AlignmentConstraint : public cola::AlignmentConstraint {
 	}
 };
 
-void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libcola_sparse_matrix(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // cola::SparseMap file: line:42
+	{ // cola::SparseMap file:libcola/sparse_matrix.h line:42
 		pybind11::class_<cola::SparseMap, std::shared_ptr<cola::SparseMap>> cl(M("cola"), "SparseMap", "");
 		cl.def( pybind11::init( [](){ return new cola::SparseMap(); } ), "doc" );
 		cl.def( pybind11::init<unsigned int>(), pybind11::arg("n") );
@@ -248,7 +253,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("resize", (void (cola::SparseMap::*)(unsigned int)) &cola::SparseMap::resize, "C++: cola::SparseMap::resize(unsigned int) --> void", pybind11::arg("n"));
 		cl.def("clear", (void (cola::SparseMap::*)()) &cola::SparseMap::clear, "C++: cola::SparseMap::clear() --> void");
 	}
-	{ // cola::SparseMatrix file: line:84
+	{ // cola::SparseMatrix file:libcola/sparse_matrix.h line:84
 		pybind11::class_<cola::SparseMatrix, std::shared_ptr<cola::SparseMatrix>> cl(M("cola"), "SparseMatrix", "");
 		cl.def( pybind11::init<const struct cola::SparseMap &>(), pybind11::arg("m") );
 
@@ -258,7 +263,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("print", (void (cola::SparseMatrix::*)() const) &cola::SparseMatrix::print, "C++: cola::SparseMatrix::print() const --> void");
 		cl.def("rowSize", (unsigned int (cola::SparseMatrix::*)() const) &cola::SparseMatrix::rowSize, "C++: cola::SparseMatrix::rowSize() const --> unsigned int");
 	}
-	{ // cola::SubConstraint file: line:51
+	{ // cola::SubConstraint file:libcola/compound_constraints.h line:51
 		pybind11::class_<cola::SubConstraint, std::shared_ptr<cola::SubConstraint>> cl(M("cola"), "SubConstraint", "");
 		cl.def( pybind11::init( [](enum vpsc::Dim const & a0, class vpsc::Constraint const & a1){ return new cola::SubConstraint(a0, a1); } ), "doc" , pybind11::arg("dim"), pybind11::arg("constraint"));
 		cl.def( pybind11::init<enum vpsc::Dim, class vpsc::Constraint, double>(), pybind11::arg("dim"), pybind11::arg("constraint"), pybind11::arg("cost") );
@@ -268,7 +273,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def_readwrite("constraint", &cola::SubConstraint::constraint);
 		cl.def_readwrite("cost", &cola::SubConstraint::cost);
 	}
-	{ // cola::VariableIDMap file: line:93
+	{ // cola::VariableIDMap file:libcola/compound_constraints.h line:93
 		pybind11::class_<cola::VariableIDMap, std::shared_ptr<cola::VariableIDMap>> cl(M("cola"), "VariableIDMap", "Holds a mapping between two sets of Variable indices.\n\n This can be used to rewrite the Rectangles to which a set of \n CompoundConstraints apply to.  This is useful when creating another\n instance of the problem, but using the same CompoundConstraints list.\n You should not usually need to use this yourself.  It is utilised by \n addons such as topology::AvoidTopologyAddon.\n\n If a mapping for a particular value is not set, it is considered to be\n equal on both sides of the mapping.");
 		cl.def( pybind11::init( [](){ return new cola::VariableIDMap(); } ) );
 		cl.def( pybind11::init( [](cola::VariableIDMap const &o){ return new cola::VariableIDMap(o); } ) );
@@ -279,7 +284,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("printCreationCode", (void (cola::VariableIDMap::*)(struct __sFILE *) const) &cola::VariableIDMap::printCreationCode, "C++: cola::VariableIDMap::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("assign", (class cola::VariableIDMap & (cola::VariableIDMap::*)(const class cola::VariableIDMap &)) &cola::VariableIDMap::operator=, "C++: cola::VariableIDMap::operator=(const class cola::VariableIDMap &) --> class cola::VariableIDMap &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::SubConstraintInfo file: line:116
+	{ // cola::SubConstraintInfo file:libcola/compound_constraints.h line:116
 		pybind11::class_<cola::SubConstraintInfo, std::shared_ptr<cola::SubConstraintInfo>, PyCallBack_cola_SubConstraintInfo> cl(M("cola"), "SubConstraintInfo", "");
 		cl.def( pybind11::init<unsigned int>(), pybind11::arg("ind") );
 
@@ -290,7 +295,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("updateVarIDsWithMapping", (void (cola::SubConstraintInfo::*)(const class cola::VariableIDMap &, bool)) &cola::SubConstraintInfo::updateVarIDsWithMapping, "C++: cola::SubConstraintInfo::updateVarIDsWithMapping(const class cola::VariableIDMap &, bool) --> void", pybind11::arg("idMap"), pybind11::arg("forward"));
 		cl.def("assign", (class cola::SubConstraintInfo & (cola::SubConstraintInfo::*)(const class cola::SubConstraintInfo &)) &cola::SubConstraintInfo::operator=, "C++: cola::SubConstraintInfo::operator=(const class cola::SubConstraintInfo &) --> class cola::SubConstraintInfo &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::CompoundConstraint file: line:146
+	{ // cola::CompoundConstraint file:libcola/compound_constraints.h line:146
 		pybind11::class_<cola::CompoundConstraint, std::shared_ptr<cola::CompoundConstraint>> cl(M("cola"), "CompoundConstraint", "An abstract base class for all high-level compound constraints.\n\n A compound constraint is a conceptual, diagramming application oriented\n type of constraint, which can be translated into a set of simple\n separation constraints, possibly extra dummy variables, and perhaps\n even some extra terms for the quadratic objective function used\n in the gradient projection solver.");
 		cl.def("updatePosition", (void (cola::CompoundConstraint::*)(const enum vpsc::Dim)) &cola::CompoundConstraint::updatePosition, "Implemented by the compound constraint to send position\n        information back to the interface.\n\n This will be called for each compound constraint once the VPSC \n instance is solved to allow them to pass information such as \n variable values back to the graphical user interface.\n\n \n   The current active dimension.\n\nC++: cola::CompoundConstraint::updatePosition(const enum vpsc::Dim) --> void", pybind11::arg("dim"));
 		cl.def("toString", (std::string (cola::CompoundConstraint::*)() const) &cola::CompoundConstraint::toString, "Returns a textual description of the compound constraint.\n\n  \n     A string describing the compound constraint.\n\nC++: cola::CompoundConstraint::toString() const --> std::string");
@@ -305,7 +310,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("shouldCombineSubConstraints", (bool (cola::CompoundConstraint::*)() const) &cola::CompoundConstraint::shouldCombineSubConstraints, "C++: cola::CompoundConstraint::shouldCombineSubConstraints() const --> bool");
 		cl.def("assign", (class cola::CompoundConstraint & (cola::CompoundConstraint::*)(const class cola::CompoundConstraint &)) &cola::CompoundConstraint::operator=, "C++: cola::CompoundConstraint::operator=(const class cola::CompoundConstraint &) --> class cola::CompoundConstraint &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::BoundaryConstraint file: line:288
+	{ // cola::BoundaryConstraint file:libcola/compound_constraints.h line:288
 		pybind11::class_<cola::BoundaryConstraint, std::shared_ptr<cola::BoundaryConstraint>, PyCallBack_cola_BoundaryConstraint, cola::CompoundConstraint> cl(M("cola"), "BoundaryConstraint", "A boundary constraint specifies a bounding line that a set of nodes \n        must be either to the left or right of.\n\n A boundary constraint gives a bounding line in a particular dimension (with\n position stored in a variable) and a set of nodes required to be to the left\n of that line and nodes required to be to the right of the line.  Separations\n are determined by offsets passed to addShape().");
 		cl.def( pybind11::init<const enum vpsc::Dim>(), pybind11::arg("dim") );
 
@@ -318,7 +323,7 @@ void bind_unknown_unknown_5(std::function< pybind11::module &(std::string const 
 		cl.def("printCreationCode", (void (cola::BoundaryConstraint::*)(struct __sFILE *) const) &cola::BoundaryConstraint::printCreationCode, "C++: cola::BoundaryConstraint::printCreationCode(struct __sFILE *) const --> void", pybind11::arg("fp"));
 		cl.def("assign", (class cola::BoundaryConstraint & (cola::BoundaryConstraint::*)(const class cola::BoundaryConstraint &)) &cola::BoundaryConstraint::operator=, "C++: cola::BoundaryConstraint::operator=(const class cola::BoundaryConstraint &) --> class cola::BoundaryConstraint &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::AlignmentConstraint file: line:345
+	{ // cola::AlignmentConstraint file:libcola/compound_constraints.h line:345
 		pybind11::class_<cola::AlignmentConstraint, std::shared_ptr<cola::AlignmentConstraint>, PyCallBack_cola_AlignmentConstraint, cola::CompoundConstraint> cl(M("cola"), "AlignmentConstraint", "An alignment constraint specifies a alignment line that a set of\n        nodes must be constrained to by an exact amount.\n\n This is represented as a variable representing the position of a vertical \n or horizontal and a then group of nodes and offsets for those nodes such \n that the nodes must be spaced exactly at those offsets from the alignment\n position.\n\n Optionally, the alignment may be given a suggested position and/or marked \n as \"fixed\".  When fixed, the position variable will be given a higher \n weight to attempt to keep it at that position.");
 		cl.def( pybind11::init( [](const enum vpsc::Dim & a0){ return new cola::AlignmentConstraint(a0); }, [](const enum vpsc::Dim & a0){ return new PyCallBack_cola_AlignmentConstraint(a0); } ), "doc");
 		cl.def( pybind11::init<const enum vpsc::Dim, double>(), pybind11::arg("dim"), pybind11::arg("position") );

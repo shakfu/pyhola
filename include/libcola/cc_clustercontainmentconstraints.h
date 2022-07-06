@@ -24,7 +24,7 @@
 #define COLA_CC_CLUSTERCONTAINMENTCONSTRAINTS_H
 
 #include <vector>
-#include "libcola/compound_constraints.h"
+#include <libcola/compound_constraints.h>
 
 namespace vpsc {
 class Rectangle;

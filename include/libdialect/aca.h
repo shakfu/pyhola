@@ -31,12 +31,12 @@
 #include <map>
 #include <set>
 
-#include "libcola/cola.h"
+#include <libcola/cola.h>
 
-#include "libdialect/util.h"
-#include "libdialect/commontypes.h"
-#include "libdialect/constraints.h"
-#include "libdialect/graphs.h"
+#include <libdialect/util.h>
+#include <libdialect/commontypes.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
 
 namespace dialect {
 

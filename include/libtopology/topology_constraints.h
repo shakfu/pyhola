@@ -27,8 +27,8 @@
  */
 #ifndef TOPOLOGY_CONSTRAINTS_H
 #define TOPOLOGY_CONSTRAINTS_H
-#include "libcola/commondefs.h"
-#include "libtopology/topology_graph.h"
+#include <libcola/commondefs.h>
+#include <libtopology/topology_graph.h>
 #include <valarray>
 #include <vector>
 #include <map>

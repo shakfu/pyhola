@@ -33,7 +33,7 @@
 #include <cstdio>
 #include <utility>
 
-#include "libavoid/geomtypes.h"
+#include <libavoid/geomtypes.h>
 
 namespace Avoid {
 

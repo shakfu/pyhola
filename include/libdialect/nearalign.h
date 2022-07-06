@@ -28,9 +28,9 @@
 #include <vector>
 #include <memory>
 
-#include "libdialect/constraints.h"
-#include "libdialect/opts.h"
-#include "libdialect/commontypes.h"
+#include <libdialect/constraints.h>
+#include <libdialect/opts.h>
+#include <libdialect/commontypes.h>
 
 namespace dialect {
 

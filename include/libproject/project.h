@@ -29,7 +29,7 @@
 #include <sstream>
 #include <cstdio>
 
-#include "libproject/util.h"
+#include <libproject/util.h>
 
 /**
  * project namespace delineates classes belonging to the libproject solver library.

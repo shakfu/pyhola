@@ -31,8 +31,8 @@
 #include <map>
 #include <utility>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/ortho.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/ortho.h>
 
 //! This header defines tools for working with the "chains", i.e. maximal subgraphs
 //! composed entirely of "links" (nodes of degree 2), in 4-planar orthogonal layouts.

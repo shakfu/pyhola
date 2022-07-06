@@ -23,8 +23,8 @@
 
 #include <vector>
 
-#include "libcola/cola.h"
-#include "libtopology/topology_graph.h"
+#include <libcola/cola.h>
+#include <libtopology/topology_graph.h>
 
 /**
  * @namespace topology

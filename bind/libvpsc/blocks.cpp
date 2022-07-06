@@ -1,4 +1,7 @@
+#include <libvpsc/block.h>
 #include <libvpsc/blocks.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>

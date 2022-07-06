@@ -1,9 +1,14 @@
 #include <functional>
 #include <iterator>
 #include <libavoid/connector.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
 #include <libavoid/scanline.h>
+#include <libavoid/vertices.h>
+#include <libcola/shapepair.h>
 #include <memory>
 #include <set>
 #include <sstream> // __str__

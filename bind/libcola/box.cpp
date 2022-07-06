@@ -1,5 +1,6 @@
 #include <_stdio.h>
 #include <libcola/box.h>
+#include <libvpsc/rectangle.h>
 #include <memory>
 #include <sstream> // __str__
 #include <vector>

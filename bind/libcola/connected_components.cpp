@@ -1,4 +1,5 @@
 #include <libcola/connected_components.h>
+#include <libvpsc/rectangle.h>
 #include <memory>
 #include <sstream> // __str__
 #include <vector>

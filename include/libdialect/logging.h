@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "libdialect/commontypes.h"
+#include <libdialect/commontypes.h>
 
 namespace dialect {
 

@@ -30,12 +30,12 @@
 #include <map>
 #include <string>
 
-#include "libvpsc/rectangle.h"
+#include <libvpsc/rectangle.h>
 
-#include "libdialect/commontypes.h"
-#include "libdialect/ortho.h"
-#include "libdialect/opts.h"
-#include "libdialect/constraints.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/ortho.h>
+#include <libdialect/opts.h>
+#include <libdialect/constraints.h>
 
 namespace dialect {
 

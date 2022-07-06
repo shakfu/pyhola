@@ -25,12 +25,12 @@
 #ifndef DIALECT_NODECONFIG_H
 #define DIALECT_NODECONFIG_H
 
-#include "libdialect/commontypes.h"
-#include "libdialect/graphs.h"
-#include "libdialect/util.h"
-#include "libdialect/aca.h"
-#include "libdialect/quadaction.h"
-#include "libdialect/logging.h"
+#include <libdialect/commontypes.h>
+#include <libdialect/graphs.h>
+#include <libdialect/util.h>
+#include <libdialect/aca.h>
+#include <libdialect/quadaction.h>
+#include <libdialect/logging.h>
 
 namespace dialect {
 

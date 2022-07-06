@@ -30,14 +30,14 @@
 #include <vector>
 #include <string>
 
-#include "libavoid/geomtypes.h"
+#include <libavoid/geomtypes.h>
 
-#include "libdialect/graphs.h"
-#include "libdialect/commontypes.h"
-#include "libdialect/ortho.h"
-#include "libdialect/opts.h"
-#include "libdialect/util.h"
-#include "libdialect/routing.h"
+#include <libdialect/graphs.h>
+#include <libdialect/commontypes.h>
+#include <libdialect/ortho.h>
+#include <libdialect/opts.h>
+#include <libdialect/util.h>
+#include <libdialect/routing.h>
 
 namespace dialect {
 

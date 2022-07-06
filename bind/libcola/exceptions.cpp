@@ -1,4 +1,13 @@
 #include <_stdio.h>
+#include <libcola/cluster.h>
+#include <libcola/cola.h>
+#include <libcola/compound_constraints.h>
+#include <libcola/exceptions.h>
+#include <libcola/pseudorandom.h>
+#include <libcola/straightener.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -18,7 +27,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// cola::PreIteration file: line:168
+// cola::PreIteration file:libcola/cola.h line:168
 struct PyCallBack_cola_PreIteration : public cola::PreIteration {
 	using cola::PreIteration::PreIteration;
 
@@ -37,7 +46,7 @@ struct PyCallBack_cola_PreIteration : public cola::PreIteration {
 	}
 };
 
-// cola::TestConvergence file: line:216
+// cola::TestConvergence file:libcola/cola.h line:216
 struct PyCallBack_cola_TestConvergence : public cola::TestConvergence {
 	using cola::TestConvergence::TestConvergence;
 
@@ -56,7 +65,7 @@ struct PyCallBack_cola_TestConvergence : public cola::TestConvergence {
 	}
 };
 
-// cola::TopologyAddonInterface file: line:531
+// cola::TopologyAddonInterface file:libcola/cola.h line:531
 struct PyCallBack_cola_TopologyAddonInterface : public cola::TopologyAddonInterface {
 	using cola::TopologyAddonInterface::TopologyAddonInterface;
 
@@ -114,21 +123,21 @@ struct PyCallBack_cola_TopologyAddonInterface : public cola::TopologyAddonInterf
 	}
 };
 
-void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libcola_exceptions(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // cola::InvalidConstraint file: line:29
+	{ // cola::InvalidConstraint file:libcola/exceptions.h line:29
 		pybind11::class_<cola::InvalidConstraint, std::shared_ptr<cola::InvalidConstraint>> cl(M("cola"), "InvalidConstraint", "");
 		cl.def( pybind11::init<class cola::CompoundConstraint *>(), pybind11::arg("c") );
 
 	}
-	{ // cola::InvalidVariableIndexException file: line:35
+	{ // cola::InvalidVariableIndexException file:libcola/exceptions.h line:35
 		pybind11::class_<cola::InvalidVariableIndexException, std::shared_ptr<cola::InvalidVariableIndexException>> cl(M("cola"), "InvalidVariableIndexException", "");
 		cl.def( pybind11::init<class cola::CompoundConstraint *, unsigned int>(), pybind11::arg("c"), pybind11::arg("i") );
 
 		cl.def_readwrite("index", &cola::InvalidVariableIndexException::index);
 		cl.def("what", (std::string (cola::InvalidVariableIndexException::*)() const) &cola::InvalidVariableIndexException::what, "C++: cola::InvalidVariableIndexException::what() const --> std::string");
 	}
-	{ // cola::PseudoRandom file: line:27
+	{ // cola::PseudoRandom file:libcola/pseudorandom.h line:27
 		pybind11::class_<cola::PseudoRandom, std::shared_ptr<cola::PseudoRandom>> cl(M("cola"), "PseudoRandom", "");
 		cl.def( pybind11::init( [](){ return new cola::PseudoRandom(); } ), "doc" );
 		cl.def( pybind11::init<double>(), pybind11::arg("s") );
@@ -137,7 +146,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("getNext", (double (cola::PseudoRandom::*)()) &cola::PseudoRandom::getNext, "C++: cola::PseudoRandom::getNext() --> double");
 		cl.def("getNextBetween", (double (cola::PseudoRandom::*)(double, double)) &cola::PseudoRandom::getNextBetween, "C++: cola::PseudoRandom::getNextBetween(double, double) --> double", pybind11::arg("min"), pybind11::arg("max"));
 	}
-	{ // cola::Lock file: line:78
+	{ // cola::Lock file:libcola/cola.h line:78
 		pybind11::class_<cola::Lock, std::shared_ptr<cola::Lock>> cl(M("cola"), "Lock", "A Lock specifies a required position for a node.");
 		cl.def( pybind11::init( [](){ return new cola::Lock(); } ) );
 		cl.def( pybind11::init<unsigned int, double, double>(), pybind11::arg("id"), pybind11::arg("X"), pybind11::arg("Y") );
@@ -145,7 +154,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("getID", (unsigned int (cola::Lock::*)() const) &cola::Lock::getID, "C++: cola::Lock::getID() const --> unsigned int");
 		cl.def("pos", (double (cola::Lock::*)(enum vpsc::Dim) const) &cola::Lock::pos, "C++: cola::Lock::pos(enum vpsc::Dim) const --> double", pybind11::arg("dim"));
 	}
-	{ // cola::Resize file: line:107
+	{ // cola::Resize file:libcola/cola.h line:107
 		pybind11::class_<cola::Resize, std::shared_ptr<cola::Resize>> cl(M("cola"), "Resize", "A Resize specifies a new required bounding box for a node.");
 		cl.def( pybind11::init( [](){ return new cola::Resize(); } ) );
 		cl.def( pybind11::init<unsigned int, double, double, double, double>(), pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("y"), pybind11::arg("w"), pybind11::arg("h") );
@@ -154,7 +163,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("getID", (unsigned int (cola::Resize::*)() const) &cola::Resize::getID, "C++: cola::Resize::getID() const --> unsigned int");
 		cl.def("getTarget", (const class vpsc::Rectangle * (cola::Resize::*)() const) &cola::Resize::getTarget, "C++: cola::Resize::getTarget() const --> const class vpsc::Rectangle *", pybind11::return_value_policy::automatic);
 	}
-	{ // cola::DesiredPosition file: line:141
+	{ // cola::DesiredPosition file:libcola/cola.h line:141
 		pybind11::class_<cola::DesiredPosition, std::shared_ptr<cola::DesiredPosition>> cl(M("cola"), "DesiredPosition", "");
 		cl.def( pybind11::init( [](){ return new cola::DesiredPosition(); } ) );
 		cl.def_readwrite("id", &cola::DesiredPosition::id);
@@ -162,12 +171,12 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("y", &cola::DesiredPosition::y);
 		cl.def_readwrite("weight", &cola::DesiredPosition::weight);
 	}
-	{ // cola::PreIteration file: line:168
+	{ // cola::PreIteration file:libcola/cola.h line:168
 		pybind11::class_<cola::PreIteration, std::shared_ptr<cola::PreIteration>, PyCallBack_cola_PreIteration> cl(M("cola"), "PreIteration", "A default functor that is called before each iteration in the \n        main loop of the ConstrainedFDLayout::run() method.\n\n Override the operator() for things like locking the position of nodes\n for the duration of the iteration.\n\n If the operator() returns false the subsequent iterations are\n abandoned, i.e., layout ends immediately.  You can make it return true\n when a user-interrupt is detected, for instance.");
 		cl.def_readwrite("changed", &cola::PreIteration::changed);
 		cl.def("__call__", (bool (cola::PreIteration::*)()) &cola::PreIteration::operator(), "C++: cola::PreIteration::operator()() --> bool");
 	}
-	{ // cola::TestConvergence file: line:216
+	{ // cola::TestConvergence file:libcola/cola.h line:216
 		pybind11::class_<cola::TestConvergence, std::shared_ptr<cola::TestConvergence>, PyCallBack_cola_TestConvergence> cl(M("cola"), "TestConvergence", "A default functor that is called after each iteration of the layout\n         algorithm.\n\n You can either instantiate ConstrainedFDLayout with an instance of this\n class setting the tolerance and maxiterations as desired, or create a\n derived class implementing the operator() to do your own convergence test,\n or create your own operator() that calls the TestConvergence::operator() in\n order to do any other post processing you might need, e.g., to animate\n changes.");
 		cl.def( pybind11::init( [](){ return new cola::TestConvergence(); }, [](){ return new PyCallBack_cola_TestConvergence(); } ), "doc");
 		cl.def( pybind11::init( [](const double & a0){ return new cola::TestConvergence(a0); }, [](const double & a0){ return new PyCallBack_cola_TestConvergence(a0); } ), "doc");
@@ -180,7 +189,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("__call__", (bool (cola::TestConvergence::*)(const double, class std::valarray<double> &, class std::valarray<double> &)) &cola::TestConvergence::operator(), "C++: cola::TestConvergence::operator()(const double, class std::valarray<double> &, class std::valarray<double> &) --> bool", pybind11::arg("new_stress"), pybind11::arg("X"), pybind11::arg("Y"));
 		cl.def("reset", (void (cola::TestConvergence::*)()) &cola::TestConvergence::reset, "C++: cola::TestConvergence::reset() --> void");
 	}
-	{ // cola::ConstrainedMajorizationLayout file: line:270
+	{ // cola::ConstrainedMajorizationLayout file:libcola/cola.h line:270
 		pybind11::class_<cola::ConstrainedMajorizationLayout, std::shared_ptr<cola::ConstrainedMajorizationLayout>> cl(M("cola"), "ConstrainedMajorizationLayout", "Implements the Constrained Majorization graph layout algorithm \n         (deprecated).\n\n The optimisation method used is \"stress majorization\", where a sequence of \n quadratic functions which strictly bound the stress from above, is solved \n to monotonically reduce the stress (by iteratively changing the \n configuration of nodes).\n\n Once the problem has been set up, call run() or runOnce() to run the \n layout algorithm.\n\n \n  We recommend the use of ConstrainedFDLayout instead of this class. \n        ConstrainedFDLayout tends to produce better results and has more \n        features.  We are no longer working on ConstrainedMajorizationLayout.");
 		cl.def( pybind11::init( [](cola::ConstrainedMajorizationLayout const &o){ return new cola::ConstrainedMajorizationLayout(o); } ) );
 		cl.def("setStickyNodes", (void (cola::ConstrainedMajorizationLayout::*)(const double, const class std::valarray<double> &, const class std::valarray<double> &)) &cola::ConstrainedMajorizationLayout::setStickyNodes, "Sticky nodes causes nodes to spring back to (startX,startY) when \n unconstrained.\n\nC++: cola::ConstrainedMajorizationLayout::setStickyNodes(const double, const class std::valarray<double> &, const class std::valarray<double> &) --> void", pybind11::arg("stickyWeight"), pybind11::arg("startX"), pybind11::arg("startY"));
@@ -199,7 +208,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("setConstrainedLayout", (void (cola::ConstrainedMajorizationLayout::*)(bool)) &cola::ConstrainedMajorizationLayout::setConstrainedLayout, "C++: cola::ConstrainedMajorizationLayout::setConstrainedLayout(bool) --> void", pybind11::arg("c"));
 		cl.def("computeStress", (double (cola::ConstrainedMajorizationLayout::*)()) &cola::ConstrainedMajorizationLayout::computeStress, "C++: cola::ConstrainedMajorizationLayout::computeStress() --> double");
 	}
-	{ // cola::TopologyAddonInterface file: line:531
+	{ // cola::TopologyAddonInterface file:libcola/cola.h line:531
 		pybind11::class_<cola::TopologyAddonInterface, std::shared_ptr<cola::TopologyAddonInterface>, PyCallBack_cola_TopologyAddonInterface> cl(M("cola"), "TopologyAddonInterface", "Interface for writing COLA addons to handle topology preserving \n         layout.");
 		cl.def( pybind11::init( [](){ return new cola::TopologyAddonInterface(); }, [](){ return new PyCallBack_cola_TopologyAddonInterface(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_cola_TopologyAddonInterface const &o){ return new PyCallBack_cola_TopologyAddonInterface(o); } ) );
@@ -210,7 +219,7 @@ void bind_unknown_unknown_11(std::function< pybind11::module &(std::string const
 		cl.def("useTopologySolver", (bool (cola::TopologyAddonInterface::*)() const) &cola::TopologyAddonInterface::useTopologySolver, "C++: cola::TopologyAddonInterface::useTopologySolver() const --> bool");
 		cl.def("assign", (class cola::TopologyAddonInterface & (cola::TopologyAddonInterface::*)(const class cola::TopologyAddonInterface &)) &cola::TopologyAddonInterface::operator=, "C++: cola::TopologyAddonInterface::operator=(const class cola::TopologyAddonInterface &) --> class cola::TopologyAddonInterface &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	{ // cola::ConstrainedFDLayout file: line:622
+	{ // cola::ConstrainedFDLayout file:libcola/cola.h line:622
 		pybind11::class_<cola::ConstrainedFDLayout, std::shared_ptr<cola::ConstrainedFDLayout>> cl(M("cola"), "ConstrainedFDLayout", "Implements a constrained force-directed layout algorithm.\n\n This method is based on a non-linear gradient projection technique.\n Conceptually it's similar to a force directed method like\n Fruchterman-Reingold---but using a more principled goal function and\n optimisation techniques.");
 		cl.def( pybind11::init( [](cola::ConstrainedFDLayout const &o){ return new cola::ConstrainedFDLayout(o); } ) );
 		cl.def("run", [](cola::ConstrainedFDLayout &o) -> void { return o.run(); }, "");

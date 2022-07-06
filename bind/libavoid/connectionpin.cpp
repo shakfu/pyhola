@@ -1,6 +1,9 @@
 #include <libavoid/connectionpin.h>
 #include <libavoid/connector.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/junction.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
 #include <memory>
 #include <sstream> // __str__
 #include <utility>

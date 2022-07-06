@@ -1,5 +1,12 @@
 #include <functional>
+#include <libavoid/geomtypes.h>
+#include <libdialect/commontypes.h>
+#include <libdialect/constraints.h>
+#include <libdialect/graphs.h>
 #include <libdialect/nearalign.h>
+#include <libdialect/ortho.h>
+#include <libdialect/util.h>
+#include <libvpsc/rectangle.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -17,17 +24,17 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_13(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_util(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// dialect::logically_equal(double, double, double) file: line:48
+	// dialect::logically_equal(double, double, double) file:libdialect/util.h line:48
 	M("dialect").def("logically_equal", [](double const & a0, double const & a1) -> bool { return dialect::logically_equal(a0, a1); }, "", pybind11::arg("a"), pybind11::arg("b"));
 	M("dialect").def("logically_equal", (bool (*)(double, double, double)) &dialect::logically_equal, "Tolerant equality test for doubles. Generates principled value\n         for tolerance.\n\n \n  Thanks to: https://stackoverflow.com/a/4010279\n\nC++: dialect::logically_equal(double, double, double) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("error_factor"));
 
-	// dialect::approx_equal(double, double, double) file: line:54
+	// dialect::approx_equal(double, double, double) file:libdialect/util.h line:54
 	M("dialect").def("approx_equal", [](double const & a0, double const & a1) -> bool { return dialect::approx_equal(a0, a1); }, "", pybind11::arg("a"), pybind11::arg("b"));
 	M("dialect").def("approx_equal", (bool (*)(double, double, double)) &dialect::approx_equal, "Tolerant equality test for doubles. Uses arbitrary tolerance.\n\nC++: dialect::approx_equal(double, double, double) --> bool", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("tol"));
 
-	// dialect::CompassDir file: line:46
+	// dialect::CompassDir file:libdialect/ortho.h line:46
 	pybind11::enum_<dialect::CompassDir>(M("dialect"), "CompassDir", "")
 		.value("EAST", dialect::CompassDir::EAST)
 		.value("SOUTH", dialect::CompassDir::SOUTH)
@@ -40,7 +47,7 @@ void bind_unknown_unknown_13(std::function< pybind11::module &(std::string const
 
 ;
 
-	// dialect::CardinalDir file: line:57
+	// dialect::CardinalDir file:libdialect/ortho.h line:57
 	pybind11::enum_<dialect::CardinalDir>(M("dialect"), "CardinalDir", "")
 		.value("EAST", dialect::CardinalDir::EAST)
 		.value("SOUTH", dialect::CardinalDir::SOUTH)
@@ -49,7 +56,7 @@ void bind_unknown_unknown_13(std::function< pybind11::module &(std::string const
 
 ;
 
-	{ // dialect::Compass file: line:67
+	{ // dialect::Compass file:libdialect/ortho.h line:67
 		pybind11::class_<dialect::Compass, std::shared_ptr<dialect::Compass>> cl(M("dialect"), "Compass", "");
 		cl.def( pybind11::init( [](){ return new dialect::Compass(); } ) );
 		cl.def_static("isVertical", (bool (*)(enum dialect::CompassDir)) &dialect::Compass::isVertical, "Check whether a compass direction is vertical.\n\nC++: dialect::Compass::isVertical(enum dialect::CompassDir) --> bool", pybind11::arg("d"));
@@ -77,7 +84,7 @@ void bind_unknown_unknown_13(std::function< pybind11::module &(std::string const
 		cl.def_static("getInplaceRotationFunction", (class std::function<void (class Avoid::Point &)> (*)(enum dialect::CardinalDir, enum dialect::CardinalDir)) &dialect::Compass::getInplaceRotationFunction, "Get a function that rotates points by the angular displacement\n        from one cardinal direction to another.\n \n\n  The starting cardinal direction.\n \n\n  The ending cardinal direction.\n \n\n  A function that alters Avoid::Points in-place.\n \n\n Compass::getRotationFunction\n\nC++: dialect::Compass::getInplaceRotationFunction(enum dialect::CardinalDir, enum dialect::CardinalDir) --> class std::function<void (class Avoid::Point &)>", pybind11::arg("fromDir"), pybind11::arg("toDir"));
 		cl.def_static("vectorSigns", (class Avoid::Point (*)(enum dialect::CompassDir)) &dialect::Compass::vectorSigns, "Get the signs of the coordinates of a vector pointing in the given direction.\n \n\n  The direction.\n \n\n  An Avoid::Point (xs, ys), where xs in {-1, 0, 1} represents the sign of the\n          x-coordinate of a vector lying in the \"octant\" represented by the given direction,\n          and likewise for ys. Here an \"octant\" is a semiaxis for a cardinal direction,\n          and an open quadrant for an ordinal direction.\n\nC++: dialect::Compass::vectorSigns(enum dialect::CompassDir) --> class Avoid::Point", pybind11::arg("d"));
 	}
-	{ // dialect::LineSegment file: line:230
+	{ // dialect::LineSegment file:libdialect/ortho.h line:230
 		pybind11::class_<dialect::LineSegment, std::shared_ptr<dialect::LineSegment>> cl(M("dialect"), "LineSegment", "");
 		cl.def( pybind11::init<class Avoid::Point, class Avoid::Point>(), pybind11::arg("p0"), pybind11::arg("p1") );
 

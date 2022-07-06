@@ -1,5 +1,6 @@
 #include <functional>
 #include <iterator>
+#include <libavoid/geomtypes.h>
 #include <map>
 #include <memory>
 #include <sstream> // __str__

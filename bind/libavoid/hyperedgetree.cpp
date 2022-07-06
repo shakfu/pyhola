@@ -1,11 +1,19 @@
 #include <_stdio.h>
 #include <functional>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/hyperedgetree.h>
 #include <libavoid/junction.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/router.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
+#include <libavoid/visibility.h>
 #include <list>
 #include <memory>
 #include <set>
@@ -45,7 +53,7 @@ struct PyCallBack_Avoid_JunctionRef : public Avoid::JunctionRef {
 	}
 };
 
-// Avoid::ShapeRef file: line:81
+// Avoid::ShapeRef file:libavoid/shape.h line:81
 struct PyCallBack_Avoid_ShapeRef : public Avoid::ShapeRef {
 	using Avoid::ShapeRef::ShapeRef;
 
@@ -72,7 +80,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 		cl.def("__call__", (bool (Avoid::CmpNodesInDim::*)(const struct Avoid::HyperedgeTreeNode *, const struct Avoid::HyperedgeTreeNode *) const) &Avoid::CmpNodesInDim::operator(), "C++: Avoid::CmpNodesInDim::operator()(const struct Avoid::HyperedgeTreeNode *, const struct Avoid::HyperedgeTreeNode *) const --> bool", pybind11::arg("lhs"), pybind11::arg("rhs"));
 	}
-	{ // Avoid::Obstacle file: line:56
+	{ // Avoid::Obstacle file:libavoid/obstacle.h line:56
 		pybind11::class_<Avoid::Obstacle, std::shared_ptr<Avoid::Obstacle>> cl(M("Avoid"), "Obstacle", "");
 		cl.def("id", (unsigned int (Avoid::Obstacle::*)() const) &Avoid::Obstacle::id, "Returns the ID of this obstacle.\n \n\n The ID of the obstacle.\n\nC++: Avoid::Obstacle::id() const --> unsigned int");
 		cl.def("polygon", (const class Avoid::Polygon & (Avoid::Obstacle::*)() const) &Avoid::Obstacle::polygon, "Returns a reference to the polygon boundary of this\n          obstacle.\n \n\n A reference to the polygon boundary of the obstacle.\n\nC++: Avoid::Obstacle::polygon() const --> const class Avoid::Polygon &", pybind11::return_value_policy::automatic);
@@ -102,7 +110,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 		cl.def("preferOrthogonalDimension", (void (Avoid::JunctionRef::*)(const unsigned long)) &Avoid::JunctionRef::preferOrthogonalDimension, "C++: Avoid::JunctionRef::preferOrthogonalDimension(const unsigned long) --> void", pybind11::arg("dim"));
 		cl.def("assign", (class Avoid::JunctionRef & (Avoid::JunctionRef::*)(const class Avoid::JunctionRef &)) &Avoid::JunctionRef::operator=, "C++: Avoid::JunctionRef::operator=(const class Avoid::JunctionRef &) --> class Avoid::JunctionRef &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	// Avoid::ShapeTransformationType file: line:57
+	// Avoid::ShapeTransformationType file:libavoid/shape.h line:57
 	pybind11::enum_<Avoid::ShapeTransformationType>(M("Avoid"), "ShapeTransformationType", pybind11::arithmetic(), "Describes the type of transformation that has been applied to a\n         shape having its transformConnectionPinPositions() method called.")
 		.value("TransformationType_CW90", Avoid::TransformationType_CW90)
 		.value("TransformationType_CW180", Avoid::TransformationType_CW180)
@@ -113,7 +121,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 ;
 
-	{ // Avoid::ShapeRef file: line:81
+	{ // Avoid::ShapeRef file:libavoid/shape.h line:81
 		pybind11::class_<Avoid::ShapeRef, std::shared_ptr<Avoid::ShapeRef>, PyCallBack_Avoid_ShapeRef, Avoid::Obstacle> cl(M("Avoid"), "ShapeRef", "The ShapeRef class represents a shape object.\n\n Shapes are obstacles that connectors must be routed around.  They can be \n placed into a Router scene and can be repositioned or resized (via\n Router::moveShape()).\n\n Usually, it is expected that you would create a ShapeRef for each shape \n in your diagram and keep that reference in your own shape class.");
 		cl.def( pybind11::init( [](class Avoid::Router * a0, class Avoid::Polygon & a1){ return new Avoid::ShapeRef(a0, a1); }, [](class Avoid::Router * a0, class Avoid::Polygon & a1){ return new PyCallBack_Avoid_ShapeRef(a0, a1); } ), "doc");
 		cl.def( pybind11::init<class Avoid::Router *, class Avoid::Polygon &, const unsigned int>(), pybind11::arg("router"), pybind11::arg("poly"), pybind11::arg("id") );
@@ -125,17 +133,17 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 		cl.def("position", (class Avoid::Point (Avoid::ShapeRef::*)() const) &Avoid::ShapeRef::position, "C++: Avoid::ShapeRef::position() const --> class Avoid::Point");
 		cl.def("assign", (class Avoid::ShapeRef & (Avoid::ShapeRef::*)(const class Avoid::ShapeRef &)) &Avoid::ShapeRef::operator=, "C++: Avoid::ShapeRef::operator=(const class Avoid::ShapeRef &) --> class Avoid::ShapeRef &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
-	// Avoid::vertexVisibility(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool) file: line:34
+	// Avoid::vertexVisibility(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool) file:libavoid/visibility.h line:34
 	M("Avoid").def("vertexVisibility", [](class Avoid::VertInf * a0, class Avoid::VertInf * a1, bool const & a2) -> void { return Avoid::vertexVisibility(a0, a1, a2); }, "", pybind11::arg("point"), pybind11::arg("partner"), pybind11::arg("knownNew"));
 	M("Avoid").def("vertexVisibility", (void (*)(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool)) &Avoid::vertexVisibility, "C++: Avoid::vertexVisibility(class Avoid::VertInf *, class Avoid::VertInf *, bool, const bool) --> void", pybind11::arg("point"), pybind11::arg("partner"), pybind11::arg("knownNew"), pybind11::arg("gen_contains"));
 
-	{ // Avoid::LineRep file: line:50
+	{ // Avoid::LineRep file:libavoid/router.h line:50
 		pybind11::class_<Avoid::LineRep, std::shared_ptr<Avoid::LineRep>> cl(M("Avoid"), "LineRep", "");
 		cl.def( pybind11::init( [](){ return new Avoid::LineRep(); } ) );
 		cl.def_readwrite("begin", &Avoid::LineRep::begin);
 		cl.def_readwrite("end", &Avoid::LineRep::end);
 	}
-	// Avoid::RouterFlag file: line:70
+	// Avoid::RouterFlag file:libavoid/router.h line:70
 	pybind11::enum_<Avoid::RouterFlag>(M("Avoid"), "RouterFlag", pybind11::arithmetic(), "Flags that can be passed to the router during initialisation \n         to specify options.")
 		.value("PolyLineRouting", Avoid::PolyLineRouting)
 		.value("OrthogonalRouting", Avoid::OrthogonalRouting)
@@ -143,7 +151,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 ;
 
-	// Avoid::RoutingParameter file: line:88
+	// Avoid::RoutingParameter file:libavoid/router.h line:88
 	pybind11::enum_<Avoid::RoutingParameter>(M("Avoid"), "RoutingParameter", pybind11::arithmetic(), "Types of routing parameters and penalties that can be used to \n         tailor the style and improve the quality of the connector \n         routes produced.")
 		.value("segmentPenalty", Avoid::segmentPenalty)
 		.value("anglePenalty", Avoid::anglePenalty)
@@ -159,7 +167,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 ;
 
-	// Avoid::RoutingOption file: line:174
+	// Avoid::RoutingOption file:libavoid/router.h line:174
 	pybind11::enum_<Avoid::RoutingOption>(M("Avoid"), "RoutingOption", pybind11::arithmetic(), "Types of routing options that can be enabled.")
 		.value("nudgeOrthogonalSegmentsConnectedToShapes", Avoid::nudgeOrthogonalSegmentsConnectedToShapes)
 		.value("improveHyperedgeRoutesMovingJunctions", Avoid::improveHyperedgeRoutesMovingJunctions)
@@ -173,7 +181,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 ;
 
-	// Avoid::TransactionPhases file: line:299
+	// Avoid::TransactionPhases file:libavoid/router.h line:299
 	pybind11::enum_<Avoid::TransactionPhases>(M("Avoid"), "TransactionPhases", pybind11::arithmetic(), "Types of routing phases reported by \n         Router::shouldContinueTransactionWithProgress().\n\n This phases will occur in the order given here, but each phase may take\n varying amounts of time.")
 		.value("TransactionPhaseOrthogonalVisibilityGraphScanX", Avoid::TransactionPhaseOrthogonalVisibilityGraphScanX)
 		.value("TransactionPhaseOrthogonalVisibilityGraphScanY", Avoid::TransactionPhaseOrthogonalVisibilityGraphScanY)
@@ -187,7 +195,7 @@ void bind_libavoid_hyperedgetree(std::function< pybind11::module &(std::string c
 
 ;
 
-	{ // Avoid::ConnRerouteFlagDelegate file: line:332
+	{ // Avoid::ConnRerouteFlagDelegate file:libavoid/router.h line:332
 		pybind11::class_<Avoid::ConnRerouteFlagDelegate, std::shared_ptr<Avoid::ConnRerouteFlagDelegate>> cl(M("Avoid"), "ConnRerouteFlagDelegate", "");
 		cl.def( pybind11::init( [](){ return new Avoid::ConnRerouteFlagDelegate(); } ) );
 		cl.def( pybind11::init( [](Avoid::ConnRerouteFlagDelegate const &o){ return new Avoid::ConnRerouteFlagDelegate(o); } ) );

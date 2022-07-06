@@ -1,6 +1,18 @@
 #include <functional>
 #include <iterator>
+#include <libavoid/geomtypes.h>
+#include <libavoid/router.h>
+#include <libcola/cluster.h>
+#include <libdialect/constraints.h>
 #include <libdialect/expansion.h>
+#include <libdialect/faces.h>
+#include <libdialect/graphs.h>
+#include <libdialect/opts.h>
+#include <libdialect/ortho.h>
+#include <libdialect/routing.h>
+#include <libdialect/treeplacement.h>
+#include <libdialect/trees.h>
+#include <libvpsc/rectangle.h>
 #include <map>
 #include <memory>
 #include <set>
@@ -21,9 +33,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_19(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libdialect_treeplacement(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // dialect::TreePlacement file: line:57
+	{ // dialect::TreePlacement file:libdialect/treeplacement.h line:57
 		pybind11::class_<dialect::TreePlacement, std::shared_ptr<dialect::TreePlacement>> cl(M("dialect"), "TreePlacement", "A TreePlacement represents a way of placing a tree into the faces of\n a 4-planar, orthogonal layout.");
 		cl.def( pybind11::init( [](class std::shared_ptr<class dialect::Tree> const & a0, class dialect::Face & a1, class std::shared_ptr<class dialect::Node> const & a2, enum dialect::CompassDir const & a3, enum dialect::CardinalDir const & a4){ return new dialect::TreePlacement(a0, a1, a2, a3, a4); } ), "doc" , pybind11::arg("tree"), pybind11::arg("face"), pybind11::arg("faceRoot"), pybind11::arg("dp"), pybind11::arg("dg"));
 		cl.def( pybind11::init<class std::shared_ptr<class dialect::Tree>, class dialect::Face &, class std::shared_ptr<class dialect::Node>, enum dialect::CompassDir, enum dialect::CardinalDir, bool>(), pybind11::arg("tree"), pybind11::arg("face"), pybind11::arg("faceRoot"), pybind11::arg("dp"), pybind11::arg("dg"), pybind11::arg("flip") );

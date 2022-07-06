@@ -2,15 +2,22 @@
 #include <functional>
 #include <iterator>
 #include <libavoid/connector.h>
+#include <libavoid/connend.h>
 #include <libavoid/debughandler.h>
+#include <libavoid/geomtypes.h>
 #include <libavoid/graph.h>
 #include <libavoid/hyperedge.h>
 #include <libavoid/hyperedgetree.h>
 #include <libavoid/junction.h>
 #include <libavoid/makepath.h>
 #include <libavoid/mtst.h>
+#include <libavoid/obstacle.h>
 #include <libavoid/orthogonal.h>
+#include <libavoid/router.h>
 #include <libavoid/scanline.h>
+#include <libavoid/shape.h>
+#include <libavoid/vertices.h>
+#include <libavoid/viscluster.h>
 #include <list>
 #include <map>
 #include <memory>
@@ -32,9 +39,9 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-void bind_unknown_unknown_2(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libavoid_viscluster(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Avoid::ClusterRef file: line:55
+	{ // Avoid::ClusterRef file:libavoid/viscluster.h line:55
 		pybind11::class_<Avoid::ClusterRef, std::shared_ptr<Avoid::ClusterRef>> cl(M("Avoid"), "ClusterRef", "The ClusterRef class represents a cluster object.\n\n Cluster are boundaries around groups of shape objects.  Ideally, only\n connectors with one endpoint inside the cluster and one endpoint outside\n the cluster will cross the cluster boundary. Connectors that begin and \n end inside a cluster will not route outside it, and connectors that begin \n and end outside the cluster will not enter the cluster.\n\n \n   While the functionality of this class works, it is currently \n         experimental you will likely suffer a large performance hit\n         when using it.");
 		cl.def( pybind11::init( [](class Avoid::Router * a0, class Avoid::Polygon & a1){ return new Avoid::ClusterRef(a0, a1); } ), "doc" , pybind11::arg("router"), pybind11::arg("poly"));
 		cl.def( pybind11::init<class Avoid::Router *, class Avoid::Polygon &, const unsigned int>(), pybind11::arg("router"), pybind11::arg("poly"), pybind11::arg("id") );

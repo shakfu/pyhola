@@ -32,9 +32,9 @@
 #include <list>
 #include <set>
 
-#include "libavoid/geomtypes.h"
-#include "libavoid/obstacle.h"
-#include "libavoid/dllexport.h"
+#include <libavoid/geomtypes.h>
+#include <libavoid/obstacle.h>
+#include <libavoid/dllexport.h>
 
 namespace Avoid {
 

@@ -25,9 +25,9 @@
 
 #include <vector>
 
-#include "libcola/cola.h"
-#include "libcola/compound_constraints.h"
-#include "libcola/shapepair.h"
+#include <libcola/cola.h>
+#include <libcola/compound_constraints.h>
+#include <libcola/shapepair.h>
 
 namespace vpsc {
 class Rectangle;

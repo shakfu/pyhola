@@ -37,7 +37,7 @@
 #include <functional>
 #include <math.h>
 
-#include "libavoid/geomtypes.h"
+#include <libavoid/geomtypes.h>
 
 namespace dialect {
 

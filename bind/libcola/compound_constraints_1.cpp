@@ -1,6 +1,11 @@
 #include <_stdio.h>
 #include <libcola/box.h>
 #include <libcola/cc_clustercontainmentconstraints.h>
+#include <libcola/cluster.h>
+#include <libcola/compound_constraints.h>
+#include <libvpsc/constraint.h>
+#include <libvpsc/rectangle.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -115,9 +120,9 @@ struct PyCallBack_cola_ClusterContainmentConstraints : public cola::ClusterConta
 	}
 };
 
-void bind_unknown_unknown_7(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libcola_compound_constraints_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // cola::UnsatisfiableConstraintInfo file: line:788
+	{ // cola::UnsatisfiableConstraintInfo file:libcola/compound_constraints.h line:788
 		pybind11::class_<cola::UnsatisfiableConstraintInfo, std::shared_ptr<cola::UnsatisfiableConstraintInfo>> cl(M("cola"), "UnsatisfiableConstraintInfo", "Info about constraints that could not be satisfied in gradient \n        projection process.");
 		cl.def( pybind11::init<const class vpsc::Constraint *>(), pybind11::arg("c") );
 

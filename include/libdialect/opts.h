@@ -25,7 +25,7 @@
 #ifndef DIALECT_OPTS_H
 #define DIALECT_OPTS_H
 
-#include "libdialect/ortho.h"
+#include <libdialect/ortho.h>
 
 namespace dialect {
 

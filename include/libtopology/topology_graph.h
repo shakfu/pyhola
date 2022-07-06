@@ -28,10 +28,10 @@
 
 #include <vector>
 
-#include "libvpsc/assertions.h"
-#include "libvpsc/rectangle.h"
+#include <libvpsc/assertions.h>
+#include <libvpsc/rectangle.h>
 
-#include "libtopology/util.h"
+#include <libtopology/util.h>
 
 namespace vpsc {
     class Variable;

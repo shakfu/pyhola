@@ -1,3 +1,6 @@
+#include <libvpsc/constraint.h>
+#include <libvpsc/solve_VPSC.h>
+#include <libvpsc/variable.h>
 #include <memory>
 #include <sstream> // __str__
 #include <string>
@@ -15,7 +18,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// vpsc::Solver file: line:60
+// vpsc::Solver file:libvpsc/solve_VPSC.h line:60
 struct PyCallBack_vpsc_Solver : public vpsc::Solver {
 	using vpsc::Solver::Solver;
 
@@ -47,7 +50,7 @@ struct PyCallBack_vpsc_Solver : public vpsc::Solver {
 	}
 };
 
-// vpsc::IncSolver file: line:105
+// vpsc::IncSolver file:libvpsc/solve_VPSC.h line:105
 struct PyCallBack_vpsc_IncSolver : public vpsc::IncSolver {
 	using vpsc::IncSolver::IncSolver;
 
@@ -79,16 +82,16 @@ struct PyCallBack_vpsc_IncSolver : public vpsc::IncSolver {
 	}
 };
 
-void bind_unknown_unknown_8(std::function< pybind11::module &(std::string const &namespace_) > &M)
+void bind_libvpsc_solve_VPSC(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // vpsc::Solver file: line:60
+	{ // vpsc::Solver file:libvpsc/solve_VPSC.h line:60
 		pybind11::class_<vpsc::Solver, std::shared_ptr<vpsc::Solver>, PyCallBack_vpsc_Solver> cl(M("vpsc"), "Solver", "Static solver for Variable Placement with Separation Constraints \n        problem instance\n\n This class attempts to solve a least-squares problem subject to a set \n of separation constraints.  The solve() and satisfy() methods return true \n if any constraints are active, in both cases false means an unconstrained \n optimum has been found.\n\n \n IncSolver");
 		cl.def( pybind11::init( [](PyCallBack_vpsc_Solver const &o){ return new PyCallBack_vpsc_Solver(o); } ) );
 		cl.def( pybind11::init( [](vpsc::Solver const &o){ return new vpsc::Solver(o); } ) );
 		cl.def("satisfy", (bool (vpsc::Solver::*)()) &vpsc::Solver::satisfy, "Results in an approximate solution subject to the constraints.\n \n\n true if any constraints are active, or false if an unconstrained \n         optimum has been found.\n\nC++: vpsc::Solver::satisfy() --> bool");
 		cl.def("solve", (bool (vpsc::Solver::*)()) &vpsc::Solver::solve, "Results in an optimum solution subject to the constraints\n \n\n true if any constraints are active, or false if an unconstrained \n         optimum has been found.\n\nC++: vpsc::Solver::solve() --> bool");
 	}
-	{ // vpsc::IncSolver file: line:105
+	{ // vpsc::IncSolver file:libvpsc/solve_VPSC.h line:105
 		pybind11::class_<vpsc::IncSolver, std::shared_ptr<vpsc::IncSolver>, PyCallBack_vpsc_IncSolver, vpsc::Solver> cl(M("vpsc"), "IncSolver", "Incremental solver for Variable Placement with Separation Constraints \n        problem instance\n\n This class attempts to solve a least-squares problem subject to a set \n of sepation constraints.  The solve() and satisfy() methods return true \n if any constraints are active, in both cases false means an unconstrained \n optimum has been found.  This is an incremental version of that allows \n refinement after blocks are moved.  This version is preferred if you are \n using VPSC in an interactive context.\n\n \n Solver");
 		cl.def( pybind11::init( [](PyCallBack_vpsc_IncSolver const &o){ return new PyCallBack_vpsc_IncSolver(o); } ) );
 		cl.def( pybind11::init( [](vpsc::IncSolver const &o){ return new vpsc::IncSolver(o); } ) );
