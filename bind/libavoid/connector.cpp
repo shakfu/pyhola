@@ -18,7 +18,6 @@
 #include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -76,19 +75,6 @@ struct PyCallBack_Avoid_DebugHandler : public Avoid::DebugHandler {
 		}
 		return DebugHandler::updateCurrentSearchPath(a0);
 	}
-	void beginningHyperedgeReroutingWithEndpoints(class std::set<class Avoid::VertInf *, struct std::less<class Avoid::VertInf *>, class std::allocator<class Avoid::VertInf *> > a0) override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::DebugHandler *>(this), "beginningHyperedgeReroutingWithEndpoints");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return DebugHandler::beginningHyperedgeReroutingWithEndpoints(a0);
-	}
 	void mtstGrowForestWithEdge(class Avoid::VertInf * a0, class Avoid::VertInf * a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::DebugHandler *>(this), "mtstGrowForestWithEdge");
@@ -136,8 +122,6 @@ void bind_libavoid_connector(std::function< pybind11::module &(std::string const
 		pybind11::class_<Avoid::PtOrder, std::shared_ptr<Avoid::PtOrder>> cl(M("Avoid"), "PtOrder", "");
 		cl.def( pybind11::init( [](){ return new Avoid::PtOrder(); } ) );
 		cl.def( pybind11::init( [](Avoid::PtOrder const &o){ return new Avoid::PtOrder(o); } ) );
-		cl.def("addPoints", (void (Avoid::PtOrder::*)(const unsigned long, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &)) &Avoid::PtOrder::addPoints, "C++: Avoid::PtOrder::addPoints(const unsigned long, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &) --> void", pybind11::arg("dim"), pybind11::arg("arg1"), pybind11::arg("arg2"));
-		cl.def("addOrderedPoints", (void (Avoid::PtOrder::*)(const unsigned long, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, bool)) &Avoid::PtOrder::addOrderedPoints, "C++: Avoid::PtOrder::addOrderedPoints(const unsigned long, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, const struct std::pair<class Avoid::Point *, class Avoid::ConnRef *> &, bool) --> void", pybind11::arg("dim"), pybind11::arg("innerArg"), pybind11::arg("outerArg"), pybind11::arg("swapped"));
 		cl.def("positionFor", (int (Avoid::PtOrder::*)(const unsigned long, const class Avoid::ConnRef *)) &Avoid::PtOrder::positionFor, "C++: Avoid::PtOrder::positionFor(const unsigned long, const class Avoid::ConnRef *) --> int", pybind11::arg("dim"), pybind11::arg("conn"));
 	}
 	{ // Avoid::ConnectorCrossings file:libavoid/connector.h line:512
@@ -174,7 +158,6 @@ void bind_libavoid_connector(std::function< pybind11::module &(std::string const
 		cl.def("updateConnectorRoute", (void (Avoid::DebugHandler::*)(class Avoid::ConnRef *, int, int)) &Avoid::DebugHandler::updateConnectorRoute, "C++: Avoid::DebugHandler::updateConnectorRoute(class Avoid::ConnRef *, int, int) --> void", pybind11::arg("conn"), pybind11::arg("index1"), pybind11::arg("index2"));
 		cl.def("beginningSearchWithEndpoints", (void (Avoid::DebugHandler::*)(class Avoid::VertInf *, class Avoid::VertInf *)) &Avoid::DebugHandler::beginningSearchWithEndpoints, "C++: Avoid::DebugHandler::beginningSearchWithEndpoints(class Avoid::VertInf *, class Avoid::VertInf *) --> void", pybind11::arg("src"), pybind11::arg("tar"));
 		cl.def("updateCurrentSearchPath", (void (Avoid::DebugHandler::*)(class Avoid::Polygon)) &Avoid::DebugHandler::updateCurrentSearchPath, "C++: Avoid::DebugHandler::updateCurrentSearchPath(class Avoid::Polygon) --> void", pybind11::arg("currentPath"));
-		cl.def("beginningHyperedgeReroutingWithEndpoints", (void (Avoid::DebugHandler::*)(class std::set<class Avoid::VertInf *, struct std::less<class Avoid::VertInf *>, class std::allocator<class Avoid::VertInf *> >)) &Avoid::DebugHandler::beginningHyperedgeReroutingWithEndpoints, "C++: Avoid::DebugHandler::beginningHyperedgeReroutingWithEndpoints(class std::set<class Avoid::VertInf *, struct std::less<class Avoid::VertInf *>, class std::allocator<class Avoid::VertInf *> >) --> void", pybind11::arg("endpoints"));
 		cl.def("mtstGrowForestWithEdge", (void (Avoid::DebugHandler::*)(class Avoid::VertInf *, class Avoid::VertInf *, bool)) &Avoid::DebugHandler::mtstGrowForestWithEdge, "C++: Avoid::DebugHandler::mtstGrowForestWithEdge(class Avoid::VertInf *, class Avoid::VertInf *, bool) --> void", pybind11::arg("u"), pybind11::arg("v"), pybind11::arg("shouldWait"));
 		cl.def("mtstPotentialBridgingEdge", (void (Avoid::DebugHandler::*)(class Avoid::VertInf *, class Avoid::VertInf *)) &Avoid::DebugHandler::mtstPotentialBridgingEdge, "C++: Avoid::DebugHandler::mtstPotentialBridgingEdge(class Avoid::VertInf *, class Avoid::VertInf *) --> void", pybind11::arg("u"), pybind11::arg("v"));
 		cl.def("mtstCommitToEdge", (void (Avoid::DebugHandler::*)(class Avoid::VertInf *, class Avoid::VertInf *, bool)) &Avoid::DebugHandler::mtstCommitToEdge, "C++: Avoid::DebugHandler::mtstCommitToEdge(class Avoid::VertInf *, class Avoid::VertInf *, bool) --> void", pybind11::arg("u"), pybind11::arg("v"), pybind11::arg("isBridge"));
@@ -198,8 +181,6 @@ void bind_libavoid_connector(std::function< pybind11::module &(std::string const
 		cl.def("isDisabled", (bool (Avoid::EdgeInf::*)() const) &Avoid::EdgeInf::isDisabled, "C++: Avoid::EdgeInf::isDisabled() const --> bool");
 		cl.def("setDisabled", (void (Avoid::EdgeInf::*)(const bool)) &Avoid::EdgeInf::setDisabled, "C++: Avoid::EdgeInf::setDisabled(const bool) --> void", pybind11::arg("disabled"));
 		cl.def("rotationLessThan", (bool (Avoid::EdgeInf::*)(const class Avoid::VertInf *, const class Avoid::EdgeInf *) const) &Avoid::EdgeInf::rotationLessThan, "C++: Avoid::EdgeInf::rotationLessThan(const class Avoid::VertInf *, const class Avoid::EdgeInf *) const --> bool", pybind11::arg("last"), pybind11::arg("rhs"));
-		cl.def("ids", (struct std::pair<class Avoid::VertID, class Avoid::VertID> (Avoid::EdgeInf::*)() const) &Avoid::EdgeInf::ids, "C++: Avoid::EdgeInf::ids() const --> struct std::pair<class Avoid::VertID, class Avoid::VertID>");
-		cl.def("points", (struct std::pair<class Avoid::Point, class Avoid::Point> (Avoid::EdgeInf::*)() const) &Avoid::EdgeInf::points, "C++: Avoid::EdgeInf::points() const --> struct std::pair<class Avoid::Point, class Avoid::Point>");
 		cl.def("db_print", (void (Avoid::EdgeInf::*)()) &Avoid::EdgeInf::db_print, "C++: Avoid::EdgeInf::db_print() --> void");
 		cl.def("checkVis", (void (Avoid::EdgeInf::*)()) &Avoid::EdgeInf::checkVis, "C++: Avoid::EdgeInf::checkVis() --> void");
 		cl.def("otherVert", (class Avoid::VertInf * (Avoid::EdgeInf::*)(const class Avoid::VertInf *) const) &Avoid::EdgeInf::otherVert, "C++: Avoid::EdgeInf::otherVert(const class Avoid::VertInf *) const --> class Avoid::VertInf *", pybind11::return_value_policy::automatic, pybind11::arg("vert"));
@@ -233,5 +214,14 @@ void bind_libavoid_connector(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("deletedJunctionList", &Avoid::HyperedgeNewAndDeletedObjectLists::deletedJunctionList);
 		cl.def_readwrite("deletedConnectorList", &Avoid::HyperedgeNewAndDeletedObjectLists::deletedConnectorList);
 		cl.def_readwrite("changedConnectorList", &Avoid::HyperedgeNewAndDeletedObjectLists::changedConnectorList);
+	}
+	{ // Avoid::HyperedgeRerouter file:libavoid/hyperedge.h line:129
+		pybind11::class_<Avoid::HyperedgeRerouter, std::shared_ptr<Avoid::HyperedgeRerouter>> cl(M("Avoid"), "HyperedgeRerouter", "The HyperedgeRerouter class is a convenience object that can be\n          used to register hyperedges to be rerouted, improving the\n          placement of their junctions and connector paths.\n\n To work with this class, you should get a copy from the router instance\n via a call to Router::hyperedgeRerouter().\n\n If you would like a particular hyperedge to be completely rerouted with\n new junction positions then you should register it with this class via a\n call to registerHyperedgeForRerouting.  A hyperedge can either be\n specified as a set of terminal vertices, or as a single JunctionRef.\n Passing a JunctionRef will cause HyperedgeRerouter to follow the attached\n connectors and junctions to determine the hyperedge.  When you register\n a hyperedge you get an index number that can be used to later find\n information about it.\n\n The rerouting will actually occur the next time the Router processes a\n transaction, see Router::processTransaction().  The rerouting will\n effectively create new junctions (JunctionRefs) and connectors (ConnRefs)\n for the hyperedge.  \n\n Since hyperedges are composed of multiple connections and junction objects,\n rerouting a hyperedge can cause creation of new or deletion of existing \n connectors and/or junctions.  Thus once the transaction has been completed\n you should call the newAndDeletedObjectLists() to get an object containing\n the lists of created and deleted junctions and connectors.  After the\n transaction You should not use references to these deleted objects any \n more from your own code (since the router will free their memory at its\n convenience) and you should refer only to the unaffected objects and the \n new connectors and junctions.");
+		cl.def( pybind11::init( [](){ return new Avoid::HyperedgeRerouter(); } ) );
+		cl.def( pybind11::init( [](Avoid::HyperedgeRerouter const &o){ return new Avoid::HyperedgeRerouter(o); } ) );
+		cl.def("registerHyperedgeForRerouting", (unsigned long (Avoid::HyperedgeRerouter::*)(class Avoid::JunctionRef *)) &Avoid::HyperedgeRerouter::registerHyperedgeForRerouting, "Registers a hyperedge to be fully rerouted the next time\n         the router processes a transaction.\n\n In this case the connectors and junctions attached to the given\n junction will be traversed to determine the endpoints of the\n hyperedge.  These endpoints will then be used for the rerouting.\n The junctions and connectors forming the old route will be\n deleted.\n\n \n  One of the junctions that forms the\n                      hyperedge.\n \n\n An index that can be used to request information on the\n         resulting routing of the hyperedge.\n\nC++: Avoid::HyperedgeRerouter::registerHyperedgeForRerouting(class Avoid::JunctionRef *) --> unsigned long", pybind11::arg("junction"));
+		cl.def("newAndDeletedObjectLists", (struct Avoid::HyperedgeNewAndDeletedObjectLists (Avoid::HyperedgeRerouter::*)(unsigned long) const) &Avoid::HyperedgeRerouter::newAndDeletedObjectLists, "Returns a HyperedgeNewAndDeletedObjectLists detailing the\n         lists of junctions and connectors created and deleted\n         during hyperedge improvement.\n\n This method will only return information once the router has\n processed the transaction.  You should read this information \n before processTransaction() is called again.\n\n After calling this you should no longer refer to any of the\n objects in the \"deleted\" lists --- the router will delete these \n and free their memory at its convenience.\n\n \n  The index of the hyperedge to return junctions for.\n \n\n A HyperedgeNewAndDeletedObjectLists containing lists of \n         junctions and connectors created and deleted.\n\nC++: Avoid::HyperedgeRerouter::newAndDeletedObjectLists(unsigned long) const --> struct Avoid::HyperedgeNewAndDeletedObjectLists", pybind11::arg("index"));
+		cl.def("count", (unsigned long (Avoid::HyperedgeRerouter::*)() const) &Avoid::HyperedgeRerouter::count, "C++: Avoid::HyperedgeRerouter::count() const --> unsigned long");
+		cl.def("assign", (class Avoid::HyperedgeRerouter & (Avoid::HyperedgeRerouter::*)(const class Avoid::HyperedgeRerouter &)) &Avoid::HyperedgeRerouter::operator=, "C++: Avoid::HyperedgeRerouter::operator=(const class Avoid::HyperedgeRerouter &) --> class Avoid::HyperedgeRerouter &", pybind11::return_value_policy::automatic, pybind11::arg(""));
 	}
 }

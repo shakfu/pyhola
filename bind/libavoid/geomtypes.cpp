@@ -12,7 +12,6 @@
 #include <memory>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>

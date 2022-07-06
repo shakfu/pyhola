@@ -1,7 +1,6 @@
 NAME := "pyhola"
 # CPPFLAGS += "-Wno-c++11-extensions"
-# STDVER := "-std=c++14"
-STDVER := "-std=c++11"
+STDVER := "-std=c++14"
 PYBIND_INCLUDES := $(shell python3 -m pybind11 --includes)
 PYBIND_EXTENSION := $(shell python3-config --extension-suffix)
 EXTENSION := $(NAME)$(PYBIND_EXTENSION)
@@ -13,7 +12,7 @@ PWD=$(shell pwd)
 ALL_INCLUDES=all_includes.hpp
 CONFIG_FILE=config.txt
 NAMESPACE_TO_BIND=dialect
-NAMESPACE_TO_SKIP=''
+NAMESPACE_TO_SKIP='std'
 
 
 all: pyhola

@@ -6,7 +6,6 @@
 #include <sstream>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>
@@ -112,7 +111,6 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		cl.def("isActive", (bool (project::Constraint::*)() const) &project::Constraint::isActive, "C++: project::Constraint::isActive() const --> bool");
 		cl.def("resetLM", (void (project::Constraint::*)()) &project::Constraint::resetLM, "C++: project::Constraint::resetLM() --> void");
 		cl.def("wantsToMoveApart", (bool (project::Constraint::*)() const) &project::Constraint::wantsToMoveApart, "C++: project::Constraint::wantsToMoveApart() const --> bool");
-		cl.def("toString", (std::string (project::Constraint::*)()) &project::Constraint::toString, "C++: project::Constraint::toString() --> std::string");
 	}
 	// project::cmpLagrangians(class project::Constraint *, class project::Constraint *) file:libproject/project.h line:175
 	M("project").def("cmpLagrangians", (bool (*)(class project::Constraint *, class project::Constraint *)) &project::cmpLagrangians, "C++: project::cmpLagrangians(class project::Constraint *, class project::Constraint *) --> bool", pybind11::arg("a"), pybind11::arg("b"));
@@ -152,9 +150,6 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("line", &project::CriticalFailure::line);
 		cl.def("print", (void (project::CriticalFailure::*)()) &project::CriticalFailure::print, "C++: project::CriticalFailure::print() --> void");
 	}
-	// project::NowTime() file:libproject/project_log.h line:39
-	M("project").def("NowTime", (std::string (*)()) &project::NowTime, "C++: project::NowTime() --> std::string");
-
 	// project::TLogLevel file:libproject/project_log.h line:41
 	pybind11::enum_<project::TLogLevel>(M("project"), "TLogLevel", pybind11::arithmetic(), "")
 		.value("logERROR", project::logERROR)
@@ -172,17 +167,12 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 	{ // project::Log file:libproject/project_log.h line:44
 		pybind11::class_<project::Log<project::Output2FILE>, std::shared_ptr<project::Log<project::Output2FILE>>> cl(M("project"), "Log_project_Output2FILE_t", "");
 		cl.def( pybind11::init( [](){ return new project::Log<project::Output2FILE>(); } ) );
-		cl.def("Get", [](project::Log<project::Output2FILE> &o) -> std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > & { return o.Get(); }, "", pybind11::return_value_policy::automatic);
-		cl.def("Get", (class std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > & (project::Log<project::Output2FILE>::*)(enum project::TLogLevel)) &project::Log<project::Output2FILE>::Get, "C++: project::Log<project::Output2FILE>::Get(enum project::TLogLevel) --> class std::basic_ostringstream<char, struct std::char_traits<char>, class std::allocator<char> > &", pybind11::return_value_policy::automatic, pybind11::arg("level"));
 		cl.def_static("ReportingLevel", (enum project::TLogLevel & (*)()) &project::Log<project::Output2FILE>::ReportingLevel, "C++: project::Log<project::Output2FILE>::ReportingLevel() --> enum project::TLogLevel &", pybind11::return_value_policy::automatic);
-		cl.def_static("ToString", (std::string (*)(enum project::TLogLevel)) &project::Log<project::Output2FILE>::ToString, "C++: project::Log<project::Output2FILE>::ToString(enum project::TLogLevel) --> std::string", pybind11::arg("level"));
-		cl.def_static("FromString", (enum project::TLogLevel (*)(const std::string &)) &project::Log<project::Output2FILE>::FromString, "C++: project::Log<project::Output2FILE>::FromString(const std::string &) --> enum project::TLogLevel", pybind11::arg("level"));
 	}
 	{ // project::Output2FILE file:libproject/project_log.h line:119
 		pybind11::class_<project::Output2FILE, std::shared_ptr<project::Output2FILE>> cl(M("project"), "Output2FILE", "");
 		cl.def( pybind11::init( [](){ return new project::Output2FILE(); } ) );
 		cl.def_static("Stream", (struct __sFILE *& (*)()) &project::Output2FILE::Stream, "C++: project::Output2FILE::Stream() --> struct __sFILE *&", pybind11::return_value_policy::automatic);
-		cl.def_static("Output", (void (*)(const std::string &)) &project::Output2FILE::Output, "C++: project::Output2FILE::Output(const std::string &) --> void", pybind11::arg("msg"));
 	}
 	{ // project::FILELog file:libproject/project_log.h line:153
 		pybind11::class_<project::FILELog, std::shared_ptr<project::FILELog>, project::Log<project::Output2FILE>> cl(M("project"), "FILELog", "");

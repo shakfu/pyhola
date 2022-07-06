@@ -11,7 +11,6 @@
 #include <sstream> // __str__
 #include <streambuf>
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 

@@ -6,7 +6,6 @@
 #include <sstream> // __str__
 #include <streambuf>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>
@@ -100,7 +99,6 @@ void bind_libavoid_vpsc(std::function< pybind11::module &(std::string const &nam
 		cl.def_readwrite("unsatisfiable", &Avoid::Constraint::unsatisfiable);
 		cl.def_readwrite("needsScaling", &Avoid::Constraint::needsScaling);
 		cl.def("slack", (double (Avoid::Constraint::*)() const) &Avoid::Constraint::slack, "C++: Avoid::Constraint::slack() const --> double");
-		cl.def("toString", (std::string (Avoid::Constraint::*)() const) &Avoid::Constraint::toString, "C++: Avoid::Constraint::toString() const --> std::string");
 
 		cl.def("__str__", [](Avoid::Constraint const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}

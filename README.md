@@ -6,6 +6,14 @@ The HOLA algorithm is part of the [libdialect](http://www.adaptagrams.org/docume
 
 The [old python project](https://github.com/skieffer/hola) for hola may also be useful for reference.
 
+There is a parallel effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically. This is ongoing effort.
+
+There is a manually wrapped `pyhola` part which works. Just 
+
+```
+make pyhola
+```
+
 ## Status
 
 The objective is to wrap as much of libdialect as possible

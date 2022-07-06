@@ -6,6 +6,7 @@
 #include <libcola/compound_constraints.h>
 #include <libdialect/constraints.h>
 #include <libdialect/graphs.h>
+#include <libdialect/opts.h>
 #include <libdialect/ortho.h>
 #include <libdialect/routing.h>
 #include <libvpsc/constraint.h>
@@ -16,7 +17,6 @@
 #include <set>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -54,19 +54,6 @@ struct PyCallBack_dialect_SepPairSubConstraintInfo : public dialect::SepPairSubC
 struct PyCallBack_dialect_SepMatrix : public dialect::SepMatrix {
 	using dialect::SepMatrix::SepMatrix;
 
-	std::string toString() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const dialect::SepMatrix *>(this), "toString");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<std::string>::value) {
-				static pybind11::detail::override_caster_t<std::string> caster;
-				return pybind11::detail::cast_ref<std::string>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<std::string>(std::move(o));
-		}
-		return SepMatrix::toString();
-	}
 	void markAllSubConstraintsAsInactive() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const dialect::SepMatrix *>(this), "markAllSubConstraintsAsInactive");
@@ -149,93 +136,8 @@ struct PyCallBack_dialect_SepMatrix : public dialect::SepMatrix {
 
 void bind_libdialect_constraints(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// dialect::GapType file:libdialect/constraints.h line:48
-	pybind11::enum_<dialect::GapType>(M("dialect"), "GapType", "")
-		.value("CENTRE", dialect::GapType::CENTRE)
-		.value("BDRY", dialect::GapType::BDRY);
-
-;
-
-	// dialect::SepDir file:libdialect/constraints.h line:55
-	pybind11::enum_<dialect::SepDir>(M("dialect"), "SepDir", "")
-		.value("EAST", dialect::SepDir::EAST)
-		.value("SOUTH", dialect::SepDir::SOUTH)
-		.value("WEST", dialect::SepDir::WEST)
-		.value("NORTH", dialect::SepDir::NORTH)
-		.value("RIGHT", dialect::SepDir::RIGHT)
-		.value("DOWN", dialect::SepDir::DOWN)
-		.value("LEFT", dialect::SepDir::LEFT)
-		.value("UP", dialect::SepDir::UP);
-
-;
-
-	// dialect::SepType file:libdialect/constraints.h line:62
-	pybind11::enum_<dialect::SepType>(M("dialect"), "SepType", "")
-		.value("NONE", dialect::SepType::NONE)
-		.value("EQ", dialect::SepType::EQ)
-		.value("INEQ", dialect::SepType::INEQ);
-
-;
-
-	// dialect::negateSepDir(enum dialect::SepDir) file:libdialect/constraints.h line:71
-	M("dialect").def("negateSepDir", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::negateSepDir, "C++: dialect::negateSepDir(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
-
-	// dialect::sepDirIsCardinal(enum dialect::SepDir) file:libdialect/constraints.h line:73
-	M("dialect").def("sepDirIsCardinal", (bool (*)(enum dialect::SepDir)) &dialect::sepDirIsCardinal, "C++: dialect::sepDirIsCardinal(enum dialect::SepDir) --> bool", pybind11::arg("sd"));
-
-	// dialect::sepDirToCardinalDir(enum dialect::SepDir) file:libdialect/constraints.h line:75
-	M("dialect").def("sepDirToCardinalDir", (enum dialect::CardinalDir (*)(enum dialect::SepDir)) &dialect::sepDirToCardinalDir, "C++: dialect::sepDirToCardinalDir(enum dialect::SepDir) --> enum dialect::CardinalDir", pybind11::arg("sd"));
-
-	// dialect::cardinalDirToSepDir(enum dialect::CardinalDir) file:libdialect/constraints.h line:77
-	M("dialect").def("cardinalDirToSepDir", (enum dialect::SepDir (*)(enum dialect::CardinalDir)) &dialect::cardinalDirToSepDir, "C++: dialect::cardinalDirToSepDir(enum dialect::CardinalDir) --> enum dialect::SepDir", pybind11::arg("dir"));
-
-	// dialect::lateralWeakening(enum dialect::SepDir) file:libdialect/constraints.h line:79
-	M("dialect").def("lateralWeakening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::lateralWeakening, "C++: dialect::lateralWeakening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
-
-	// dialect::cardinalStrengthening(enum dialect::SepDir) file:libdialect/constraints.h line:81
-	M("dialect").def("cardinalStrengthening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::cardinalStrengthening, "C++: dialect::cardinalStrengthening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
-
-	// dialect::SepTransform file:libdialect/constraints.h line:83
-	pybind11::enum_<dialect::SepTransform>(M("dialect"), "SepTransform", "")
-		.value("ROTATE90CW", dialect::SepTransform::ROTATE90CW)
-		.value("ROTATE90ACW", dialect::SepTransform::ROTATE90ACW)
-		.value("ROTATE180", dialect::SepTransform::ROTATE180)
-		.value("FLIPV", dialect::SepTransform::FLIPV)
-		.value("FLIPH", dialect::SepTransform::FLIPH)
-		.value("FLIPMD", dialect::SepTransform::FLIPMD)
-		.value("FLIPOD", dialect::SepTransform::FLIPOD);
-
-;
-
-	{ // dialect::SepPair file:libdialect/constraints.h line:104
-		pybind11::class_<dialect::SepPair, std::shared_ptr<dialect::SepPair>> cl(M("dialect"), "SepPair", "");
-		cl.def( pybind11::init( [](){ return new dialect::SepPair(); } ) );
-		cl.def_readwrite("src", &dialect::SepPair::src);
-		cl.def_readwrite("tgt", &dialect::SepPair::tgt);
-		cl.def_readwrite("xgt", &dialect::SepPair::xgt);
-		cl.def_readwrite("ygt", &dialect::SepPair::ygt);
-		cl.def_readwrite("xst", &dialect::SepPair::xst);
-		cl.def_readwrite("yst", &dialect::SepPair::yst);
-		cl.def_readwrite("xgap", &dialect::SepPair::xgap);
-		cl.def_readwrite("ygap", &dialect::SepPair::ygap);
-		cl.def_readwrite("tglfPrecision", &dialect::SepPair::tglfPrecision);
-		cl.def_readwrite("flippedRetrieval", &dialect::SepPair::flippedRetrieval);
-		cl.def("addSep", (void (dialect::SepPair::*)(enum dialect::GapType, enum dialect::SepDir, enum dialect::SepType, double)) &dialect::SepPair::addSep, "Add a constraint.\n \n\n  addSep method of SepMatrix class\n\nC++: dialect::SepPair::addSep(enum dialect::GapType, enum dialect::SepDir, enum dialect::SepType, double) --> void", pybind11::arg("gt"), pybind11::arg("sd"), pybind11::arg("st"), pybind11::arg("gap"));
-		cl.def("transform", (void (dialect::SepPair::*)(enum dialect::SepTransform)) &dialect::SepPair::transform, "Apply a transformation.\n\nC++: dialect::SepPair::transform(enum dialect::SepTransform) --> void", pybind11::arg("tf"));
-		cl.def("isVerticalCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isVerticalCardinal, "Check whether this SepPair represents a separation in a vertical cardinal compass direction.\n\nC++: dialect::SepPair::isVerticalCardinal() const --> bool");
-		cl.def("isHorizontalCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isHorizontalCardinal, "Check whether this SepPair represents a separation in a horizontal cardinal compass direction.\n\nC++: dialect::SepPair::isHorizontalCardinal() const --> bool");
-		cl.def("isVAlign", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isVAlign, "Check whether this SepPair represents a vertical alignment.\n\nC++: dialect::SepPair::isVAlign() const --> bool");
-		cl.def("isHAlign", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isHAlign, "Check whether this SepPair represents a horizontal alignment.\n\nC++: dialect::SepPair::isHAlign() const --> bool");
-		cl.def("isCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isCardinal, "Check whether this SepPair represents a separation in a cardinal compass direction.\n\nC++: dialect::SepPair::isCardinal() const --> bool");
-		cl.def("getCardinalDir", (enum dialect::CardinalDir (dialect::SepPair::*)() const) &dialect::SepPair::getCardinalDir, "Get the cardinal direction of this separation.\n \n\n  Runtime exception if this separation is not cardinal.\n \n\n The cardinal direction.\n\nC++: dialect::SepPair::getCardinalDir() const --> enum dialect::CardinalDir");
-		cl.def("roundGapsUpAbs", (void (dialect::SepPair::*)()) &dialect::SepPair::roundGapsUpAbs, "Round gaps upward in absolute value. Useful when trying to move nodes to integer coords.\n\n E.g., -2.3 goes to -3.0; 2.3 goes to 3.0.\n\nC++: dialect::SepPair::roundGapsUpAbs() --> void");
-		cl.def("writeTglf", (std::string (dialect::SepPair::*)(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >, const class dialect::SepMatrix &) const) &dialect::SepPair::writeTglf, "Write a representation of this constraint in the format of\n         the SEPCO'S section of the TGLF file format.\n \n\n  Mapping from internal Node IDs to external IDs for the TGLF output.\n\nC++: dialect::SepPair::writeTglf(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >, const class dialect::SepMatrix &) const --> std::string", pybind11::arg("id2ext"), pybind11::arg("m"));
-		cl.def("hasConstraintInDim", (bool (dialect::SepPair::*)(enum vpsc::Dim) const) &dialect::SepPair::hasConstraintInDim, "Check whether there is a constraint in a given dimension.\n\nC++: dialect::SepPair::hasConstraintInDim(enum vpsc::Dim) const --> bool", pybind11::arg("dim"));
-	}
 	{ // dialect::SepPairSubConstraintInfo file:libdialect/constraints.h line:176
 		pybind11::class_<dialect::SepPairSubConstraintInfo, std::shared_ptr<dialect::SepPairSubConstraintInfo>, PyCallBack_dialect_SepPairSubConstraintInfo, cola::SubConstraintInfo> cl(M("dialect"), "SepPairSubConstraintInfo", "Since each SepPair may represent up to two VPSC constraints (one in each dimension), we need a simple wrapper\n struct to represent each dimension.");
-		cl.def( pybind11::init<class std::shared_ptr<struct dialect::SepPair>, enum vpsc::Dim>(), pybind11::arg("sp"), pybind11::arg("dim") );
-
 		cl.def( pybind11::init( [](PyCallBack_dialect_SepPairSubConstraintInfo const &o){ return new PyCallBack_dialect_SepPairSubConstraintInfo(o); } ) );
 		cl.def( pybind11::init( [](dialect::SepPairSubConstraintInfo const &o){ return new dialect::SepPairSubConstraintInfo(o); } ) );
 		cl.def_readwrite("sp", &dialect::SepPairSubConstraintInfo::sp);
@@ -258,24 +160,94 @@ void bind_libdialect_constraints(std::function< pybind11::module &(std::string c
 		cl.def("free", (void (dialect::SepMatrix::*)(unsigned int, unsigned int)) &dialect::SepMatrix::free, "Free a pair of Nodes; i.e. remove the SepPair for these Nodes\n         completely.\n\nC++: dialect::SepMatrix::free(unsigned int, unsigned int) --> void", pybind11::arg("id1"), pybind11::arg("id2"));
 		cl.def("clear", (void (dialect::SepMatrix::*)()) &dialect::SepMatrix::clear, "Clear all constraints.\n\n \n We do not destroy the SepPairs; we merely erase our pointers to them.\n\nC++: dialect::SepMatrix::clear() --> void");
 		cl.def("setCorrespondingConstraints", (void (dialect::SepMatrix::*)(class dialect::SepMatrix &) const) &dialect::SepMatrix::setCorrespondingConstraints, "Set corresponding constraints in another SepMatrix.\n\n         This means that for each constraint between nodes of IDs id1 and id2 in this\n         SepMatrix, we set that constraint in the other SepMatrix if and only if its\n         underlying Graph contains Nodes of IDs id1 and id2.\n \n\n  The other SepMatrix.\n\nC++: dialect::SepMatrix::setCorrespondingConstraints(class dialect::SepMatrix &) const --> void", pybind11::arg("matrix"));
-		cl.def("setSepPair", (void (dialect::SepMatrix::*)(unsigned int, unsigned int, class std::shared_ptr<struct dialect::SepPair>)) &dialect::SepMatrix::setSepPair, "Set a SepPair directly into another SepMatrix.\n \n\n  The primary ID under which the SepPair is to be stored.\n \n\n  The secondary ID under which the SepPair is to be stored.\n \n\n  The SepPair to be stored.\n \n\n  Runtime error if id1 >= id2.\n\nC++: dialect::SepMatrix::setSepPair(unsigned int, unsigned int, class std::shared_ptr<struct dialect::SepPair>) --> void", pybind11::arg("id1"), pybind11::arg("id2"), pybind11::arg("sp"));
 		cl.def("transform", (void (dialect::SepMatrix::*)(enum dialect::SepTransform)) &dialect::SepMatrix::transform, "Apply a transformation to all Nodes.\n\nC++: dialect::SepMatrix::transform(enum dialect::SepTransform) --> void", pybind11::arg("tf"));
-		cl.def("transformClosedSubset", (void (dialect::SepMatrix::*)(enum dialect::SepTransform, const class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > &)) &dialect::SepMatrix::transformClosedSubset, "Apply a transformation to a closed subset of all Nodes.\n\n \n  the transformation to be performed\n \n\n  the set of IDs of all Nodes to which the transformation\n                  should be applied. /Both/ Nodes must be in the set.\n \n\n transformOpenSubset\n\nC++: dialect::SepMatrix::transformClosedSubset(enum dialect::SepTransform, const class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > &) --> void", pybind11::arg("tf"), pybind11::arg("ids"));
-		cl.def("transformOpenSubset", (void (dialect::SepMatrix::*)(enum dialect::SepTransform, const class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > &)) &dialect::SepMatrix::transformOpenSubset, "Apply a transformation to an open subset of all Nodes.\n\n \n  the transformation to be performed\n \n\n  the set of IDs of all Nodes to which the transformation\n                  should be applied. /At least one/ Node must be in the set.\n \n\n transformClosedSubset\n\nC++: dialect::SepMatrix::transformOpenSubset(enum dialect::SepTransform, const class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > &) --> void", pybind11::arg("tf"), pybind11::arg("ids"));
 		cl.def("removeNode", (void (dialect::SepMatrix::*)(unsigned int)) &dialect::SepMatrix::removeNode, "Remove all records for the Node of given ID.\n\nC++: dialect::SepMatrix::removeNode(unsigned int) --> void", pybind11::arg("id"));
-		cl.def("removeNodes", (void (dialect::SepMatrix::*)(const class std::map<unsigned int, class std::shared_ptr<class dialect::Node>, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::shared_ptr<class dialect::Node> > > > &)) &dialect::SepMatrix::removeNodes, "Remove all records for the given Nodes.\n\nC++: dialect::SepMatrix::removeNodes(const class std::map<unsigned int, class std::shared_ptr<class dialect::Node>, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::shared_ptr<class dialect::Node> > > > &) --> void", pybind11::arg("nodes"));
 		cl.def("getCardinalDir", (enum dialect::CardinalDir (dialect::SepMatrix::*)(unsigned int, unsigned int) const) &dialect::SepMatrix::getCardinalDir, "Get the cardinal direction of the separation between two Nodes.\n \n\n  The ID of one of the Nodes.\n \n\n  The ID of the other Node.\n \n\n  Runtime exception if this separation is not cardinal.\n \n\n The cardinal direction.\n\nC++: dialect::SepMatrix::getCardinalDir(unsigned int, unsigned int) const --> enum dialect::CardinalDir", pybind11::arg("id1"), pybind11::arg("id2"));
-		cl.def("getAlignedSets", (void (dialect::SepMatrix::*)(class std::map<unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > > > > &, class std::map<unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > > > > &) const) &dialect::SepMatrix::getAlignedSets, "Determine which sets of nodes are aligned with one another.\n \n\n  Will be populated with a lookup from Node ID to set of IDs of\n                    all Nodes that are horizontally aligned with that one.\n \n\n  Like hSets, only for vertical alignment.\n\nC++: dialect::SepMatrix::getAlignedSets(class std::map<unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > > > > &, class std::map<unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> >, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, class std::set<unsigned int, struct std::less<unsigned int>, class std::allocator<unsigned int> > > > > &) const --> void", pybind11::arg("hSets"), pybind11::arg("vSets"));
 		cl.def("areHAligned", (bool (dialect::SepMatrix::*)(unsigned int, unsigned int) const) &dialect::SepMatrix::areHAligned, "Check whether two nodes are horizontally aligned.\n\nC++: dialect::SepMatrix::areHAligned(unsigned int, unsigned int) const --> bool", pybind11::arg("id1"), pybind11::arg("id2"));
 		cl.def("areVAligned", (bool (dialect::SepMatrix::*)(unsigned int, unsigned int) const) &dialect::SepMatrix::areVAligned, "Check whether two nodes are vertically aligned.\n\nC++: dialect::SepMatrix::areVAligned(unsigned int, unsigned int) const --> bool", pybind11::arg("id1"), pybind11::arg("id2"));
-		cl.def("writeTglf", (std::string (dialect::SepMatrix::*)(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >) const) &dialect::SepMatrix::writeTglf, "Write a representation of all constraints in the format of\n         the SEPCO'S section of the TGLF file format.\n \n\n  Mapping from internal Node IDs to external IDs for the TGLF output.\n\nC++: dialect::SepMatrix::writeTglf(class std::map<unsigned int, unsigned int, struct std::less<unsigned int>, class std::allocator<struct std::pair<const unsigned int, unsigned int> > >) const --> std::string", pybind11::arg("id2ext"));
 		cl.def("setGraph", (void (dialect::SepMatrix::*)(class dialect::Graph *)) &dialect::SepMatrix::setGraph, "Set the related Graph.\n\nC++: dialect::SepMatrix::setGraph(class dialect::Graph *) --> void", pybind11::arg("G"));
 		cl.def("getGraph", (class dialect::Graph * (dialect::SepMatrix::*)()) &dialect::SepMatrix::getGraph, "Get the Graph.\n\nC++: dialect::SepMatrix::getGraph() --> class dialect::Graph *", pybind11::return_value_policy::automatic);
 		cl.def("roundGapsUpward", (void (dialect::SepMatrix::*)()) &dialect::SepMatrix::roundGapsUpward, "Round gaps up to next largest integer. Useful if desiring to move all nodes to\n         integer coordaintes.\n\nC++: dialect::SepMatrix::roundGapsUpward() --> void");
 		cl.def("setExtraBdryGap", (void (dialect::SepMatrix::*)(double)) &dialect::SepMatrix::setExtraBdryGap, "Set a global value to be added onto the gap value for all GapType::BDRY constraints.\n\nC++: dialect::SepMatrix::setExtraBdryGap(double) --> void", pybind11::arg("extraBdryGap"));
 		cl.def("getExtraBdryGap", (double (dialect::SepMatrix::*)() const) &dialect::SepMatrix::getExtraBdryGap, "C++: dialect::SepMatrix::getExtraBdryGap() const --> double");
-		cl.def("toString", (std::string (dialect::SepMatrix::*)() const) &dialect::SepMatrix::toString, "C++: dialect::SepMatrix::toString() const --> std::string");
 		cl.def("markAllSubConstraintsAsInactive", (void (dialect::SepMatrix::*)()) &dialect::SepMatrix::markAllSubConstraintsAsInactive, "C++: dialect::SepMatrix::markAllSubConstraintsAsInactive() --> void");
 		cl.def("assign", (class dialect::SepMatrix & (dialect::SepMatrix::*)(const class dialect::SepMatrix &)) &dialect::SepMatrix::operator=, "C++: dialect::SepMatrix::operator=(const class dialect::SepMatrix &) --> class dialect::SepMatrix &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
+	{ // dialect::SepCo file:libdialect/constraints.h line:422
+		pybind11::class_<dialect::SepCo, std::shared_ptr<dialect::SepCo>> cl(M("dialect"), "SepCo", "Simple struct to represent separation constraints in one dimension, in terms\n of Nodes (rather than Rectangle indices).\n\n Also supports separation constraints with negative gaps (unlike VPSC).\n Such constraints are perhaps better called \"containment constraints\". To illustrate,\n in the figure below\n\n             ---\n            | a |  ------|\n             ---         |\n                         |\n             ---         |\n            | b |        |\n             ---         |\n\n the separation constraint b.x - 100 <= a.x might mean that node b is constrained to\n stay to the left of the dashed line (which moves with node a).");
+		cl.def( pybind11::init( [](dialect::SepCo const &o){ return new dialect::SepCo(o); } ) );
+		cl.def_readwrite("dim", &dialect::SepCo::dim);
+		cl.def_readwrite("left", &dialect::SepCo::left);
+		cl.def_readwrite("right", &dialect::SepCo::right);
+		cl.def_readwrite("gap", &dialect::SepCo::gap);
+		cl.def_readwrite("exact", &dialect::SepCo::exact);
+		cl.def("addToMatrix", (void (dialect::SepCo::*)(class dialect::SepMatrix &) const) &dialect::SepCo::addToMatrix, "Add this constraint to a SepMatrix.\n\nC++: dialect::SepCo::addToMatrix(class dialect::SepMatrix &) const --> void", pybind11::arg("matrix"));
+		cl.def("violation", (double (dialect::SepCo::*)() const) &dialect::SepCo::violation, "Determine the extent to which this separation constraint is currently violated.\n\nC++: dialect::SepCo::violation() const --> double");
+	}
+	{ // dialect::Projection file:libdialect/constraints.h line:466
+		pybind11::class_<dialect::Projection, std::shared_ptr<dialect::Projection>> cl(M("dialect"), "Projection", "A Projection represents a set of constraints (given by SepCos), together\n with a dimension in which to project.");
+		cl.def( pybind11::init( [](dialect::Projection const &o){ return new dialect::Projection(o); } ) );
+		cl.def_readwrite("sepCoSet", &dialect::Projection::sepCoSet);
+		cl.def_readwrite("dim", &dialect::Projection::dim);
+		cl.def("size", (unsigned long (dialect::Projection::*)()) &dialect::Projection::size, "Check how many SepCos are in the projection.\n\nC++: dialect::Projection::size() --> unsigned long");
+	}
+	{ // dialect::ProjSeq file:libdialect/constraints.h line:492
+		pybind11::class_<dialect::ProjSeq, std::shared_ptr<dialect::ProjSeq>> cl(M("dialect"), "ProjSeq", "Projection Sequence. Manages a sequence of VPSC projections onto a monotonially\n increasing set of separation constraints.");
+		cl.def( pybind11::init( [](){ return new dialect::ProjSeq(); } ) );
+		cl.def( pybind11::init( [](dialect::ProjSeq const &o){ return new dialect::ProjSeq(o); } ) );
+		cl.def("noteStresschange", (void (dialect::ProjSeq::*)(double)) &dialect::ProjSeq::noteStresschange, "Note a stress change.\n\nC++: dialect::ProjSeq::noteStresschange(double) --> void", pybind11::arg("dS"));
+		cl.def("__iadd__", (class dialect::ProjSeq & (dialect::ProjSeq::*)(const class dialect::ProjSeq &)) &dialect::ProjSeq::operator+=, "When another ProjSeq is added to this one, we simply add each\n         Projection from the other one to this one, as usual. Thus is\n         monotonicity maintained, and this ProjSeq's pointer is left in place.\n\nC++: dialect::ProjSeq::operator+=(const class dialect::ProjSeq &) --> class dialect::ProjSeq &", pybind11::return_value_policy::automatic, pybind11::arg("rhs"));
+		cl.def("reset", (void (dialect::ProjSeq::*)()) &dialect::ProjSeq::reset, "Reset to start of sequence.\n\nC++: dialect::ProjSeq::reset() --> void");
+		cl.def("violation", (double (dialect::ProjSeq::*)() const) &dialect::ProjSeq::violation, "Sum the violations of all SepCos in the final sets.\n\nC++: dialect::ProjSeq::violation() const --> double");
+	}
+	// dialect::AspectRatioClass file:libdialect/opts.h line:32
+	pybind11::enum_<dialect::AspectRatioClass>(M("dialect"), "AspectRatioClass", "")
+		.value("NONE", dialect::AspectRatioClass::NONE)
+		.value("PORTRAIT", dialect::AspectRatioClass::PORTRAIT)
+		.value("LANDSCAPE", dialect::AspectRatioClass::LANDSCAPE);
+
+;
+
+	// dialect::TreeRoutingType file:libdialect/opts.h line:50
+	pybind11::enum_<dialect::TreeRoutingType>(M("dialect"), "TreeRoutingType", "When routing connectors for Trees, the set of allowed connection directions\n depends on the application.\n\n In, for example, a NORTH-growing tree, an edge between ranks i and i + 1\n will always be allowed to connect only to the south (S) port of a node in\n rank i + 1.\n\n The TreeRoutingType controls the directions allowed for connection to nodes in\n rank i, as follows:\n\n STRICT:  only N is allowed.\n CORE_ATTACHMENT:  N, E, W are allowed for the root node if it has exactly one child and\n                   is transversely displaced from its one child; otherwise only N.\n MONOTONIC:  N, E, W are allowed for all nodes on rank i.")
+		.value("STRICT", dialect::TreeRoutingType::STRICT)
+		.value("CORE_ATTACHMENT", dialect::TreeRoutingType::CORE_ATTACHMENT)
+		.value("MONOTONIC", dialect::TreeRoutingType::MONOTONIC);
+
+;
+
+	// dialect::ExpansionEstimateMethod file:libdialect/opts.h line:62
+	pybind11::enum_<dialect::ExpansionEstimateMethod>(M("dialect"), "ExpansionEstimateMethod", "When expanding faces in order to make room to place the trees, there are different\n ways to estimate which is the best dimension in which to operate first.\n\n SPACE: Look at the available space in each dimension.\n CONSTRAINTS: Compute the separation constraints you would use in each dimension, and\n              sum their violations.")
+		.value("SPACE", dialect::ExpansionEstimateMethod::SPACE)
+		.value("CONSTRAINTS", dialect::ExpansionEstimateMethod::CONSTRAINTS);
+
+;
+
+	{ // dialect::HolaOpts file:libdialect/opts.h line:67
+		pybind11::class_<dialect::HolaOpts, std::shared_ptr<dialect::HolaOpts>> cl(M("dialect"), "HolaOpts", "");
+		cl.def( pybind11::init( [](){ return new dialect::HolaOpts(); } ) );
+		cl.def_readwrite("defaultTreeGrowthDir", &dialect::HolaOpts::defaultTreeGrowthDir);
+		cl.def_readwrite("treeLayoutScalar_nodeSep", &dialect::HolaOpts::treeLayoutScalar_nodeSep);
+		cl.def_readwrite("treeLayoutScalar_rankSep", &dialect::HolaOpts::treeLayoutScalar_rankSep);
+		cl.def_readwrite("preferConvexTrees", &dialect::HolaOpts::preferConvexTrees);
+		cl.def_readwrite("peeledTreeRouting", &dialect::HolaOpts::peeledTreeRouting);
+		cl.def_readwrite("wholeTreeRouting", &dialect::HolaOpts::wholeTreeRouting);
+		cl.def_readwrite("orthoHubAvoidFlatTriangles", &dialect::HolaOpts::orthoHubAvoidFlatTriangles);
+		cl.def_readwrite("useACAforLinks", &dialect::HolaOpts::useACAforLinks);
+		cl.def_readwrite("routingScalar_crossingPenalty", &dialect::HolaOpts::routingScalar_crossingPenalty);
+		cl.def_readwrite("routingScalar_segmentPenalty", &dialect::HolaOpts::routingScalar_segmentPenalty);
+		cl.def_readwrite("treePlacement_favourCardinal", &dialect::HolaOpts::treePlacement_favourCardinal);
+		cl.def_readwrite("treePlacement_favourExternal", &dialect::HolaOpts::treePlacement_favourExternal);
+		cl.def_readwrite("treePlacement_favourIsolation", &dialect::HolaOpts::treePlacement_favourIsolation);
+		cl.def_readwrite("expansion_doCostlierDimensionFirst", &dialect::HolaOpts::expansion_doCostlierDimensionFirst);
+		cl.def_readwrite("expansion_estimateMethod", &dialect::HolaOpts::expansion_estimateMethod);
+		cl.def_readwrite("do_near_align", &dialect::HolaOpts::do_near_align);
+		cl.def_readwrite("align_reps", &dialect::HolaOpts::align_reps);
+		cl.def_readwrite("nearAlignScalar_kinkWidth", &dialect::HolaOpts::nearAlignScalar_kinkWidth);
+		cl.def_readwrite("nearAlignScalar_scope", &dialect::HolaOpts::nearAlignScalar_scope);
+		cl.def_readwrite("nodePaddingScalar", &dialect::HolaOpts::nodePaddingScalar);
+		cl.def_readwrite("preferredAspectRatio", &dialect::HolaOpts::preferredAspectRatio);
+		cl.def_readwrite("preferredTreeGrowthDir", &dialect::HolaOpts::preferredTreeGrowthDir);
+		cl.def_readwrite("putUlcAtOrigin", &dialect::HolaOpts::putUlcAtOrigin);
 	}
 }

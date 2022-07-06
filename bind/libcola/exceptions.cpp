@@ -11,7 +11,6 @@
 #include <memory>
 #include <sstream> // __str__
 #include <string>
-#include <string_view>
 #include <utility>
 #include <valarray>
 #include <vector>
@@ -50,19 +49,6 @@ struct PyCallBack_cola_PreIteration : public cola::PreIteration {
 struct PyCallBack_cola_TestConvergence : public cola::TestConvergence {
 	using cola::TestConvergence::TestConvergence;
 
-	bool operator()(const double a0, class std::valarray<double> & a1, class std::valarray<double> & a2) override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const cola::TestConvergence *>(this), "__call__");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return TestConvergence::operator()(a0, a1, a2);
-	}
 };
 
 // cola::TopologyAddonInterface file:libcola/cola.h line:531
@@ -135,7 +121,6 @@ void bind_libcola_exceptions(std::function< pybind11::module &(std::string const
 		cl.def( pybind11::init<class cola::CompoundConstraint *, unsigned int>(), pybind11::arg("c"), pybind11::arg("i") );
 
 		cl.def_readwrite("index", &cola::InvalidVariableIndexException::index);
-		cl.def("what", (std::string (cola::InvalidVariableIndexException::*)() const) &cola::InvalidVariableIndexException::what, "C++: cola::InvalidVariableIndexException::what() const --> std::string");
 	}
 	{ // cola::PseudoRandom file:libcola/pseudorandom.h line:27
 		pybind11::class_<cola::PseudoRandom, std::shared_ptr<cola::PseudoRandom>> cl(M("cola"), "PseudoRandom", "");
@@ -186,13 +171,11 @@ void bind_libcola_exceptions(std::function< pybind11::module &(std::string const
 		cl.def_readonly("tolerance", &cola::TestConvergence::tolerance);
 		cl.def_readonly("maxiterations", &cola::TestConvergence::maxiterations);
 		cl.def_readwrite("iterations", &cola::TestConvergence::iterations);
-		cl.def("__call__", (bool (cola::TestConvergence::*)(const double, class std::valarray<double> &, class std::valarray<double> &)) &cola::TestConvergence::operator(), "C++: cola::TestConvergence::operator()(const double, class std::valarray<double> &, class std::valarray<double> &) --> bool", pybind11::arg("new_stress"), pybind11::arg("X"), pybind11::arg("Y"));
 		cl.def("reset", (void (cola::TestConvergence::*)()) &cola::TestConvergence::reset, "C++: cola::TestConvergence::reset() --> void");
 	}
 	{ // cola::ConstrainedMajorizationLayout file:libcola/cola.h line:270
 		pybind11::class_<cola::ConstrainedMajorizationLayout, std::shared_ptr<cola::ConstrainedMajorizationLayout>> cl(M("cola"), "ConstrainedMajorizationLayout", "Implements the Constrained Majorization graph layout algorithm \n         (deprecated).\n\n The optimisation method used is \"stress majorization\", where a sequence of \n quadratic functions which strictly bound the stress from above, is solved \n to monotonically reduce the stress (by iteratively changing the \n configuration of nodes).\n\n Once the problem has been set up, call run() or runOnce() to run the \n layout algorithm.\n\n \n  We recommend the use of ConstrainedFDLayout instead of this class. \n        ConstrainedFDLayout tends to produce better results and has more \n        features.  We are no longer working on ConstrainedMajorizationLayout.");
 		cl.def( pybind11::init( [](cola::ConstrainedMajorizationLayout const &o){ return new cola::ConstrainedMajorizationLayout(o); } ) );
-		cl.def("setStickyNodes", (void (cola::ConstrainedMajorizationLayout::*)(const double, const class std::valarray<double> &, const class std::valarray<double> &)) &cola::ConstrainedMajorizationLayout::setStickyNodes, "Sticky nodes causes nodes to spring back to (startX,startY) when \n unconstrained.\n\nC++: cola::ConstrainedMajorizationLayout::setStickyNodes(const double, const class std::valarray<double> &, const class std::valarray<double> &) --> void", pybind11::arg("stickyWeight"), pybind11::arg("startX"), pybind11::arg("startY"));
 		cl.def("setScaling", (void (cola::ConstrainedMajorizationLayout::*)(bool)) &cola::ConstrainedMajorizationLayout::setScaling, "Scaling speeds up the solver by conditioning the quadratic terms matrix.\n\nC++: cola::ConstrainedMajorizationLayout::setScaling(bool) --> void", pybind11::arg("scaling"));
 		cl.def("setExternalSolver", (void (cola::ConstrainedMajorizationLayout::*)(bool)) &cola::ConstrainedMajorizationLayout::setExternalSolver, "Says that the Mosek optimisation library should be used to solve the \n quadratic programs rather than the libvpsc solver.\n\nC++: cola::ConstrainedMajorizationLayout::setExternalSolver(bool) --> void", pybind11::arg("externalSolver"));
 		cl.def("setAvoidOverlaps", [](cola::ConstrainedMajorizationLayout &o) -> void { return o.setAvoidOverlaps(); }, "");
@@ -235,8 +218,6 @@ void bind_libcola_exceptions(std::function< pybind11::module &(std::string const
 		cl.def("makeFeasible", [](cola::ConstrainedFDLayout &o, double const & a0) -> void { return o.makeFeasible(a0); }, "", pybind11::arg("xBorder"));
 		cl.def("makeFeasible", (void (cola::ConstrainedFDLayout::*)(double, double)) &cola::ConstrainedFDLayout::makeFeasible, "Finds a feasible starting position for nodes that satisfies the\n        given constraints.\n\n Starts with an initial position (x, y) for the nodes.  This position \n is then iteratively updated with a greedy heuristic that tries adding\n additional constraints based on compound constraint priority to the\n satisfiable set, so as to satisfy as many of the placement constraints\n as possible.  This includes automatically generated constraints for\n non-overlap and cluster containment.\n\n \n  Optional border width to add to left and right\n                     sides of rectangles. Defaults to 1.\n \n\n  Optional border width to add to top and bottom\n                     sides of rectangles. Defaults to 1.\n\n \n This method doesn't do force-directed layout.  All forces are \n       ignored and it merely satisfies the constraints with minimal \n       movement to nodes.\n\nC++: cola::ConstrainedFDLayout::makeFeasible(double, double) --> void", pybind11::arg("xBorder"), pybind11::arg("yBorder"));
 		cl.def("freeAssociatedObjects", (void (cola::ConstrainedFDLayout::*)()) &cola::ConstrainedFDLayout::freeAssociatedObjects, "A convenience method that can be called from Java to free\n         the memory of nodes (Rectangles), CompoundConstraints, etc.\n\n This assumes that the ConstrainedFDLayout instance takes ownership\n of all the objects passed to it.\n\n This is useful because in SWIG we have problems with Java wrapper\n classes going out of scope and causing objects like Rectanges to \n sometimes be freed when the layout instance still needs them.  For \n this reason we prevent the Java wrappers from deleting the internal\n C++ instances, and let them be cleaned up later via this method.\n\nC++: cola::ConstrainedFDLayout::freeAssociatedObjects() --> void");
-		cl.def("outputInstanceToSVG", [](cola::ConstrainedFDLayout &o) -> void { return o.outputInstanceToSVG(); }, "");
-		cl.def("outputInstanceToSVG", (void (cola::ConstrainedFDLayout::*)(std::string)) &cola::ConstrainedFDLayout::outputInstanceToSVG, "Generates an SVG file containing debug output and code that\n         can be used to regenerate the instance.\n\n This method can be called before or after run() or makeFeasible()\n have been called.\n\n \n  A string indicating the filename (without \n                      extension) for the output file.  Defaults to\n                      \"libcola-debug.svg\" if no filename is given.\n\nC++: cola::ConstrainedFDLayout::outputInstanceToSVG(std::string) --> void", pybind11::arg("filename"));
 		cl.def("setUseNeighbourStress", (void (cola::ConstrainedFDLayout::*)(bool)) &cola::ConstrainedFDLayout::setUseNeighbourStress, "Specifies whether neighbour stress should be used.\n\n Under neighbour stress, only the terms representing neighbouring\n nodes contribute to the stress function. This can help to distribute\n nodes more evenly, eliminating long-range forces.\n\n Default value is false.\n\n \n  New boolean value for this option.\n\nC++: cola::ConstrainedFDLayout::setUseNeighbourStress(bool) --> void", pybind11::arg("useNeighbourStress"));
 		cl.def("computeStress", (double (cola::ConstrainedFDLayout::*)() const) &cola::ConstrainedFDLayout::computeStress, "C++: cola::ConstrainedFDLayout::computeStress() const --> double");
 	}

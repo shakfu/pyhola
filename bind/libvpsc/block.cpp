@@ -9,7 +9,6 @@
 #include <sstream> // __str__
 #include <streambuf>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include <functional>
@@ -99,7 +98,6 @@ void bind_libvpsc_block(std::function< pybind11::module &(std::string const &nam
 		cl.def_readonly("equality", &vpsc::Constraint::equality);
 		cl.def_readwrite("unsatisfiable", &vpsc::Constraint::unsatisfiable);
 		cl.def_readwrite("needsScaling", &vpsc::Constraint::needsScaling);
-		cl.def("toString", (std::string (vpsc::Constraint::*)() const) &vpsc::Constraint::toString, "Returns a textual description of the constraint.\n\n  \n     A string describing the constraint.\n\nC++: vpsc::Constraint::toString() const --> std::string");
 		cl.def("slack", (double (vpsc::Constraint::*)() const) &vpsc::Constraint::slack, "C++: vpsc::Constraint::slack() const --> double");
 
 		cl.def("__str__", [](vpsc::Constraint const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );

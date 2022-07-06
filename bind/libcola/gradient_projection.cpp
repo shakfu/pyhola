@@ -25,12 +25,9 @@ void bind_libcola_gradient_projection(std::function< pybind11::module &(std::str
 	{ // cola::GradientProjection file:libcola/gradient_projection.h line:47
 		pybind11::class_<cola::GradientProjection, std::shared_ptr<cola::GradientProjection>> cl(M("cola"), "GradientProjection", "");
 		cl.def( pybind11::init( [](cola::GradientProjection const &o){ return new cola::GradientProjection(o); } ) );
-		cl.def_static("dumpSquareMatrix", (void (*)(const class std::valarray<double> &)) &cola::GradientProjection::dumpSquareMatrix, "C++: cola::GradientProjection::dumpSquareMatrix(const class std::valarray<double> &) --> void", pybind11::arg("L"));
 		cl.def("getNumStaticVars", (unsigned int (cola::GradientProjection::*)() const) &cola::GradientProjection::getNumStaticVars, "C++: cola::GradientProjection::getNumStaticVars() const --> unsigned int");
-		cl.def("solve", (unsigned int (cola::GradientProjection::*)(const class std::valarray<double> &, class std::valarray<double> &)) &cola::GradientProjection::solve, "C++: cola::GradientProjection::solve(const class std::valarray<double> &, class std::valarray<double> &) --> unsigned int", pybind11::arg("b"), pybind11::arg("x"));
 		cl.def("unfixPos", (void (cola::GradientProjection::*)(unsigned int)) &cola::GradientProjection::unfixPos, "C++: cola::GradientProjection::unfixPos(unsigned int) --> void", pybind11::arg("i"));
 		cl.def("fixPos", (void (cola::GradientProjection::*)(const unsigned int, const double)) &cola::GradientProjection::fixPos, "C++: cola::GradientProjection::fixPos(const unsigned int, const double) --> void", pybind11::arg("i"), pybind11::arg("pos"));
 		cl.def("getDimension", (enum vpsc::Dim (cola::GradientProjection::*)() const) &cola::GradientProjection::getDimension, "C++: cola::GradientProjection::getDimension() const --> enum vpsc::Dim");
-		cl.def("getFullResult", (const class std::valarray<double> & (cola::GradientProjection::*)() const) &cola::GradientProjection::getFullResult, "C++: cola::GradientProjection::getFullResult() const --> const class std::valarray<double> &", pybind11::return_value_policy::automatic);
 	}
 }
