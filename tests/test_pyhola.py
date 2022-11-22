@@ -1,5 +1,14 @@
+import sys
 import os
 from os.path import exists
+parentdir = os.path.dirname(__file__)
+
+try:
+    import pyhola
+except ImportError:
+    # assumes pyhola has just been built in the project directory
+    sys.path.insert(0, os.path.dirname(parentdir))
+
 from pyhola import Graph, Node, Edge, graph_from_tglf_file, do_hola
 
 
@@ -14,14 +23,17 @@ def output(g, name):
         f.write(g.to_svg())
     assert exists(svg)
 
+def get_test_graph():
+    return graph_from_tglf_file(os.path.join(parentdir, 'test_graph.tglf'))
+
+
 def test_graph_from_tglf_file():
-    g = graph_from_tglf_file('test_graph.tglf')
+    g = get_test_graph()
     assert g.get_num_nodes() == 30
     assert g.get_num_edges() == 33
-    return g
 
 def test_do_hola():
-    g = test_graph_from_tglf_file()
+    g = get_test_graph()
     output(g, 'before')
     do_hola(g)
     output(g, 'after')

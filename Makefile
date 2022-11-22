@@ -57,6 +57,7 @@ clean:
 	@rm -f $(EXTENSION)
 	@rm -rf .pytest_cache
 	@rm -rf __pycache__
+	@rm -rf tests/__pycache__
 	@rm -rf outputs
 	@rm -rf bind build
 
