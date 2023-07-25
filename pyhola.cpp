@@ -14,7 +14,7 @@
 // extras
 #include <libdialect/trees.h>
 
-// libavoid::Point
+// to get Avoid::Point
 #include <libavoid/geomtypes.h>
 
 // constraints
@@ -41,8 +41,9 @@ PYBIND11_MODULE(pyhola, m)
 
     m.def("graph_from_tglf_file", &buildGraphFromTglfFile, "build graph from .tglf file");
 
-    m.def("do_hola", static_cast<void (*)(Graph &g, const HolaOpts &h, Logger *l)>(&doHOLA), "layout a graph with options");
-    m.def("do_hola", static_cast<void (*)(Graph &g)>(&doHOLA), "layout a graph");
+    m.def("do_hola", [](dialect::Graph &g, const HolaOpts &h) { doHOLA(g, h); }, "layout a graph with options");
+    m.def("do_hola", static_cast<void (*)(dialect::Graph &g, const HolaOpts &h, Logger *l)>(&doHOLA), "layout a graph with options");
+    m.def("do_hola", static_cast<void (*)(dialect::Graph &g)>(&doHOLA), "layout a graph");
 
     py::class_<Graph, Graph_SP>(m, "Graph", "The Graph class represents graphs consisting of nodes and edges.")
         .def(pybind11::init([]() { return new Graph(); }))

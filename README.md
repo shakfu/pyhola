@@ -1,22 +1,31 @@
 # pyhola
 
-This repo wraps a small part of the [adaptagrams](https://github.com/mjwybrow/adaptagrams) c++ library using [pybind11](https://github.com/pybind/pybind11). Specifically, it wraps the HOLA algorithm (Human-like Orthogonal Layout Algorithm), a very promising graph layout algorithm which approximates to what a human would do. It is explained in [this](https://skieffer.info/publications/kieffer2016hola.pdf) paper.
+This project wraps a key part of the [adaptagrams](https://github.com/mjwybrow/adaptagrams) c++ library using [pybind11](https://github.com/pybind/pybind11). Specifically, it wraps the HOLA algorithm (Human-like Orthogonal Layout Algorithm) in `libdialect`: a very promising graph layout algorithm which approximates to what a human would do if the given the task to layout a graph. Further details are provided in [this](https://skieffer.info/publications/kieffer2016hola.pdf) paper.
 
 The HOLA algorithm is part of the [libdialect](http://www.adaptagrams.org/documentation/libdialect.html) module of the adaptagrams library.
 
-The [old python project](https://github.com/skieffer/hola) for hola may also be useful for reference.
+Note that the the adaptagrams library provides a comprehensive swig-based python wrapper which is likely useful for most use-case.
 
-There is a parallel effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically. This is ongoing effort.
+This project provide a target wrapper for the HOLA algo, and tries to provide a python api along the way. 
 
-There is a manually wrapped `pyhola` part which works. Just 
+`pyhola` and the adaptagrams swig-based python wrapper have been used successfully in the [py2max project](https://github.com/shakfu/py2max), to provide auto-layout capability of programmatically generated Max patches.
+
+
+Note that there is an obsolete [old python project](https://github.com/skieffer/hola) for hola may also be useful for historicall purposes.
+
+After manually wrapping the core HOLA algo, there was a subsequent  effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically. While a decent portion was wrapped, there is little (at least from my part) interest to push this further as there is already the maintained swig-based wrapper and the HOLA part that was the primary area of interest is already wrapped and functional as `pyhola`.
+
+To build pyhola:
+
 
 ```
-make pyhola
+make
 ```
 
 ## Status
 
-The objective is to wrap as much of libdialect as possible
+HOLA algorithm in `pyhola` is functional
+
 
 - [x] libdialect/aca.h
 - [ ] libdialect/chains.h
@@ -39,6 +48,7 @@ The objective is to wrap as much of libdialect as possible
 - [ ] libdialect/treeplacement.h
 - [x] libdialect/trees.h
 - [ ] libdialect/util.h
+- [x] libavoid/geomtypes.h (Avoid::Point only)
 
 
 ## Usage
@@ -83,6 +93,14 @@ make clean
 
 
 The compiled static `lib` files (compiled on 64bit macOS Catalina) and `include` files for the `adaptagrams` library are only included for convenience.
+
+You can compile your own more recent libs and just drop them into this project.
+
+
+## Future Directions:
+
+- use nanobind instead of pybind11 for a miminal binding.
+
 
 
 ## Implementation
