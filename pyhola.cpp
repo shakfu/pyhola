@@ -14,7 +14,10 @@
 // extras
 #include <libdialect/trees.h>
 
-// constrains
+// libavoid::Point
+#include <libavoid/geomtypes.h>
+
+// constraints
 #include <libdialect/constraints.h>
 #include <libcola/compound_constraints.h>
 
@@ -241,6 +244,16 @@ PYBIND11_MODULE(pyhola, m)
         .def_readwrite("preferredAspectRatio", &HolaOpts::preferredAspectRatio)
         .def_readwrite("preferredTreeGrowthDir", &HolaOpts::preferredTreeGrowthDir)
         .def_readwrite("putUlcAtOrigin", &HolaOpts::putUlcAtOrigin)
+        ;
+
+
+    //------------------------------------------------------------------------
+    // libavoid/geomtypes.h
+    py::class_<Avoid::Point, std::shared_ptr<Avoid::Point>>(m, "Point")
+        .def( pybind11::init<const double, const double>(), pybind11::arg("x"), pybind11::arg("y") )
+        .def( pybind11::init( [](){ return new Avoid::Point(); } ) )
+        .def_readonly("x", &Avoid::Point::x)
+        .def_readonly("y", &Avoid::Point::y)
         ;
 
 
