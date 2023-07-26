@@ -1,15 +1,19 @@
+import pytest
 import sys
 import os
 from os.path import exists, join
 parentdir = os.path.dirname(__file__)
 
 try:
-    import pyhola
-except ImportError:
     # assumes pyhola has just been built in the project directory
     sys.path.insert(0, join(os.path.dirname(parentdir), 'build'))
+    import pyhola_nano as pyhola
+    from pyhola_nano import Graph, Node, Edge, graph_from_tglf_file, do_hola
+    HAS_PYHOLA_NANO = True
+except ImportError:
+    HAS_PYHOLA_NANO = False
 
-from pyhola import Graph, Node, Edge, graph_from_tglf_file, do_hola
+
 
 
 def output(g, name):
@@ -26,23 +30,26 @@ def output(g, name):
 def get_test_graph():
     return graph_from_tglf_file(os.path.join(parentdir, 'test_graph.tglf'))
 
-
+@pytest.mark.skipif(not HAS_PYHOLA_NANO, reason="requires pyhola_nano")
 def test_graph_from_tglf_file():
     g = get_test_graph()
     assert g.get_num_nodes() == 30
     assert g.get_num_edges() == 33
 
+@pytest.mark.skipif(not HAS_PYHOLA_NANO, reason="requires pyhola_nano")
 def test_do_hola():
     g = get_test_graph()
     output(g, 'before')
     do_hola(g)
     output(g, 'after')
 
+@pytest.mark.skipif(not HAS_PYHOLA_NANO, reason="requires pyhola_nano")
 def test_graph():
     g = Graph()
     assert g.get_num_nodes() == 0
     assert g.get_num_edges() == 0
 
+@pytest.mark.skipif(not HAS_PYHOLA_NANO, reason="requires pyhola_nano")
 def test_node():
     g = Graph()
     n = Node.allocate(10.2, 3.4)
@@ -51,7 +58,7 @@ def test_node():
     assert d == (10.2, 3.4)
     assert g.get_num_nodes() == 1
 
-
+@pytest.mark.skipif(not HAS_PYHOLA_NANO, reason="requires pyhola_nano")
 def test_edge():
     g = Graph()
     n1 = Node.allocate(3.2, 2.1)
