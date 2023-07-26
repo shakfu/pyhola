@@ -4,16 +4,11 @@ This project wraps a key part of the [adaptagrams](https://github.com/mjwybrow/a
 
 The HOLA algorithm is part of the [libdialect](http://www.adaptagrams.org/documentation/libdialect.html) module of the adaptagrams library.
 
-Note that the the adaptagrams library provides a comprehensive swig-based python wrapper which is likely useful for most use-case.
+Note that the the adaptagrams library provides a comprehensive swig-based python wrapper which is likely useful for most use-cases.
 
-This project provide a target wrapper for the HOLA algo, and tries to provide a python api along the way. 
+This project provide a targeted pybind11 wrapper for the HOLA algorithm, and tries to provide a pythonic api along the way. There is also a [nanobind](https://github.com/wjakob/nanobind) wrapper in development which is still not functional.
 
 `pyhola` and the adaptagrams swig-based python wrapper have been used successfully in the [py2max project](https://github.com/shakfu/py2max), to provide auto-layout capability of programmatically generated Max patches.
-
-
-Note that there is an obsolete [old python project](https://github.com/skieffer/hola) for hola may also be useful for historicall purposes.
-
-After manually wrapping the core HOLA algo, there was a subsequent  effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically. While a decent portion was wrapped, there is little (at least from my part) interest to push this further as there is already the maintained swig-based wrapper and the HOLA part that was the primary area of interest is already wrapped and functional as `pyhola`.
 
 To build pyhola:
 
@@ -99,13 +94,14 @@ You can compile your own more recent libs and just drop them into this project.
 
 ## Future Directions:
 
-- use nanobind instead of pybind11 for a miminal binding.
+- [ ] Wrap all of libdialect: after manually wrapping the core HOLA algorithm, there was a subsequent effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically.  While a decent portion was wrapped, there is still a good amount left to do, but progress has been slow because there is already the maintained swig-based wrapper and `pyhola` is quite stable and functional.
+
+- [ ] Complete nanobind wrapper for a miminal binding.
 
 
+## Binder Usage
 
-## Implementation
-
-Uses [binder](https://github.com/RosettaCommons/binder), a tool to autogenerate [pybind11](https://github.com/pybind/pybind11) bindings for c++ code. The generated code is then manually fixed and tweaked to create the current library.
+To use [binder](https://github.com/RosettaCommons/binder), a tool to autogenerate [pybind11](https://github.com/pybind/pybind11) bindings for c++ code, build it and use it to generat code which can then be manually fixed and tweaked to supplement the current `pyhola` library.
 
 To build and test binder
 
@@ -127,5 +123,7 @@ All rights reserved to the original respective authors:
 
 >>Steve Kieffer, Tim Dwyer, Kim Marriott, and Michael Wybrow.
 HOLA: Human-like Orthogonal Network Layout. In Visualization and Computer Graphics, IEEE Transactions on, Volume 22, Issue 1, pages 349 - 358. IEEE, 2016. DOI
+
+Thanks to [Wenzel Jakob](https://github.com/wjakob), developer of pybind11 and nanobind for making this project possible.
 
 This thin pybind11 wrapper is placed in the public domain.

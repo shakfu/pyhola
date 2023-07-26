@@ -2,8 +2,9 @@ NAME := "pyhola"
 # CPPFLAGS += "-Wno-c++11-extensions"
 STDVER := "-std=c++14"
 PYBIND_INCLUDES := $(shell python3 -m pybind11 --includes)
-PYBIND_EXTENSION := $(shell python3-config --extension-suffix)
-EXTENSION := $(NAME)$(PYBIND_EXTENSION)
+EXTENSION_SUFFIX := $(shell python3-config --extension-suffix)
+PY_INCLUDES := $(shell python3-config --includes)
+EXTENSION := $(NAME)$(EXTENSION_SUFFIX)
 
 SYS_CPP_INCLUDE=/Library/Developer/CommandLineTools/usr/include/c++/v1
 SYS_C_INCLUDE=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include
@@ -15,23 +16,13 @@ NAMESPACE_TO_BIND=dialect
 NAMESPACE_TO_SKIP='std'
 
 
-all: pyhola
+all: build
 
+build:
+	@mkdir -p build && cd build && cmake .. && cmake --build . --config Release
 
-pyhola:
-	@c++ -O3 -Wall -shared $(STDVER) -fPIC \
-		-undefined dynamic_lookup \
-		$(PYBIND_INCLUDES) \
-		-I include \
-		pyhola.cpp \
-		libs/libavoid.a \
-		libs/libcola.a \
-		libs/libdialect.a \
-		libs/libtopology.a \
-		libs/libvpsc.a \
-		-o $(EXTENSION)
-
-
+nano: # build with pyhola_nano
+	@mkdir -p build && cd build && cmake .. -DBUILD_PYHOLA_NANO=ON && cmake --build . --config Release
 
 bind:
 	@mkdir -p bind
@@ -54,7 +45,6 @@ test:
 	@pytest
 
 clean:
-	@rm -f $(EXTENSION)
 	@rm -rf .pytest_cache
 	@rm -rf __pycache__
 	@rm -rf tests/__pycache__
@@ -62,13 +52,8 @@ clean:
 	@rm -rf bind build
 
 
-.PHONY: all build clean regen test
+.PHONY: all build nano clean regen test
 
-
-setup:
-	python3 setup.py build_ext --inplace
-
-build: setup
 
 regen: clean bind
 

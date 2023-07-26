@@ -1,6 +1,7 @@
+*.pyc
 .DS_Store
+.pytest_cache
 .vscode
 __pycache__
-.pytest_cache
-*.pyc
-
+build
+outputs
