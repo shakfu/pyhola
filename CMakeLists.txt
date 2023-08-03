@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.18...3.22)
 
 project(pyhola_project)
 
-option(BUILD_PYHOLA_NANO "enable pybhola nanbind version (unstable and buggy)")
+option(BUILD_PYHOLA_BINDER "enable pyhola binder version")
+option(BUILD_PYHOLA_NANO "enable pyhola nanobind version (non-functional)")
 
 find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
 
@@ -15,6 +16,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # add subprojects
 add_subdirectory(pyhola_pybind11)
+
+if(BUILD_PYHOLA_BINDER)
+add_subdirectory(bind)
+endif()
+
 
 if(BUILD_PYHOLA_NANO)
 add_subdirectory(pyhola_nanobind)
