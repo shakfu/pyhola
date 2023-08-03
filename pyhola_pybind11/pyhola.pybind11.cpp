@@ -521,69 +521,69 @@ PYBIND11_MODULE(pyhola, m)
         using Avoid::PolygonInterface::PolygonInterface;
 
         void clear() override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "clear");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "clear");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-                    static pybind11::detail::override_caster_t<void> caster;
-                    return pybind11::detail::cast_ref<void>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<void>::value) {
+                    static py::detail::override_caster_t<void> caster;
+                    return py::detail::cast_ref<void>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<void>(std::move(o));
+                else return py::detail::cast_safe<void>(std::move(o));
             }
-            pybind11::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::clear\"");
+            py::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::clear\"");
         }
         bool empty() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "empty");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "empty");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-                    static pybind11::detail::override_caster_t<bool> caster;
-                    return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<bool>::value) {
+                    static py::detail::override_caster_t<bool> caster;
+                    return py::detail::cast_ref<bool>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<bool>(std::move(o));
+                else return py::detail::cast_safe<bool>(std::move(o));
             }
-            pybind11::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::empty\"");
+            py::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::empty\"");
         }
         unsigned long size() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "size");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "size");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<unsigned long>::value) {
-                    static pybind11::detail::override_caster_t<unsigned long> caster;
-                    return pybind11::detail::cast_ref<unsigned long>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<unsigned long>::value) {
+                    static py::detail::override_caster_t<unsigned long> caster;
+                    return py::detail::cast_ref<unsigned long>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<unsigned long>(std::move(o));
+                else return py::detail::cast_safe<unsigned long>(std::move(o));
             }
-            pybind11::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::size\"");
+            py::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::size\"");
         }
         int id() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "id");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "id");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-                    static pybind11::detail::override_caster_t<int> caster;
-                    return pybind11::detail::cast_ref<int>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<int>::value) {
+                    static py::detail::override_caster_t<int> caster;
+                    return py::detail::cast_ref<int>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<int>(std::move(o));
+                else return py::detail::cast_safe<int>(std::move(o));
             }
-            pybind11::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::id\"");
+            py::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::id\"");
         }
         const class Avoid::Point & at(unsigned long a0) const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "at");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::PolygonInterface *>(this), "at");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-                if (pybind11::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
-                    static pybind11::detail::override_caster_t<const class Avoid::Point &> caster;
-                    return pybind11::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>(a0);
+                if (py::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
+                    static py::detail::override_caster_t<const class Avoid::Point &> caster;
+                    return py::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<const class Avoid::Point &>(std::move(o));
+                else return py::detail::cast_safe<const class Avoid::Point &>(std::move(o));
             }
-            pybind11::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::at\"");
+            py::pybind11_fail("Tried to call pure virtual function \"PolygonInterface::at\"");
         }
     };
 
@@ -591,67 +591,67 @@ PYBIND11_MODULE(pyhola, m)
         using Avoid::Polygon::Polygon;
 
         void clear() override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Polygon *>(this), "clear");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Polygon *>(this), "clear");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-                    static pybind11::detail::override_caster_t<void> caster;
-                    return pybind11::detail::cast_ref<void>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<void>::value) {
+                    static py::detail::override_caster_t<void> caster;
+                    return py::detail::cast_ref<void>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<void>(std::move(o));
+                else return py::detail::cast_safe<void>(std::move(o));
             }
             return Polygon::clear();
         }
         bool empty() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Polygon *>(this), "empty");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Polygon *>(this), "empty");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-                    static pybind11::detail::override_caster_t<bool> caster;
-                    return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<bool>::value) {
+                    static py::detail::override_caster_t<bool> caster;
+                    return py::detail::cast_ref<bool>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<bool>(std::move(o));
+                else return py::detail::cast_safe<bool>(std::move(o));
             }
             return Polygon::empty();
         }
         unsigned long size() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Polygon *>(this), "size");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Polygon *>(this), "size");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<unsigned long>::value) {
-                    static pybind11::detail::override_caster_t<unsigned long> caster;
-                    return pybind11::detail::cast_ref<unsigned long>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<unsigned long>::value) {
+                    static py::detail::override_caster_t<unsigned long> caster;
+                    return py::detail::cast_ref<unsigned long>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<unsigned long>(std::move(o));
+                else return py::detail::cast_safe<unsigned long>(std::move(o));
             }
             return Polygon::size();
         }
         int id() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Polygon *>(this), "id");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Polygon *>(this), "id");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-                    static pybind11::detail::override_caster_t<int> caster;
-                    return pybind11::detail::cast_ref<int>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<int>::value) {
+                    static py::detail::override_caster_t<int> caster;
+                    return py::detail::cast_ref<int>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<int>(std::move(o));
+                else return py::detail::cast_safe<int>(std::move(o));
             }
             return Polygon::id();
         }
         const class Avoid::Point & at(unsigned long a0) const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Polygon *>(this), "at");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Polygon *>(this), "at");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-                if (pybind11::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
-                    static pybind11::detail::override_caster_t<const class Avoid::Point &> caster;
-                    return pybind11::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>(a0);
+                if (py::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
+                    static py::detail::override_caster_t<const class Avoid::Point &> caster;
+                    return py::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<const class Avoid::Point &>(std::move(o));
+                else return py::detail::cast_safe<const class Avoid::Point &>(std::move(o));
             }
             return Polygon::at(a0);
         }
@@ -662,67 +662,67 @@ PYBIND11_MODULE(pyhola, m)
         using Avoid::ReferencingPolygon::ReferencingPolygon;
 
         void clear() override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "clear");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "clear");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-                    static pybind11::detail::override_caster_t<void> caster;
-                    return pybind11::detail::cast_ref<void>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<void>::value) {
+                    static py::detail::override_caster_t<void> caster;
+                    return py::detail::cast_ref<void>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<void>(std::move(o));
+                else return py::detail::cast_safe<void>(std::move(o));
             }
             return ReferencingPolygon::clear();
         }
         bool empty() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "empty");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "empty");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-                    static pybind11::detail::override_caster_t<bool> caster;
-                    return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<bool>::value) {
+                    static py::detail::override_caster_t<bool> caster;
+                    return py::detail::cast_ref<bool>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<bool>(std::move(o));
+                else return py::detail::cast_safe<bool>(std::move(o));
             }
             return ReferencingPolygon::empty();
         }
         unsigned long size() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "size");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "size");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<unsigned long>::value) {
-                    static pybind11::detail::override_caster_t<unsigned long> caster;
-                    return pybind11::detail::cast_ref<unsigned long>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<unsigned long>::value) {
+                    static py::detail::override_caster_t<unsigned long> caster;
+                    return py::detail::cast_ref<unsigned long>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<unsigned long>(std::move(o));
+                else return py::detail::cast_safe<unsigned long>(std::move(o));
             }
             return ReferencingPolygon::size();
         }
         int id() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "id");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "id");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-                    static pybind11::detail::override_caster_t<int> caster;
-                    return pybind11::detail::cast_ref<int>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<int>::value) {
+                    static py::detail::override_caster_t<int> caster;
+                    return py::detail::cast_ref<int>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<int>(std::move(o));
+                else return py::detail::cast_safe<int>(std::move(o));
             }
             return ReferencingPolygon::id();
         }
         const class Avoid::Point & at(unsigned long a0) const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "at");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::ReferencingPolygon *>(this), "at");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-                if (pybind11::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
-                    static pybind11::detail::override_caster_t<const class Avoid::Point &> caster;
-                    return pybind11::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>(a0);
+                if (py::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
+                    static py::detail::override_caster_t<const class Avoid::Point &> caster;
+                    return py::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<const class Avoid::Point &>(std::move(o));
+                else return py::detail::cast_safe<const class Avoid::Point &>(std::move(o));
             }
             return ReferencingPolygon::at(a0);
         }
@@ -732,67 +732,67 @@ PYBIND11_MODULE(pyhola, m)
         using Avoid::Rectangle::Rectangle;
 
         void clear() override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Rectangle *>(this), "clear");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Rectangle *>(this), "clear");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-                    static pybind11::detail::override_caster_t<void> caster;
-                    return pybind11::detail::cast_ref<void>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<void>::value) {
+                    static py::detail::override_caster_t<void> caster;
+                    return py::detail::cast_ref<void>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<void>(std::move(o));
+                else return py::detail::cast_safe<void>(std::move(o));
             }
             return Polygon::clear();
         }
         bool empty() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Rectangle *>(this), "empty");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Rectangle *>(this), "empty");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-                    static pybind11::detail::override_caster_t<bool> caster;
-                    return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<bool>::value) {
+                    static py::detail::override_caster_t<bool> caster;
+                    return py::detail::cast_ref<bool>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<bool>(std::move(o));
+                else return py::detail::cast_safe<bool>(std::move(o));
             }
             return Polygon::empty();
         }
         unsigned long size() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Rectangle *>(this), "size");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Rectangle *>(this), "size");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<unsigned long>::value) {
-                    static pybind11::detail::override_caster_t<unsigned long> caster;
-                    return pybind11::detail::cast_ref<unsigned long>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<unsigned long>::value) {
+                    static py::detail::override_caster_t<unsigned long> caster;
+                    return py::detail::cast_ref<unsigned long>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<unsigned long>(std::move(o));
+                else return py::detail::cast_safe<unsigned long>(std::move(o));
             }
             return Polygon::size();
         }
         int id() const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Rectangle *>(this), "id");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Rectangle *>(this), "id");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>();
-                if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-                    static pybind11::detail::override_caster_t<int> caster;
-                    return pybind11::detail::cast_ref<int>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>();
+                if (py::detail::cast_is_temporary_value_reference<int>::value) {
+                    static py::detail::override_caster_t<int> caster;
+                    return py::detail::cast_ref<int>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<int>(std::move(o));
+                else return py::detail::cast_safe<int>(std::move(o));
             }
             return Polygon::id();
         }
         const class Avoid::Point & at(unsigned long a0) const override {
-            pybind11::gil_scoped_acquire gil;
-            pybind11::function overload = pybind11::get_overload(static_cast<const Avoid::Rectangle *>(this), "at");
+            py::gil_scoped_acquire gil;
+            py::function overload = py::get_overload(static_cast<const Avoid::Rectangle *>(this), "at");
             if (overload) {
-                auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-                if (pybind11::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
-                    static pybind11::detail::override_caster_t<const class Avoid::Point &> caster;
-                    return pybind11::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
+                auto o = overload.operator()<py::return_value_policy::reference>(a0);
+                if (py::detail::cast_is_temporary_value_reference<const class Avoid::Point &>::value) {
+                    static py::detail::override_caster_t<const class Avoid::Point &> caster;
+                    return py::detail::cast_ref<const class Avoid::Point &>(std::move(o), caster);
                 }
-                else return pybind11::detail::cast_safe<const class Avoid::Point &>(std::move(o));
+                else return py::detail::cast_safe<const class Avoid::Point &>(std::move(o));
             }
             return Polygon::at(a0);
         }
@@ -871,8 +871,6 @@ PYBIND11_MODULE(pyhola, m)
         .def("translate", (void (Avoid::Polygon::*)(const double, const double)) &Avoid::Polygon::translate, "Translates the polygon position by a relative amount.\n\n \n  Distance to move polygon in the x dimension.\n \n\n  Distance to move polygon in the y dimension.\n\nC++: Avoid::Polygon::translate(const double, const double) --> void", py::arg("xDist"), py::arg("yDist"))
         .def("assign", (class Avoid::Polygon & (Avoid::Polygon::*)(const class Avoid::Polygon &)) &Avoid::Polygon::operator=, "C++: Avoid::Polygon::operator=(const class Avoid::Polygon &) --> class Avoid::Polygon &", py::return_value_policy::automatic, py::arg(""))
         ;
-
-
 
 
     py::class_<Avoid::ReferencingPolygon, std::shared_ptr<Avoid::ReferencingPolygon>, PyCallBack_Avoid_ReferencingPolygon, Avoid::PolygonInterface> (avoid, "ReferencingPolygon", "A Polygon which just references its points from other Polygons.\n\n This type of Polygon is used to accurately represent cluster boundaries \n made up from the corner points of shapes.")
