@@ -19,31 +19,7 @@ make
 
 ## Status
 
-HOLA algorithm in `pyhola` is functional
-
-
-- [x] libdialect/aca.h
-- [ ] libdialect/chains.h
-- [ ] libdialect/commontypes.h
-- [ ] libdialect/constraints.h
-- [ ] libdialect/expansion.h
-- [ ] libdialect/faces.h
-- [x] libdialect/graphs.h
-- [x] libdialect/hola.h
-- [ ] libdialect/io.h
-- [ ] libdialect/libdialect.h
-- [ ] libdialect/logging.h
-- [ ] libdialect/nearalign.h
-- [ ] libdialect/nodeconfig.h
-- [x] libdialect/opts.h
-- [ ] libdialect/ortho.h
-- [ ] libdialect/peeling.h
-- [ ] libdialect/planarize.h
-- [ ] libdialect/quadaction.h
-- [ ] libdialect/treeplacement.h
-- [x] libdialect/trees.h
-- [ ] libdialect/util.h
-- [x] libavoid/geomtypes.h
+- HOLA algorithm in `pyhola_pybind11` build is functional  other builds, `pyhola_bind`, and `pyhola_nano` are not functional.
 
 
 ## Usage
@@ -94,14 +70,14 @@ You can compile your own more recent libs and just drop them into this project.
 
 ## Future Directions:
 
-- [ ] Wrap all of libdialect: after manually wrapping the core HOLA algorithm, there was a subsequent effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of libdialect automatically.  While a decent portion was wrapped, there is still a good amount left to do, but progress has been slow because there is already the maintained swig-based wrapper and `pyhola` is quite stable and functional.
+- [ ] Wrap all of adaptagrms libs: after manually wrapping the core HOLA algorithm, there is an ongoing effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of the adaptagrams libs automatically.  While a decent portion is wrapped, there are still a few errors which remain. (see `bind/remaining-errors.diff`)
 
 - [ ] Complete nanobind wrapper for a miminal binding.
 
 
 ## Binder Usage
 
-To use [binder](https://github.com/RosettaCommons/binder), a tool to autogenerate [pybind11](https://github.com/pybind/pybind11) bindings for c++ code, build it and use it to generat code which can then be manually fixed and tweaked to supplement the current `pyhola` library.
+To use [binder](https://github.com/RosettaCommons/binder), a tool to autogenerate [pybind11](https://github.com/pybind/pybind11) bindings for c++ code, build it and use the resulting binary to generate code which can then be manually fixed and tweaked to supplement the current `pyhola` library.
 
 To build and test binder
 
@@ -114,7 +90,6 @@ To build and test binder
    symlink as follows: `~/.binder/bin/binder` to `/usr/local/bin/binder`
 
 4. run `./build.sh` in this directory and a demo python extension should be in the `build` directory
-
 
 
 ## Credits and Licensing
