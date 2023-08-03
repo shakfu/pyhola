@@ -97,7 +97,7 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		cl.def("clearConstraints", (void (project::Variable::*)()) &project::Variable::clearConstraints, "C++: project::Variable::clearConstraints() --> void");
 	}
 	// project::compute_dfdv(const class project::Variable *, const class project::Constraint *) file:libproject/project.h line:132
-	M("project").def("compute_dfdv", (double (*)(const class project::Variable *, const class project::Constraint *)) &project::compute_dfdv, "C++: project::compute_dfdv(const class project::Variable *, const class project::Constraint *) --> double", pybind11::arg(""), pybind11::arg(""));
+	// M("project").def("compute_dfdv", (double (*)(const class project::Variable *, const class project::Constraint *)) &project::compute_dfdv, "C++: project::compute_dfdv(const class project::Variable *, const class project::Constraint *) --> double", pybind11::arg(""), pybind11::arg(""));
 
 	{ // project::Constraint file:libproject/project.h line:138
 		pybind11::class_<project::Constraint, std::shared_ptr<project::Constraint>> cl(M("project"), "Constraint", "A separation constraint of the form \n\n ");
@@ -113,7 +113,7 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		cl.def("wantsToMoveApart", (bool (project::Constraint::*)() const) &project::Constraint::wantsToMoveApart, "C++: project::Constraint::wantsToMoveApart() const --> bool");
 	}
 	// project::cmpLagrangians(class project::Constraint *, class project::Constraint *) file:libproject/project.h line:175
-	M("project").def("cmpLagrangians", (bool (*)(class project::Constraint *, class project::Constraint *)) &project::cmpLagrangians, "C++: project::cmpLagrangians(class project::Constraint *, class project::Constraint *) --> bool", pybind11::arg("a"), pybind11::arg("b"));
+	// M("project").def("cmpLagrangians", (bool (*)(class project::Constraint *, class project::Constraint *)) &project::cmpLagrangians, "C++: project::cmpLagrangians(class project::Constraint *, class project::Constraint *) --> bool", pybind11::arg("a"), pybind11::arg("b"));
 
 	{ // project::Block file:libproject/project.h line:182
 		pybind11::class_<project::Block, std::shared_ptr<project::Block>> cl(M("project"), "Block", "A block is a set of variables spanned by a tree of active constraints.");

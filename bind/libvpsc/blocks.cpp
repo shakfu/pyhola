@@ -26,7 +26,7 @@ void bind_libvpsc_blocks(std::function< pybind11::module &(std::string const &na
 		cl.def_readwrite("blockTimeCtr", &vpsc::Blocks::blockTimeCtr);
 		cl.def("mergeLeft", (void (vpsc::Blocks::*)(class vpsc::Block *)) &vpsc::Blocks::mergeLeft, "C++: vpsc::Blocks::mergeLeft(class vpsc::Block *) --> void", pybind11::arg("r"));
 		cl.def("mergeRight", (void (vpsc::Blocks::*)(class vpsc::Block *)) &vpsc::Blocks::mergeRight, "C++: vpsc::Blocks::mergeRight(class vpsc::Block *) --> void", pybind11::arg("l"));
-		cl.def("split", (void (vpsc::Blocks::*)(class vpsc::Block *, class vpsc::Block *&, class vpsc::Block *&, class vpsc::Constraint *)) &vpsc::Blocks::split, "C++: vpsc::Blocks::split(class vpsc::Block *, class vpsc::Block *&, class vpsc::Block *&, class vpsc::Constraint *) --> void", pybind11::arg("b"), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
+		// cl.def("split", (void (vpsc::Blocks::*)(class vpsc::Block *, class vpsc::Block *&, class vpsc::Block *&, class vpsc::Constraint *)) &vpsc::Blocks::split, "C++: vpsc::Blocks::split(class vpsc::Block *, class vpsc::Block *&, class vpsc::Block *&, class vpsc::Constraint *) --> void", pybind11::arg("b"), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
 		cl.def("cleanup", (void (vpsc::Blocks::*)()) &vpsc::Blocks::cleanup, "C++: vpsc::Blocks::cleanup() --> void");
 		cl.def("cost", (double (vpsc::Blocks::*)()) &vpsc::Blocks::cost, "C++: vpsc::Blocks::cost() --> double");
 		cl.def("size", (unsigned long (vpsc::Blocks::*)() const) &vpsc::Blocks::size, "C++: vpsc::Blocks::size() const --> unsigned long");

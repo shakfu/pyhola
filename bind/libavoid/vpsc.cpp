@@ -39,7 +39,6 @@ void bind_libavoid_vpsc(std::function< pybind11::module &(std::string const &nam
 		pybind11::class_<Avoid::Block, std::shared_ptr<Avoid::Block>> cl(M("Avoid"), "Block", "");
 		cl.def( pybind11::init( [](class Avoid::Blocks * a0){ return new Avoid::Block(a0); } ), "doc" , pybind11::arg("blocks"));
 		cl.def( pybind11::init<class Avoid::Blocks *, class Avoid::Variable *const>(), pybind11::arg("blocks"), pybind11::arg("v") );
-
 		cl.def_readwrite("posn", &Avoid::Block::posn);
 		cl.def_readwrite("ps", &Avoid::Block::ps);
 		cl.def_readwrite("deleted", &Avoid::Block::deleted);
@@ -55,8 +54,8 @@ void bind_libavoid_vpsc(std::function< pybind11::module &(std::string const &nam
 		cl.def("merge", (class Avoid::Block * (Avoid::Block::*)(class Avoid::Block *, class Avoid::Constraint *)) &Avoid::Block::merge, "C++: Avoid::Block::merge(class Avoid::Block *, class Avoid::Constraint *) --> class Avoid::Block *", pybind11::return_value_policy::automatic, pybind11::arg("b"), pybind11::arg("c"));
 		cl.def("mergeIn", (void (Avoid::Block::*)(class Avoid::Block *)) &Avoid::Block::mergeIn, "C++: Avoid::Block::mergeIn(class Avoid::Block *) --> void", pybind11::arg("b"));
 		cl.def("mergeOut", (void (Avoid::Block::*)(class Avoid::Block *)) &Avoid::Block::mergeOut, "C++: Avoid::Block::mergeOut(class Avoid::Block *) --> void", pybind11::arg("b"));
-		cl.def("split", (void (Avoid::Block::*)(class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *)) &Avoid::Block::split, "C++: Avoid::Block::split(class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *) --> void", pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
-		cl.def("splitBetween", (class Avoid::Constraint * (Avoid::Block::*)(class Avoid::Variable *, class Avoid::Variable *, class Avoid::Block *&, class Avoid::Block *&)) &Avoid::Block::splitBetween, "C++: Avoid::Block::splitBetween(class Avoid::Variable *, class Avoid::Variable *, class Avoid::Block *&, class Avoid::Block *&) --> class Avoid::Constraint *", pybind11::return_value_policy::automatic, pybind11::arg("vl"), pybind11::arg("vr"), pybind11::arg("lb"), pybind11::arg("rb"));
+		// cl.def("split", (void (Avoid::Block::*)(class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *)) &Avoid::Block::split, "C++: Avoid::Block::split(class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *) --> void", pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
+		// cl.def("splitBetween", (class Avoid::Constraint * (Avoid::Block::*)(class Avoid::Variable *, class Avoid::Variable *, class Avoid::Block *&, class Avoid::Block *&)) &Avoid::Block::splitBetween, "C++: Avoid::Block::splitBetween(class Avoid::Variable *, class Avoid::Variable *, class Avoid::Block *&, class Avoid::Block *&) --> class Avoid::Constraint *", pybind11::return_value_policy::automatic, pybind11::arg("vl"), pybind11::arg("vr"), pybind11::arg("lb"), pybind11::arg("rb"));
 		cl.def("setUpInConstraints", (void (Avoid::Block::*)()) &Avoid::Block::setUpInConstraints, "C++: Avoid::Block::setUpInConstraints() --> void");
 		cl.def("setUpOutConstraints", (void (Avoid::Block::*)()) &Avoid::Block::setUpOutConstraints, "C++: Avoid::Block::setUpOutConstraints() --> void");
 		cl.def("cost", (double (Avoid::Block::*)()) &Avoid::Block::cost, "C++: Avoid::Block::cost() --> double");
@@ -108,7 +107,7 @@ void bind_libavoid_vpsc(std::function< pybind11::module &(std::string const &nam
 		cl.def_readwrite("blockTimeCtr", &Avoid::Blocks::blockTimeCtr);
 		cl.def("mergeLeft", (void (Avoid::Blocks::*)(class Avoid::Block *)) &Avoid::Blocks::mergeLeft, "C++: Avoid::Blocks::mergeLeft(class Avoid::Block *) --> void", pybind11::arg("r"));
 		cl.def("mergeRight", (void (Avoid::Blocks::*)(class Avoid::Block *)) &Avoid::Blocks::mergeRight, "C++: Avoid::Blocks::mergeRight(class Avoid::Block *) --> void", pybind11::arg("l"));
-		cl.def("split", (void (Avoid::Blocks::*)(class Avoid::Block *, class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *)) &Avoid::Blocks::split, "C++: Avoid::Blocks::split(class Avoid::Block *, class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *) --> void", pybind11::arg("b"), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
+		// cl.def("split", (void (Avoid::Blocks::*)(class Avoid::Block *, class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *)) &Avoid::Blocks::split, "C++: Avoid::Blocks::split(class Avoid::Block *, class Avoid::Block *&, class Avoid::Block *&, class Avoid::Constraint *) --> void", pybind11::arg("b"), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("c"));
 		cl.def("cleanup", (void (Avoid::Blocks::*)()) &Avoid::Blocks::cleanup, "C++: Avoid::Blocks::cleanup() --> void");
 		cl.def("cost", (double (Avoid::Blocks::*)()) &Avoid::Blocks::cost, "C++: Avoid::Blocks::cost() --> double");
 		cl.def("size", (unsigned long (Avoid::Blocks::*)() const) &Avoid::Blocks::size, "C++: Avoid::Blocks::size() const --> unsigned long");

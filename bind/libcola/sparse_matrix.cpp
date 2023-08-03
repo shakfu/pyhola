@@ -234,16 +234,16 @@ void bind_libcola_sparse_matrix(std::function< pybind11::module &(std::string co
 		cl.def("print", (void (cola::SparseMatrix::*)() const) &cola::SparseMatrix::print, "C++: cola::SparseMatrix::print() const --> void");
 		cl.def("rowSize", (unsigned int (cola::SparseMatrix::*)() const) &cola::SparseMatrix::rowSize, "C++: cola::SparseMatrix::rowSize() const --> unsigned int");
 	}
-	{ // cola::SubConstraint file:libcola/compound_constraints.h line:51
-		pybind11::class_<cola::SubConstraint, std::shared_ptr<cola::SubConstraint>> cl(M("cola"), "SubConstraint", "");
-		cl.def( pybind11::init( [](enum vpsc::Dim const & a0, class vpsc::Constraint const & a1){ return new cola::SubConstraint(a0, a1); } ), "doc" , pybind11::arg("dim"), pybind11::arg("constraint"));
-		cl.def( pybind11::init<enum vpsc::Dim, class vpsc::Constraint, double>(), pybind11::arg("dim"), pybind11::arg("constraint"), pybind11::arg("cost") );
+	// { // cola::SubConstraint file:libcola/compound_constraints.h line:51
+	// 	pybind11::class_<cola::SubConstraint, std::shared_ptr<cola::SubConstraint>> cl(M("cola"), "SubConstraint", "");
+	// 	cl.def( pybind11::init( [](enum vpsc::Dim const & a0, class vpsc::Constraint const & a1){ return new cola::SubConstraint(a0, a1); } ), "doc" , pybind11::arg("dim"), pybind11::arg("constraint"));
+	// 	cl.def( pybind11::init<enum vpsc::Dim, class vpsc::Constraint, double>(), pybind11::arg("dim"), pybind11::arg("constraint"), pybind11::arg("cost") );
 
-		cl.def( pybind11::init( [](cola::SubConstraint const &o){ return new cola::SubConstraint(o); } ) );
-		cl.def_readwrite("dim", &cola::SubConstraint::dim);
-		cl.def_readwrite("constraint", &cola::SubConstraint::constraint);
-		cl.def_readwrite("cost", &cola::SubConstraint::cost);
-	}
+	// 	cl.def( pybind11::init( [](cola::SubConstraint const &o){ return new cola::SubConstraint(o); } ) );
+	// 	cl.def_readwrite("dim", &cola::SubConstraint::dim);
+	// 	cl.def_readwrite("constraint", &cola::SubConstraint::constraint);
+	// 	cl.def_readwrite("cost", &cola::SubConstraint::cost);
+	// }
 	{ // cola::VariableIDMap file:libcola/compound_constraints.h line:93
 		pybind11::class_<cola::VariableIDMap, std::shared_ptr<cola::VariableIDMap>> cl(M("cola"), "VariableIDMap", "Holds a mapping between two sets of Variable indices.\n\n This can be used to rewrite the Rectangles to which a set of \n CompoundConstraints apply to.  This is useful when creating another\n instance of the problem, but using the same CompoundConstraints list.\n You should not usually need to use this yourself.  It is utilised by \n addons such as topology::AvoidTopologyAddon.\n\n If a mapping for a particular value is not set, it is considered to be\n equal on both sides of the mapping.");
 		cl.def( pybind11::init( [](){ return new cola::VariableIDMap(); } ) );
