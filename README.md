@@ -43,7 +43,7 @@ HOLA algorithm in `pyhola` is functional
 - [ ] libdialect/treeplacement.h
 - [x] libdialect/trees.h
 - [ ] libdialect/util.h
-- [x] libavoid/geomtypes.h (Avoid::Point only)
+- [x] libavoid/geomtypes.h
 
 
 ## Usage
