@@ -80,7 +80,7 @@ void bind_libvpsc_block(std::function< pybind11::module &(std::string const &nam
 		cl.def_readwrite("fixedDesiredPosition", &vpsc::Variable::fixedDesiredPosition);
 		cl.def_readwrite("in", &vpsc::Variable::in);
 		cl.def_readwrite("out", &vpsc::Variable::out);
-		cl.def("toString", (char * (vpsc::Variable::*)()) &vpsc::Variable::toString, "C++: vpsc::Variable::toString() --> char *", pybind11::return_value_policy::automatic);
+		// cl.def("toString", (char * (vpsc::Variable::*)()) &vpsc::Variable::toString, "C++: vpsc::Variable::toString() --> char *", pybind11::return_value_policy::automatic);
 		cl.def("dfdv", (double (vpsc::Variable::*)() const) &vpsc::Variable::dfdv, "C++: vpsc::Variable::dfdv() const --> double");
 
 		cl.def("__str__", [](vpsc::Variable const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );

@@ -1,13 +1,15 @@
 #include <string.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/shared_ptr.h>
+
 
 #include <libdialect/graphs.h>
 #include <libdialect/hola.h>
 #include <libdialect/io.h>
 #include <libavoid/geomtypes.h>
 
-#include <nanobind/stl/shared_ptr.h>
 
 namespace nb = nanobind;
 
@@ -51,6 +53,7 @@ NB_MODULE(pyhola_nano, m)
         .def("to_tglf", &Graph::writeTglf, "returns tglf string", "use_external_ids"_a = false)
         .def("to_svg", &Graph::writeSvg, "returns svg string", "use_external_ids"_a = false)
         // .def("assign", &Graph::operator=, "Copy-assignment operator.", nb::return_value_policy::automatic, nb::arg("other"))
+        .def("assign", &Graph::operator=, "Copy-assignment operator.", nb::arg("other"))
         .def("get_max_degree", &Graph::getMaxDegree, "Reports the maximum degree of any Node in this Graph.")
         .def("has_node", &Graph::hasNode, "Returns true if this Graph has a Node of the given ID.", nb::arg("id"))
         .def("has_edge", &Graph::hasEdge, "Returns true if this Graph has an Edge of the given ID.", nb::arg("id"))
@@ -61,10 +64,6 @@ NB_MODULE(pyhola_nano, m)
         .def("get_num_edges", &Graph::getNumEdges, "Say how many Edges there are in this Graph.")
         .def("is_empty", &Graph::isEmpty, "Say whether the Graph is empty, meaning that it has no Nodes.")
         .def("is_tree", &Graph::isTree, "Say whether the Graph is a tree.")
-        ;
-
-    nb::class_<Graph_SP>(m, "Graph_SP")
-        .def(nb::init<std::shared_ptr<Graph>>())
         ;
 
     nb::class_<Node>(m, "Node")
@@ -78,9 +77,11 @@ NB_MODULE(pyhola_nano, m)
         .def("translate", &Node::translate, "Update the position of the node, by adding to its centre coordinates.", "dx"_a, "dy"_a)
 
         .def("set_graph", &Node::setGraph, "Tell the Node which Graph it belongs to.", nb::arg("graph"))
+        .def("get_graph", &Node::getGraph, "Access the Graph to which the Node belongs.")
         // .def("get_graph", &Node::getGraph, "Access the Graph to which the Node belongs.", nb::return_value_policy::automatic)
         .def("remove_edge", &Node::removeEdge, "Remove an incident Edge.", nb::arg("edge"))
         .def("copy_geometry", &Node::copyGeometry, "Give this Node the same coordinates and dimensions as another.", nb::arg("other"))
+        .def("copy_other_ghost_properties", &Node::copyOtherGhostProperties, "Copy other properties of Ghost nodes besides geometry.", nb::arg("other"))
         // .def("copy_other_ghost_properties", &Node::copyOtherGhostProperties, "Copy other properties of Ghost nodes besides geometry.", nb::arg("other"))
         .def("get_bounding_box", &Node::getBoundingBox, "Get the bounding box for this Node.\n\nC++: Node::getBoundingBox() const --> struct BoundingBox")
         .def("get_boundary_compass_pt", &Node::getBoundaryCompassPt, "Get the point on the boundary of this Node in a given direction from its centre.", nb::arg("dir"))
@@ -97,16 +98,13 @@ NB_MODULE(pyhola_nano, m)
         .def("make_libavoid_polygon", &Node::makeLibavoidPolygon, "Build and return a Polygon to represent this Node in libavoid.")
         .def("is_root", &Node::isRoot, "Check whether this Node has been marked as being a root -- useful when working with trees, and can be safely ignored when working with other sorts of graphs.")
         .def("set_is_root", &Node::setIsRoot, "Say whether this Node is a root.", nb::arg("isRoot"))
-        // .def("lies_opposite_segment", [](Node &o, const struct LineSegment &a0) -> bool { return o.liesOppositeSegment(a0); }, "", nb::arg("seg"))
-        // .def("lies_opposite_segment", (bool (Node::*)(const struct LineSegment &, bool)) &Node::liesOppositeSegment, "Check whether this Node lies opposite a LineSegment.", nb::arg("seg"), nb::arg("openInterval"))
-        ;
-
-    nb::class_<Node_SP>(m, "Node_SP")
-        .def(nb::init<std::shared_ptr<Node>>())
+        .def("lies_opposite_segment", [](Node &o, const struct LineSegment &a0) -> bool { return o.liesOppositeSegment(a0); }, "", nb::arg("seg"))
+        .def("lies_opposite_segment", (bool (Node::*)(const struct LineSegment &, bool)) &Node::liesOppositeSegment, "Check whether this Node lies opposite a LineSegment.", nb::arg("seg"), nb::arg("openInterval"))
         ;
 
 
     nb::class_<Edge>(m, "Edge")
+        // .def( "__init__", [](Edge const &o){ return new Edge(o); } )
         // .def( nb::init( [](Edge const &o){ return new Edge(o); } ) )
         .def("allocate", &Edge::allocate, "allocate edge from src node to dst node")
         .def("id", &Edge::id, "Access the unique ID of this instance.")
@@ -121,10 +119,6 @@ NB_MODULE(pyhola_nano, m)
         .def("translate", &Edge::translate, "Translate the connector route by a given amount in each dimension.", nb::arg("dx"), nb::arg("dy"))
         .def("clear_route_and_bends", &Edge::clearRouteAndBends, "Clear the connector route and drop all bend nodes.")
         .def("build_route_from_bends", &Edge::buildRouteFromBends, "Build a connector route based on the bend nodes.")
-        ;
-
-    nb::class_<Edge_SP>(m, "Edge_SP")
-        .def(nb::init<std::shared_ptr<Edge>>())
         ;
 
     nb::class_<BoundingBox>(m, "BoundingBox", "A bounding box, given by the extreme coordinates.")

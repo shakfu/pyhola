@@ -93,7 +93,7 @@ void bind_libcola_straightener(std::function< pybind11::module &(std::string con
 		cl.def("updateNodePositions", (void (straightener::Straightener::*)()) &straightener::Straightener::updateNodePositions, "C++: straightener::Straightener::updateNodePositions() --> void");
 		cl.def("finalizeRoutes", (void (straightener::Straightener::*)()) &straightener::Straightener::finalizeRoutes, "C++: straightener::Straightener::finalizeRoutes() --> void");
 		cl.def("computeForces", (void (straightener::Straightener::*)(struct cola::SparseMap &)) &straightener::Straightener::computeForces, "C++: straightener::Straightener::computeForces(struct cola::SparseMap &) --> void", pybind11::arg("H"));
-		cl.def("computeForces2", (void (straightener::Straightener::*)(struct cola::SparseMap &)) &straightener::Straightener::computeForces2, "C++: straightener::Straightener::computeForces2(struct cola::SparseMap &) --> void", pybind11::arg("H"));
+		// cl.def("computeForces2", (void (straightener::Straightener::*)(struct cola::SparseMap &)) &straightener::Straightener::computeForces2, "C++: straightener::Straightener::computeForces2(struct cola::SparseMap &) --> void", pybind11::arg("H"));
 	}
 	{ // straightener::Cluster file:libcola/straightener.h line:234
 		pybind11::class_<straightener::Cluster, std::shared_ptr<straightener::Cluster>> cl(M("straightener"), "Cluster", "");
