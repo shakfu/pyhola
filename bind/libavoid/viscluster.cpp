@@ -75,7 +75,7 @@ void bind_libavoid_viscluster(std::function< pybind11::module &(std::string cons
 		cl.def( pybind11::init( [](Avoid::MinimumTerminalSpanningTree const &o){ return new Avoid::MinimumTerminalSpanningTree(o); } ) );
 		cl.def("constructInterleaved", (void (Avoid::MinimumTerminalSpanningTree::*)()) &Avoid::MinimumTerminalSpanningTree::constructInterleaved, "C++: Avoid::MinimumTerminalSpanningTree::constructInterleaved() --> void");
 		cl.def("constructSequential", (void (Avoid::MinimumTerminalSpanningTree::*)()) &Avoid::MinimumTerminalSpanningTree::constructSequential, "C++: Avoid::MinimumTerminalSpanningTree::constructSequential() --> void");
-		cl.def("setDebuggingOutput", (void (Avoid::MinimumTerminalSpanningTree::*)(struct __sFILE *, unsigned int)) &Avoid::MinimumTerminalSpanningTree::setDebuggingOutput, "C++: Avoid::MinimumTerminalSpanningTree::setDebuggingOutput(struct __sFILE *, unsigned int) --> void", pybind11::arg("fp"), pybind11::arg("counter"));
+		// cl.def("setDebuggingOutput", (void (Avoid::MinimumTerminalSpanningTree::*)(struct __sFILE *, unsigned int)) &Avoid::MinimumTerminalSpanningTree::setDebuggingOutput, "C++: Avoid::MinimumTerminalSpanningTree::setDebuggingOutput(struct __sFILE *, unsigned int) --> void", pybind11::arg("fp"), pybind11::arg("counter"));
 		cl.def("rootJunction", (struct Avoid::HyperedgeTreeNode * (Avoid::MinimumTerminalSpanningTree::*)() const) &Avoid::MinimumTerminalSpanningTree::rootJunction, "C++: Avoid::MinimumTerminalSpanningTree::rootJunction() const --> struct Avoid::HyperedgeTreeNode *", pybind11::return_value_policy::automatic);
 	}
 	// Avoid::generateStaticOrthogonalVisGraph(class Avoid::Router *) file:libavoid/orthogonal.h line:33

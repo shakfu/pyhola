@@ -48,7 +48,7 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		pybind11::class_<project::Uncopyable, project::Uncopyable*> cl(M("project"), "Uncopyable", "Item 6 in Meyers' Effective C++: \n Explicitly disallow the use of compiler-generated functions you do not want");
 	}
 	// project::approx_equals(double, double) file:libproject/util.h line:88
-	M("project").def("approx_equals", (bool (*)(double, double)) &project::approx_equals, "C++: project::approx_equals(double, double) --> bool", pybind11::arg("a"), pybind11::arg("b"));
+	// M("project").def("approx_equals", (bool (*)(double, double)) &project::approx_equals, "C++: project::approx_equals(double, double) --> bool", pybind11::arg("a"), pybind11::arg("b"));
 
 	{ // project::Initial file:libproject/project.h line:46
 		pybind11::class_<project::Initial, std::shared_ptr<project::Initial>> cl(M("project"), "Initial", "type for Initial position for Variable ctor");
@@ -101,7 +101,7 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 
 	{ // project::Constraint file:libproject/project.h line:138
 		pybind11::class_<project::Constraint, std::shared_ptr<project::Constraint>> cl(M("project"), "Constraint", "A separation constraint of the form \n\n ");
-		cl.def( pybind11::init<class project::Variable *, class project::Variable *, const double>(), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("g") );
+		// cl.def( pybind11::init<class project::Variable *, class project::Variable *, const double>(), pybind11::arg("l"), pybind11::arg("r"), pybind11::arg("g") );
 
 		cl.def_readonly("g", &project::Constraint::g);
 		cl.def("initialSlack", (double (project::Constraint::*)() const) &project::Constraint::initialSlack, "C++: project::Constraint::initialSlack() const --> double");
@@ -128,7 +128,7 @@ void bind_libproject_util(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("X", &project::Block::X);
 		cl.def_readwrite("XI", &project::Block::XI);
 		cl.def("optimalPosition", (double (project::Block::*)() const) &project::Block::optimalPosition, "Compute the optimal position for this block based on the ideal positions of\n its constituent variables.  \n\nC++: project::Block::optimalPosition() const --> double");
-		cl.def("computeLagrangians", (void (project::Block::*)()) &project::Block::computeLagrangians, "compute the lagrangian multipliers of all the active constraints in this block.\n\nC++: project::Block::computeLagrangians() --> void");
+		// cl.def("computeLagrangians", (void (project::Block::*)()) &project::Block::computeLagrangians, "compute the lagrangian multipliers of all the active constraints in this block.\n\nC++: project::Block::computeLagrangians() --> void");
 		cl.def("toDesired", (double (project::Block::*)() const) &project::Block::toDesired, "vector to desired position\n\nC++: project::Block::toDesired() const --> double");
 	}
 	{ // project::ExternalAlphaCheck file:libproject/project.h line:228
