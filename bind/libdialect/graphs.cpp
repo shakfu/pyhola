@@ -1,29 +1,13 @@
-#include <_stdio.h>
-#include <functional>
-#include <iterator>
-#include <libavoid/connend.h>
-#include <libavoid/geomtypes.h>
-#include <libavoid/router.h>
-#include <libcola/cluster.h>
-#include <libdialect/aca.h>
 #include <libdialect/constraints.h>
 #include <libdialect/graphs.h>
 #include <libdialect/ortho.h>
-#include <libdialect/routing.h>
-#include <libvpsc/constraint.h>
-#include <libvpsc/rectangle.h>
-#include <libvpsc/variable.h>
-#include <map>
-#include <memory>
-#include <set>
 #include <sstream> // __str__
-#include <string>
-#include <utility>
-#include <vector>
 
 #include <functional>
 #include <pybind11/pybind11.h>
 #include <string>
+#include <cstdlib>
+
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -32,160 +16,156 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// dialect::Node file:libdialect/graphs.h line:713
-struct PyCallBack_dialect_Node : public dialect::Node {
-	using dialect::Node::Node;
-
-	unsigned int id() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const dialect::Node *>(this), "id");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<unsigned int>::value) {
-				static pybind11::detail::override_caster_t<unsigned int> caster;
-				return pybind11::detail::cast_ref<unsigned int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<unsigned int>(std::move(o));
-		}
-		return Node::id();
-	}
-};
-
-// dialect::GhostNode file:libdialect/graphs.h line:939
-struct PyCallBack_dialect_GhostNode : public dialect::GhostNode {
-	using dialect::GhostNode::GhostNode;
-
-	unsigned int id() const override {
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const dialect::GhostNode *>(this), "id");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<unsigned int>::value) {
-				static pybind11::detail::override_caster_t<unsigned int> caster;
-				return pybind11::detail::cast_ref<unsigned int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<unsigned int>(std::move(o));
-		}
-		return GhostNode::id();
-	}
-};
-
 void bind_libdialect_graphs(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// dialect::swap(class dialect::Graph &, class dialect::Graph &) file:libdialect/graphs.h line:192
-	// M("dialect").def("swap", (void (*)(class dialect::Graph &, class dialect::Graph &)) &dialect::swap, "Swap operator.\n\nC++: dialect::swap(class dialect::Graph &, class dialect::Graph &) --> void", pybind11::arg("first"), pybind11::arg("second"));
+	{ // dialect::BoundingBox file:libdialect/graphs.h line:52
+		pybind11::class_<dialect::BoundingBox, std::shared_ptr<dialect::BoundingBox>> cl(M("dialect"), "BoundingBox", "A bounding box, given by the extreme coordinates.");
+		cl.def( pybind11::init<double, double, double, double>(), pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y") );
 
-	{ // dialect::Node file:libdialect/graphs.h line:713
-		pybind11::class_<dialect::Node, std::shared_ptr<dialect::Node>, PyCallBack_dialect_Node> cl(M("dialect"), "Node", "The Node class represents nodes in a graph.");
-		cl.def("id", (unsigned int (dialect::Node::*)() const) &dialect::Node::id, "Access the unique ID of a given instance.\n\n \n  The ID.\n\nC++: dialect::Node::id() const --> unsigned int");
-		cl.def("getDegree", (unsigned int (dialect::Node::*)() const) &dialect::Node::getDegree, "Check the degree (number of incident Edges) of the Node.\n\n \n  The degree of the Node\n\nC++: dialect::Node::getDegree() const --> unsigned int");
-		cl.def("setGraph", (void (dialect::Node::*)(class dialect::Graph &)) &dialect::Node::setGraph, "Tell the Node which Graph it belongs to.\n\n \n  The Graph to which the Node is to belong.\n\nC++: dialect::Node::setGraph(class dialect::Graph &) --> void", pybind11::arg("graph"));
-		cl.def("getGraph", (class dialect::Graph * (dialect::Node::*)()) &dialect::Node::getGraph, "Access the Graph to which the Node belongs.\n\nC++: dialect::Node::getGraph() --> class dialect::Graph *", pybind11::return_value_policy::automatic);
-		cl.def("removeEdge", (void (dialect::Node::*)(const class dialect::Edge &)) &dialect::Node::removeEdge, "Remove an incident Edge.\n\nC++: dialect::Node::removeEdge(const class dialect::Edge &) --> void", pybind11::arg("edge"));
-		cl.def("copyGeometry", (void (dialect::Node::*)(const class dialect::Node &)) &dialect::Node::copyGeometry, "Give this Node the same coordinates and dimensions as another.\n\nC++: dialect::Node::copyGeometry(const class dialect::Node &) --> void", pybind11::arg("other"));
-		cl.def("copyOtherGhostProperties", (void (dialect::Node::*)(const class dialect::Node &)) &dialect::Node::copyOtherGhostProperties, "Besides copying geometry, there may be other properties we wish\n         to copy; in particular, properties that are suitable to be copied\n         by a GhostNode.\n\nC++: dialect::Node::copyOtherGhostProperties(const class dialect::Node &) --> void", pybind11::arg("other"));
-		cl.def("getBoundingBox", (struct dialect::BoundingBox (dialect::Node::*)() const) &dialect::Node::getBoundingBox, "Get the bounding box for this Node.\n\nC++: dialect::Node::getBoundingBox() const --> struct dialect::BoundingBox");
-		cl.def("getBoundaryCompassPt", (class Avoid::Point (dialect::Node::*)(enum dialect::CompassDir) const) &dialect::Node::getBoundaryCompassPt, "Get the point on the boundary of this Node in a given direction\n         from its centre.\n\nC++: dialect::Node::getBoundaryCompassPt(enum dialect::CompassDir) const --> class Avoid::Point", pybind11::arg("dir"));
-		cl.def("setCentre", (void (dialect::Node::*)(double, double)) &dialect::Node::setCentre, "Set the position of the node, by setting its centre coordinates.\n\nC++: dialect::Node::setCentre(double, double) --> void", pybind11::arg("cx"), pybind11::arg("cy"));
-		cl.def("translate", (void (dialect::Node::*)(double, double)) &dialect::Node::translate, "Update the position of the node, by adding to its centre coordinates.\n\nC++: dialect::Node::translate(double, double) --> void", pybind11::arg("dx"), pybind11::arg("dy"));
-		cl.def("getCentre", (class Avoid::Point (dialect::Node::*)() const) &dialect::Node::getCentre, "Get the centre coordinates of the node.\n\nC++: dialect::Node::getCentre() const --> class Avoid::Point");
-		cl.def("setExternalId", (void (dialect::Node::*)(unsigned int)) &dialect::Node::setExternalId, "Set an externally-determined ID. (This is useful for TGLF and other\n         interfacing operations.)\n\nC++: dialect::Node::setExternalId(unsigned int) --> void", pybind11::arg("id"));
-		cl.def("getExternalId", (int (dialect::Node::*)()) &dialect::Node::getExternalId, "Get the external ID.\n\nC++: dialect::Node::getExternalId() --> int");
-		cl.def("setDims", (void (dialect::Node::*)(double, double)) &dialect::Node::setDims, "Set the dimensions of the node.\n\nC++: dialect::Node::setDims(double, double) --> void", pybind11::arg("w"), pybind11::arg("h"));
-		cl.def("setBoundingBox", (void (dialect::Node::*)(double, double, double, double)) &dialect::Node::setBoundingBox, "Set the bounding box of the node. This sets both the dimensions and the centre point.\n \n\n  The minimum x-coord of the box.\n \n\n  The maximum x-coord of the box.\n \n\n  The minimum y-coord of the box.\n \n\n  The maximum y-coord of the box.\n\nC++: dialect::Node::setBoundingBox(double, double, double, double) --> void", pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y"));
-		cl.def("addPadding", (void (dialect::Node::*)(double, double)) &dialect::Node::addPadding, "Add padding to the node's dimensions.\n \n\n  Amounts can be positive or negative, thus adding or subtracting padding.\n\nC++: dialect::Node::addPadding(double, double) --> void", pybind11::arg("dw"), pybind11::arg("dh"));
-		cl.def("updatePosnFromRect", (void (dialect::Node::*)(class vpsc::Rectangle *)) &dialect::Node::updatePosnFromRect, "Update the position of this Node to equal that of the given Rectangle.\n\nC++: dialect::Node::updatePosnFromRect(class vpsc::Rectangle *) --> void", pybind11::arg("r"));
-		cl.def("updateXCoordFromRect", (void (dialect::Node::*)(class vpsc::Rectangle *)) &dialect::Node::updateXCoordFromRect, "Update the x-coordinate of this Node to equal that of the given Rectangle.\n\nC++: dialect::Node::updateXCoordFromRect(class vpsc::Rectangle *) --> void", pybind11::arg("r"));
-		cl.def("updateYCoordFromRect", (void (dialect::Node::*)(class vpsc::Rectangle *)) &dialect::Node::updateYCoordFromRect, "Update the y-coordinate of this Node to equal that of the given Rectangle.\n\nC++: dialect::Node::updateYCoordFromRect(class vpsc::Rectangle *) --> void", pybind11::arg("r"));
-		cl.def("makeLibavoidPolygon", (class Avoid::Polygon (dialect::Node::*)() const) &dialect::Node::makeLibavoidPolygon, "Build and return a Polygon to represent this Node in libavoid.\n\nC++: dialect::Node::makeLibavoidPolygon() const --> class Avoid::Polygon");
-		cl.def("isRoot", (bool (dialect::Node::*)() const) &dialect::Node::isRoot, "Check whether this Node has been marked as being a root. This is\n         useful when working with trees, and can be safely ignored when\n         working with other sorts of graphs.\n\nC++: dialect::Node::isRoot() const --> bool");
-		cl.def("setIsRoot", (void (dialect::Node::*)(bool)) &dialect::Node::setIsRoot, "Say whether this Node is a root. This is useful when working with\n         trees, and can be safely ignored when working with other sorts of graphs.\n\nC++: dialect::Node::setIsRoot(bool) --> void", pybind11::arg("isRoot"));
-		cl.def("liesOppositeSegment", [](dialect::Node &o, const struct dialect::LineSegment & a0) -> bool { return o.liesOppositeSegment(a0); }, "", pybind11::arg("seg"));
-		cl.def("liesOppositeSegment", (bool (dialect::Node::*)(const struct dialect::LineSegment &, bool)) &dialect::Node::liesOppositeSegment, "Check whether this Node lies opposite a LineSegment, i.e. whether\n         the sides of the Node lying parallel to the segment intersect its\n         interval.\n \n\n  The LineSegment in question.\n \n\n  Boolean saying whether we should treat the interval\n                      in question as an open one (i.e. not including its\n                      endpoints). Defaults to false, so that the closed\n                      interval is considered by default.\n\nC++: dialect::Node::liesOppositeSegment(const struct dialect::LineSegment &, bool) --> bool", pybind11::arg("seg"), pybind11::arg("openInterval"));
+		cl.def( pybind11::init( [](){ return new dialect::BoundingBox(); } ) );
+		cl.def_readwrite("x", &dialect::BoundingBox::x);
+		cl.def_readwrite("X", &dialect::BoundingBox::X);
+		cl.def_readwrite("y", &dialect::BoundingBox::y);
+		cl.def_readwrite("Y", &dialect::BoundingBox::Y);
+		cl.def("__iadd__", (struct dialect::BoundingBox & (dialect::BoundingBox::*)(const struct dialect::BoundingBox &)) &dialect::BoundingBox::operator+=, "Adding two bounding boxes returns the bounding box of their union.\n\nC++: dialect::BoundingBox::operator+=(const struct dialect::BoundingBox &) --> struct dialect::BoundingBox &", pybind11::return_value_policy::automatic, pybind11::arg("rhs"));
+		cl.def("repr", (int (dialect::BoundingBox::*)() const) &dialect::BoundingBox::repr, "Write a simple representation of the bounding box.\n\nC++: dialect::BoundingBox::repr() const --> int");
+		cl.def("w", (double (dialect::BoundingBox::*)() const) &dialect::BoundingBox::w, "Get the width of the box.\n\nC++: dialect::BoundingBox::w() const --> double");
+		cl.def("h", (double (dialect::BoundingBox::*)() const) &dialect::BoundingBox::h, "Get the height of the box.\n\nC++: dialect::BoundingBox::h() const --> double");
+		cl.def("getInterval", (int (dialect::BoundingBox::*)(int)) &dialect::BoundingBox::getInterval, "Get the interval in a given dimension.\n \n\n  The desired interval's variable dimension; thus, X if you want the box's\n                 horizontal interval, Y if you want its vertical interval.\n\nC++: dialect::BoundingBox::getInterval(int) --> int", pybind11::arg("dim"));
+		cl.def("centre", (int (dialect::BoundingBox::*)() const) &dialect::BoundingBox::centre, "Get the centre of the box.\n\nC++: dialect::BoundingBox::centre() const --> int");
+		cl.def("buildSideSegment", (int (dialect::BoundingBox::*)(int) const) &dialect::BoundingBox::buildSideSegment, "Build a LineSegment representing a side of the box.\n\nC++: dialect::BoundingBox::buildSideSegment(int) const --> int", pybind11::arg("side"));
+		cl.def("perimeter", (double (dialect::BoundingBox::*)() const) &dialect::BoundingBox::perimeter, "Compute the perimeter of the box.\n\nC++: dialect::BoundingBox::perimeter() const --> double");
 	}
-	{ // dialect::GhostNode file:libdialect/graphs.h line:939
-		pybind11::class_<dialect::GhostNode, std::shared_ptr<dialect::GhostNode>, PyCallBack_dialect_GhostNode, dialect::Node> cl(M("dialect"), "GhostNode", "A GhostNode represents another Node.\n\n When working with techniques that involve decomposing a graph into parts,\n and then reassembling those parts, it is often useful to have a node in one\n part represent a node in another part. For example this can be a useful way\n to manage the nodes where the two parts intersect. The GhostNode class\n supports this by representing a given Node.");
-		cl.def("id", (unsigned int (dialect::GhostNode::*)() const) &dialect::GhostNode::id, "Return an appropriate ID number.\n\n Whether the GhostNode's actual ID is returned, or that of the\n Node it represents, depends whether it is set to masquerade.\n\nC++: dialect::GhostNode::id() const --> unsigned int");
-		cl.def("trueID", (unsigned int (dialect::GhostNode::*)() const) &dialect::GhostNode::trueID, "Simple way to get the true ID of this GhostNode, even\n         if it is currently set to masquerade as the Node it represents.\n\nC++: dialect::GhostNode::trueID() const --> unsigned int");
-		cl.def("setMasquerade", (void (dialect::GhostNode::*)(bool)) &dialect::GhostNode::setMasquerade, "Say whether the GhostNode should masquerade as the original Node.\n\nC++: dialect::GhostNode::setMasquerade(bool) --> void", pybind11::arg("doMasquerade"));
+	{ // dialect::ColaOptions file:libdialect/graphs.h line:105
+		pybind11::class_<dialect::ColaOptions, std::shared_ptr<dialect::ColaOptions>> cl(M("dialect"), "ColaOptions", "Provides a simple way to set any or all of the various\n         optional arguments to libcola layout methods.");
+		cl.def( pybind11::init( [](){ return new dialect::ColaOptions(); } ) );
+		cl.def_readwrite("idealEdgeLength", &dialect::ColaOptions::idealEdgeLength);
+		cl.def_readwrite("preventOverlaps", &dialect::ColaOptions::preventOverlaps);
+		cl.def_readwrite("solidifyAlignedEdges", &dialect::ColaOptions::solidifyAlignedEdges);
+		cl.def_readwrite("solidEdgeExemptions", &dialect::ColaOptions::solidEdgeExemptions);
+		cl.def_readwrite("xAxis", &dialect::ColaOptions::xAxis);
+		cl.def_readwrite("yAxis", &dialect::ColaOptions::yAxis);
+		cl.def_readwrite("makeFeasible", &dialect::ColaOptions::makeFeasible);
+		cl.def_readwrite("makeFeasible_xBorder", &dialect::ColaOptions::makeFeasible_xBorder);
+		cl.def_readwrite("makeFeasible_yBorder", &dialect::ColaOptions::makeFeasible_yBorder);
+		cl.def_readwrite("useNeighbourStress", &dialect::ColaOptions::useNeighbourStress);
+		cl.def_readwrite("nbrStressIELScalar", &dialect::ColaOptions::nbrStressIELScalar);
+		cl.def_readwrite("useMajorization", &dialect::ColaOptions::useMajorization);
+		cl.def_readwrite("useScaling", &dialect::ColaOptions::useScaling);
+		cl.def_readwrite("ccs", &dialect::ColaOptions::ccs);
+		cl.def_readwrite("nodeClusters", &dialect::ColaOptions::nodeClusters);
+		cl.def_readwrite("eLengths", &dialect::ColaOptions::eLengths);
 	}
-	{ // dialect::Edge file:libdialect/graphs.h line:1006
-		pybind11::class_<dialect::Edge, std::shared_ptr<dialect::Edge>> cl(M("dialect"), "Edge", "The Edge class represents edges in a graph.");
-		cl.def( pybind11::init( [](dialect::Edge const &o){ return new dialect::Edge(o); } ) );
-		cl.def("id", (unsigned int (dialect::Edge::*)() const) &dialect::Edge::id, "Access the unique ID of this instance.\n\n \n  The ID.\n\nC++: dialect::Edge::id() const --> unsigned int");
-		cl.def("setGraph", (void (dialect::Edge::*)(class dialect::Graph &)) &dialect::Edge::setGraph, "Tell the Edge which Graph it belongs to.\n\n \n  The Graph to which the Edge is to belong.\n\nC++: dialect::Edge::setGraph(class dialect::Graph &) --> void", pybind11::arg("graph"));
-		cl.def("sever", (void (dialect::Edge::*)()) &dialect::Edge::sever, "\"Sever\" this Edge, i.e. remove it from the Nodes to which\n         it is attached.\n\nC++: dialect::Edge::sever() --> void");
-		cl.def("getBoundingBox", (struct dialect::BoundingBox (dialect::Edge::*)() const) &dialect::Edge::getBoundingBox, "Get the bounding box for the edge,\n         including its end points and route points.\n\nC++: dialect::Edge::getBoundingBox() const --> struct dialect::BoundingBox");
-		cl.def("addRoutePoint", (void (dialect::Edge::*)(double, double)) &dialect::Edge::addRoutePoint, "Add a point to the route.\n\nC++: dialect::Edge::addRoutePoint(double, double) --> void", pybind11::arg("x"), pybind11::arg("y"));
-		cl.def("hasBendNodes", (bool (dialect::Edge::*)()) &dialect::Edge::hasBendNodes, "Check whether this Edge has any bend nodes.\n\nC++: dialect::Edge::hasBendNodes() --> bool");
-		cl.def("rotate90cw", (void (dialect::Edge::*)()) &dialect::Edge::rotate90cw, "Rotate the connector route 90 degrees clockwise.\n\nC++: dialect::Edge::rotate90cw() --> void");
-		cl.def("rotate90acw", (void (dialect::Edge::*)()) &dialect::Edge::rotate90acw, "Rotate the connector route 90 degrees anticlockwise.\n\nC++: dialect::Edge::rotate90acw() --> void");
-		cl.def("rotate180", (void (dialect::Edge::*)()) &dialect::Edge::rotate180, "Rotate the connector route 180 degrees.\n\nC++: dialect::Edge::rotate180() --> void");
-		cl.def("translate", (void (dialect::Edge::*)(double, double)) &dialect::Edge::translate, "Translate the connector route by a given amount in each dimension.\n \n\n  The amount by which to translate in the x-dimension.\n \n\n  The amount by which to translate in the y-dimension.\n\nC++: dialect::Edge::translate(double, double) --> void", pybind11::arg("dx"), pybind11::arg("dy"));
-		cl.def("clearRouteAndBends", (void (dialect::Edge::*)()) &dialect::Edge::clearRouteAndBends, "Clear the connector route and drop all bend nodes.\n\nC++: dialect::Edge::clearRouteAndBends() --> void");
-		cl.def("buildRouteFromBends", (void (dialect::Edge::*)()) &dialect::Edge::buildRouteFromBends, "Build a connector route based on the bend nodes.\n\nC++: dialect::Edge::buildRouteFromBends() --> void");
+	{ // dialect::ColaGraphRep file:libdialect/graphs.h line:157
+		pybind11::class_<dialect::ColaGraphRep, std::shared_ptr<dialect::ColaGraphRep>> cl(M("dialect"), "ColaGraphRep", "Bundles those data structures required in order to represent\n         a Graph in libcola, and to map infomration between the libcola\n         and libdialect representations.");
+		cl.def( pybind11::init( [](){ return new dialect::ColaGraphRep(); } ) );
+		cl.def_readwrite("rs", &dialect::ColaGraphRep::rs);
+		cl.def_readwrite("es", &dialect::ColaGraphRep::es);
+		cl.def_readwrite("id2ix", &dialect::ColaGraphRep::id2ix);
+		cl.def_readwrite("ix2id", &dialect::ColaGraphRep::ix2id);
 	}
-	// dialect::ACAFlag file:libdialect/aca.h line:43
-	pybind11::enum_<dialect::ACAFlag>(M("dialect"), "ACAFlag", pybind11::arithmetic(), "")
-		.value("ACAHORIZ", dialect::ACAHORIZ)
-		.value("ACAVERT", dialect::ACAVERT)
-		.value("ACADELIB", dialect::ACADELIB)
-		.value("ACACONN", dialect::ACACONN)
-		.export_values();
-
-;
-
-	// dialect::ACASepFlag file:libdialect/aca.h line:50
-	pybind11::enum_<dialect::ACASepFlag>(M("dialect"), "ACASepFlag", pybind11::arithmetic(), "")
-		.value("ACANOSEP", dialect::ACANOSEP)
-		.value("ACANORTH", dialect::ACANORTH)
-		.value("ACAEAST", dialect::ACAEAST)
-		.value("ACASOUTH", dialect::ACASOUTH)
-		.value("ACAWEST", dialect::ACAWEST)
-		.value("ACANORTHEAST", dialect::ACANORTHEAST)
-		.value("ACASOUTHEAST", dialect::ACASOUTHEAST)
-		.value("ACANORTHWEST", dialect::ACANORTHWEST)
-		.value("ACASOUTHWEST", dialect::ACASOUTHWEST)
-		.value("ACANORTHSOUTH", dialect::ACANORTHSOUTH)
-		.value("ACAEASTWEST", dialect::ACAEASTWEST)
-		.value("ACANOTNORTH", dialect::ACANOTNORTH)
-		.value("ACANOTEAST", dialect::ACANOTEAST)
-		.value("ACANOTSOUTH", dialect::ACANOTSOUTH)
-		.value("ACANOTWEST", dialect::ACANOTWEST)
-		.value("ACAALLSEP", dialect::ACAALLSEP)
-		.export_values();
-
-;
-
-	// dialect::negateSepFlag(enum dialect::ACASepFlag) file:libdialect/aca.h line:74
-	M("dialect").def("negateSepFlag", (enum dialect::ACASepFlag (*)(enum dialect::ACASepFlag)) &dialect::negateSepFlag, "C++: dialect::negateSepFlag(enum dialect::ACASepFlag) --> enum dialect::ACASepFlag", pybind11::arg("sf"));
-
-	// dialect::sepToAlignFlag(enum dialect::ACASepFlag) file:libdialect/aca.h line:75
-	M("dialect").def("sepToAlignFlag", (enum dialect::ACAFlag (*)(enum dialect::ACASepFlag)) &dialect::sepToAlignFlag, "C++: dialect::sepToAlignFlag(enum dialect::ACASepFlag) --> enum dialect::ACAFlag", pybind11::arg("sf"));
-
-	// dialect::perpAlignFlag(enum dialect::ACAFlag) file:libdialect/aca.h line:76
-	M("dialect").def("perpAlignFlag", (enum dialect::ACAFlag (*)(enum dialect::ACAFlag)) &dialect::perpAlignFlag, "C++: dialect::perpAlignFlag(enum dialect::ACAFlag) --> enum dialect::ACAFlag", pybind11::arg("af"));
-
-	// dialect::vectorToSepFlag(double, double) file:libdialect/aca.h line:77
-	M("dialect").def("vectorToSepFlag", (enum dialect::ACASepFlag (*)(double, double)) &dialect::vectorToSepFlag, "C++: dialect::vectorToSepFlag(double, double) --> enum dialect::ACASepFlag", pybind11::arg("dx"), pybind11::arg("dy"));
-
-	// dialect::propsedSepConflictsWithExistingPosition(enum dialect::ACASepFlag, enum dialect::ACASepFlag) file:libdialect/aca.h line:78
-	M("dialect").def("propsedSepConflictsWithExistingPosition", (bool (*)(enum dialect::ACASepFlag, enum dialect::ACASepFlag)) &dialect::propsedSepConflictsWithExistingPosition, "C++: dialect::propsedSepConflictsWithExistingPosition(enum dialect::ACASepFlag, enum dialect::ACASepFlag) --> bool", pybind11::arg("pro"), pybind11::arg("ex"));
-
-	{ // dialect::OrderedAlignment file:libdialect/aca.h line:80
-		pybind11::class_<dialect::OrderedAlignment, std::shared_ptr<dialect::OrderedAlignment>> cl(M("dialect"), "OrderedAlignment", "");
-		cl.def( pybind11::init( [](){ return new dialect::OrderedAlignment(); } ) );
-		cl.def_readwrite("af", &dialect::OrderedAlignment::af);
-		cl.def_readwrite("sf", &dialect::OrderedAlignment::sf);
-		cl.def_readwrite("dim", &dialect::OrderedAlignment::dim);
-		cl.def_readwrite("src", &dialect::OrderedAlignment::src);
-		cl.def_readwrite("tgt", &dialect::OrderedAlignment::tgt);
-		cl.def_readwrite("offsetSrc", &dialect::OrderedAlignment::offsetSrc);
-		cl.def_readwrite("offsetTgt", &dialect::OrderedAlignment::offsetTgt);
-		cl.def_readwrite("edgeIndex", &dialect::OrderedAlignment::edgeIndex);
-		cl.def_readwrite("penalty", &dialect::OrderedAlignment::penalty);
+	{ // dialect::NodeIdCmp file:libdialect/graphs.h line:169
+		pybind11::class_<dialect::NodeIdCmp, std::shared_ptr<dialect::NodeIdCmp>> cl(M("dialect"), "NodeIdCmp", "Useful for set operations on Node lookups.\n \n\n  Thanks to https://stackoverflow.com/a/15579928");
+		cl.def( pybind11::init( [](){ return new dialect::NodeIdCmp(); } ) );
+		cl.def("__call__", (bool (dialect::NodeIdCmp::*)(unsigned int, const int &) const) &dialect::NodeIdCmp::operator(), "C++: dialect::NodeIdCmp::operator()(unsigned int, const int &) const --> bool", pybind11::arg("i"), pybind11::arg("p"));
+		cl.def("__call__", (bool (dialect::NodeIdCmp::*)(const int &, unsigned int) const) &dialect::NodeIdCmp::operator(), "C++: dialect::NodeIdCmp::operator()(const int &, unsigned int) const --> bool", pybind11::arg("p"), pybind11::arg("i"));
 	}
-	// dialect::sortOrdAlignsByPenalty(const struct dialect::OrderedAlignment *, const struct dialect::OrderedAlignment *) file:libdialect/aca.h line:109
-	M("dialect").def("sortOrdAlignsByPenalty", (bool (*)(const struct dialect::OrderedAlignment *, const struct dialect::OrderedAlignment *)) &dialect::sortOrdAlignsByPenalty, "C++: dialect::sortOrdAlignsByPenalty(const struct dialect::OrderedAlignment *, const struct dialect::OrderedAlignment *) --> bool", pybind11::arg("lhs"), pybind11::arg("rhs"));
-
+	{ // dialect::Graph file:libdialect/graphs.h line:180
+		pybind11::class_<dialect::Graph, std::shared_ptr<dialect::Graph>> cl(M("dialect"), "Graph", "The Graph class represents graphs consisting of nodes and edges.");
+		cl.def( pybind11::init( [](){ return new dialect::Graph(); } ) );
+		cl.def( pybind11::init( [](dialect::Graph const &o){ return new dialect::Graph(o); } ) );
+		cl.def_readwrite("m_debugOutputPath", &dialect::Graph::m_debugOutputPath);
+		cl.def_readwrite("m_projectionDebugLevel", &dialect::Graph::m_projectionDebugLevel);
+		cl.def("assign", (class dialect::Graph & (dialect::Graph::*)(const class dialect::Graph)) &dialect::Graph::operator=, "Copy-assignment operator.\n \n\n  Pass-by-value is deliberate. See https://stackoverflow.com/a/3279550\n\nC++: dialect::Graph::operator=(const class dialect::Graph) --> class dialect::Graph &", pybind11::return_value_policy::automatic, pybind11::arg("other"));
+		cl.def("getMaxDegree", (unsigned int (dialect::Graph::*)() const) &dialect::Graph::getMaxDegree, "Reports the maximum degree of any Node in this Graph.\n\n The value is automatically maintained as you add or remove Nodes\n from the Graph.\n\n \n  Maximum degree of any Node in the Graph.\n\nC++: dialect::Graph::getMaxDegree() const --> unsigned int");
+		cl.def("addNode", [](dialect::Graph &o, int const & a0) -> void { return o.addNode(a0); }, "", pybind11::arg("node"));
+		cl.def("addNode", (void (dialect::Graph::*)(int, bool)) &dialect::Graph::addNode, "Add a Node to this Graph.\n\n \n  The Node to be added to the Graph.\n \n\n  Controls whether the Node will record this Graph\n                            as being the one to which it belongs.\n\nC++: dialect::Graph::addNode(int, bool) --> void", pybind11::arg("node"), pybind11::arg("takeOwnership"));
+		cl.def("addNode", (int (dialect::Graph::*)()) &dialect::Graph::addNode, "Add a new Node to this Graph.\n \n\n  The new Node.\n\nC++: dialect::Graph::addNode() --> int");
+		cl.def("addNode", (int (dialect::Graph::*)(double, double)) &dialect::Graph::addNode, "Add a new Node to this Graph, setting dimensions.\n \n\n  Width of Node.\n \n\n  Height of Node.\n \n\n  The new Node.\n\nC++: dialect::Graph::addNode(double, double) --> int", pybind11::arg("w"), pybind11::arg("h"));
+		cl.def("addNode", (int (dialect::Graph::*)(double, double, double, double)) &dialect::Graph::addNode, "Add a new Node to this Graph, setting position and dimensions.\n \n\n  Centre x-coordinate of Node.\n \n\n  Centre y-coordinate of Node.\n \n\n  Width of Node.\n \n\n  Height of Node.\n \n\n  The new Node.\n\nC++: dialect::Graph::addNode(double, double, double, double) --> int", pybind11::arg("cx"), pybind11::arg("cy"), pybind11::arg("w"), pybind11::arg("h"));
+		cl.def("addEdge", [](dialect::Graph &o, int const & a0) -> void { return o.addEdge(a0); }, "", pybind11::arg("edge"));
+		cl.def("addEdge", (void (dialect::Graph::*)(int, bool)) &dialect::Graph::addEdge, "Add an Edge to this Graph.\n\n \n  The Edge to be added to the Graph.\n \n\n  Controls whether the Edge will record this Graph\n                            as being the one to which it belongs.\n\nC++: dialect::Graph::addEdge(int, bool) --> void", pybind11::arg("edge"), pybind11::arg("takeOwnership"));
+		cl.def("addEdge", (int (dialect::Graph::*)(int, int)) &dialect::Graph::addEdge, "Add a new Edge to this Graph.\n \n\n  The source Node.\n \n\n  The target Node.\n \n\n  Nodes are also informed of their linkage to this new Edge.\n \n\n  The new Edge.\n\nC++: dialect::Graph::addEdge(int, int) --> int", pybind11::arg("src"), pybind11::arg("tgt"));
+		cl.def("addEdge", (int (dialect::Graph::*)(const unsigned int &, const unsigned int &)) &dialect::Graph::addEdge, "Add an Edge by specifying the IDs of its endpoint Nodes.\n\n \n  The ID of the Node that is to sit at the source end of the new Edge.\n \n\n  The ID of the Node that is to sit at the target end of the new Edge.\n \n\n  A shared pointer to the new Edge.\n\nC++: dialect::Graph::addEdge(const unsigned int &, const unsigned int &) --> int", pybind11::arg("srcID"), pybind11::arg("tgtID"));
+		cl.def("hasNode", (bool (dialect::Graph::*)(const unsigned int &) const) &dialect::Graph::hasNode, "Say whether this Graph has a Node of the given ID.\n\n \n  boolean\n\nC++: dialect::Graph::hasNode(const unsigned int &) const --> bool", pybind11::arg("id"));
+		cl.def("hasEdge", (bool (dialect::Graph::*)(const unsigned int &) const) &dialect::Graph::hasEdge, "Say whether this Graph has an Edge of the given ID.\n\n \n  boolean\n\nC++: dialect::Graph::hasEdge(const unsigned int &) const --> bool", pybind11::arg("id"));
+		cl.def("severEdge", (void (dialect::Graph::*)(class dialect::Edge &)) &dialect::Graph::severEdge, "Sever an Edge in this Graph.\n\n The Edge is removed from the Graph, and from both of its endpoint\n Nodes as well.\n\n \n  The Edge to be severed from the Graph.\n\nC++: dialect::Graph::severEdge(class dialect::Edge &) --> void", pybind11::arg("edge"));
+		cl.def("severNode", (void (dialect::Graph::*)(const class dialect::Node &)) &dialect::Graph::severNode, "Sever all the Edges incident to a Node in this Graph.\n\n \n  This method only cuts the incident Edges; it does /not/ also\n        remove the Node itself from the Graph.\n\n \n  The Node whose Edges are to be severed.\n\n \n severAndRemoveNode\n\nC++: dialect::Graph::severNode(const class dialect::Node &) --> void", pybind11::arg("node"));
+		cl.def("severNodeNotingNeighbours", (int (dialect::Graph::*)(const class dialect::Node &)) &dialect::Graph::severNodeNotingNeighbours, "Like severNode but also returns a vector of all Nodes that\n         were neighbours before severing.\n\n \n  severNode\n\nC++: dialect::Graph::severNodeNotingNeighbours(const class dialect::Node &) --> int", pybind11::arg("node"));
+		cl.def("removeNode", (void (dialect::Graph::*)(const class dialect::Node &)) &dialect::Graph::removeNode, "Remove a Node from this Graph.\n\n \n  This method only removes the Node itself; it does not also\n        sever the incident Edges.\n\n \n  The Node to be removed from the Graph.\n\n \n severAndRemoveNode\n\nC++: dialect::Graph::removeNode(const class dialect::Node &) --> void", pybind11::arg("node"));
+		cl.def("removeNodes", (void (dialect::Graph::*)(const int &)) &dialect::Graph::removeNodes, "Remove several Nodes from this Graph.\n\n \n  The Nodes to be removed from the Graph.\n\n \n removeNode\n\nC++: dialect::Graph::removeNodes(const int &) --> void", pybind11::arg("nodes"));
+		cl.def("severAndRemoveNode", (void (dialect::Graph::*)(const class dialect::Node &)) &dialect::Graph::severAndRemoveNode, "Convenience method to completely remove a Node from the Graph.\n\n \n severNode\n \n\n removeNode\n\nC++: dialect::Graph::severAndRemoveNode(const class dialect::Node &) --> void", pybind11::arg("node"));
+		cl.def("severAndRemoveNode", (void (dialect::Graph::*)(unsigned int)) &dialect::Graph::severAndRemoveNode, "Convenience method to completely remove a Node from the Graph.\n\n \n severNode\n \n\n removeNode\n\nC++: dialect::Graph::severAndRemoveNode(unsigned int) --> void", pybind11::arg("nodeID"));
+		cl.def("cloneNode", (int (dialect::Graph::*)(unsigned int)) &dialect::Graph::cloneNode, "Clone a node completely. There will be as many copies of the original\n         node as it had edges, and each clone will be a leaf.\n \n\n  The ID of the node to be cloned.\n \n\n Vector of new clones added to the graph.\n\nC++: dialect::Graph::cloneNode(unsigned int) --> int", pybind11::arg("id"));
+		cl.def("getNode", (int (dialect::Graph::*)(const unsigned int &) const) &dialect::Graph::getNode, "Look up a Node by ID.\n\n \n  out_of_range exception if there is no Node by the given ID.\n\n \n  The Node with the given ID, if present.\n\nC++: dialect::Graph::getNode(const unsigned int &) const --> int", pybind11::arg("id"));
+		cl.def("getNodeLookup", (const int & (dialect::Graph::*)() const) &dialect::Graph::getNodeLookup, "Read-only access to this Graph's lookup map for Nodes by their ID.\n\nC++: dialect::Graph::getNodeLookup() const --> const int &", pybind11::return_value_policy::automatic);
+		cl.def("getNodeLookupWithIgnore", (int (dialect::Graph::*)(const int &) const) &dialect::Graph::getNodeLookupWithIgnore, "Build a NodesById lookup with some Nodes omitted.\n\nC++: dialect::Graph::getNodeLookupWithIgnore(const int &) const --> int", pybind11::arg("ignore"));
+		cl.def("getNodeLookupWithIgnore", (int (dialect::Graph::*)(const int &) const) &dialect::Graph::getNodeLookupWithIgnore, "Build a NodesById lookup with some Nodes omitted.\n\nC++: dialect::Graph::getNodeLookupWithIgnore(const int &) const --> int", pybind11::arg("ignore"));
+		cl.def("getEdgeLookup", (const int & (dialect::Graph::*)() const) &dialect::Graph::getEdgeLookup, "Read-only access to this Graph's lookup map for Edges by their ID.\n\nC++: dialect::Graph::getEdgeLookup() const --> const int &", pybind11::return_value_policy::automatic);
+		cl.def("getNumNodes", (unsigned long (dialect::Graph::*)() const) &dialect::Graph::getNumNodes, "Say how many Nodes there are in this Graph.\n\nC++: dialect::Graph::getNumNodes() const --> unsigned long");
+		cl.def("getNumEdges", (unsigned long (dialect::Graph::*)() const) &dialect::Graph::getNumEdges, "Say how many Edges there are in this Graph.\n\nC++: dialect::Graph::getNumEdges() const --> unsigned long");
+		cl.def("isEmpty", (bool (dialect::Graph::*)() const) &dialect::Graph::isEmpty, "Say whether the Graph is empty, meaning that it has no Nodes.\n\nC++: dialect::Graph::isEmpty() const --> bool");
+		cl.def("isTree", (bool (dialect::Graph::*)() const) &dialect::Graph::isTree, "Say whether the Graph is a tree.\n\nC++: dialect::Graph::isTree() const --> bool");
+		cl.def("computeAvgNodeDim", (double (dialect::Graph::*)() const) &dialect::Graph::computeAvgNodeDim, "Compute the average of all heights and widths of Nodes\n         in this Graph.\n\n \n  The average.\n\nC++: dialect::Graph::computeAvgNodeDim() const --> double");
+		cl.def("getIEL", (double (dialect::Graph::*)()) &dialect::Graph::getIEL, "Read the ideal edge length of this Graph.\n\n \n  If the current value is zero (which is true of all new Graphs), the Graph\n        will first auto-infer an ideal edge length equal to twice the average node\n        dimension, store that value, and return it.\n\n \n  Once this method has been called, the Graph will NOT recompute its IEL\n           on subsequent calls, even if Nodes have been added or taken away.\n\n \n Graph::recomputeIEL\n\nC++: dialect::Graph::getIEL() --> double");
+		cl.def("recomputeIEL", (double (dialect::Graph::*)()) &dialect::Graph::recomputeIEL, "Recompute, store, and return the Graph's ideal edge length.\n\n \n  As in the getIEL method, the value will be twice the average dimension\n        of Nodes currently in the Graph.\n\n \n Graph::getIEL\n\nC++: dialect::Graph::recomputeIEL() --> double");
+		cl.def("getBoundingBox", [](dialect::Graph const &o) -> dialect::BoundingBox { return o.getBoundingBox(); }, "");
+		cl.def("getBoundingBox", [](dialect::Graph const &o, const int & a0) -> dialect::BoundingBox { return o.getBoundingBox(a0); }, "", pybind11::arg("ignore"));
+		cl.def("getBoundingBox", (struct dialect::BoundingBox (dialect::Graph::*)(const int &, bool) const) &dialect::Graph::getBoundingBox, "Get the bounding box for this Graph.\n\n \n  Optional set of Nodes (as NodesByID) to leave out of the box.\n \n\n  Say whether bend points of connector routes\n                           should be included in the box.\n\n \n  The bounding box.\n\n \n getBoundingBoxDimensions\n\nC++: dialect::Graph::getBoundingBox(const int &, bool) const --> struct dialect::BoundingBox", pybind11::arg("ignore"), pybind11::arg("includeBends"));
+		cl.def("getConnComps", (int (dialect::Graph::*)() const) &dialect::Graph::getConnComps, "Get the connected components of this Graph.\n\n Note that the Nodes and Edges in the component Graphs will be\n the same objects as those in this Graph.\n\n \n  A vector of shared pointers to Graphs.\n\nC++: dialect::Graph::getConnComps() const --> int");
+		cl.def("getChainsAndCycles", (void (dialect::Graph::*)(int)) &dialect::Graph::getChainsAndCycles, "Identify all sequences of consecutive \"links\" (degree-2 nodes) in this graph.\n \n\n  Vector of deques of Nodes, where each identified \"chain\" will be recorded.\n                     A \"chain\" is a consecutive sequence of \"links\" whose endpoints are distinct.\n \n\n  Vector of deques of Nodes, where each identified \"cycle\" will be recorded.\n                     A \"cycles\" is a consecutive sequence of \"links\" that forms a closed loop.\n\nC++: dialect::Graph::getChainsAndCycles(int) --> void", pybind11::arg(""));
+		cl.def("writeTglf", [](dialect::Graph const &o) -> int { return o.writeTglf(); }, "");
+		cl.def("writeTglf", (int (dialect::Graph::*)(bool) const) &dialect::Graph::writeTglf, "Write TGLF to represent this Graph.\n \n\n  When a Graph is built from TGLF its Nodes store the IDs that\n                            were used there. Set true if you want these same IDs to be\n                            written out as well. Otherwise the internal unique Node IDs are used.\n \n\n  A string containing the TGLF.\n\nC++: dialect::Graph::writeTglf(bool) const --> int", pybind11::arg("useExternalIds"));
+		cl.def("writeSvg", [](dialect::Graph const &o) -> int { return o.writeSvg(); }, "");
+		cl.def("writeSvg", (int (dialect::Graph::*)(bool) const) &dialect::Graph::writeSvg, "Write SVG to represent this Graph.\n \n\n  When a Graph is built from TGLF its Nodes store the IDs that\n                            were used there. Set true if you want these same IDs to be\n                            written out as well. Otherwise the internal unique Node IDs are used.\n \n\n  A string containing the SVG.\n\nC++: dialect::Graph::writeSvg(bool) const --> int", pybind11::arg("useExternalIds"));
+		cl.def("writeId2Ix", (int (dialect::Graph::*)() const) &dialect::Graph::writeId2Ix, "Write the Node ID --> Rectangle Index map.\n         Useful for debugging.\n \n\n  String representation of the map.\n\nC++: dialect::Graph::writeId2Ix() const --> int");
+		cl.def("writeIx2Id", (int (dialect::Graph::*)() const) &dialect::Graph::writeIx2Id, "Write the Rectangle Index --> Node ID map.\n         Useful for debugging.\n \n\n  String representation of the map.\n\nC++: dialect::Graph::writeIx2Id() const --> int");
+		cl.def("rotate90cw", [](dialect::Graph &o) -> void { return o.rotate90cw(); }, "");
+		cl.def("rotate90cw", (void (dialect::Graph::*)(struct dialect::ColaOptions *)) &dialect::Graph::rotate90cw, "Rotate the layout -- and the constraints -- 90 degrees clockwise.\n \n\n  ColaOptions to control destressing operation after rotation.\n                  This is optional; pass nullptr if you do not want to destress.\n \n\n If any nodes are non-square, i.e. have aspect ratio different from 1:1, then destressing\n       is recommended after a 90-degree rotation. The relationships between oblong nodes can\n       change dramatically when rotating 90 degrees.\n \n\n Graph::rotate90acw\n \n\n Graph::rotate180\n\nC++: dialect::Graph::rotate90cw(struct dialect::ColaOptions *) --> void", pybind11::arg("opts"));
+		cl.def("rotate90acw", [](dialect::Graph &o) -> void { return o.rotate90acw(); }, "");
+		cl.def("rotate90acw", (void (dialect::Graph::*)(struct dialect::ColaOptions *)) &dialect::Graph::rotate90acw, "Rotate the layout -- and the constraints -- 90 degrees anticlockwise.\n \n\n  ColaOptions to control destressing operation after rotation.\n                  This is optional; pass nullptr if you do not want to destress.\n \n\n If any nodes are non-square, i.e. have aspect ratio different from 1:1, then destressing\n       is recommended after a 90-degree rotation. The relationships between oblong nodes can\n       change dramatically when rotating 90 degrees.\n \n\n Graph::rotate90cw\n \n\n Graph::rotate180\n\nC++: dialect::Graph::rotate90acw(struct dialect::ColaOptions *) --> void", pybind11::arg("opts"));
+		cl.def("rotate180", (void (dialect::Graph::*)()) &dialect::Graph::rotate180, "Rotate the layout -- and the constraints -- 180 degrees.\n \n\n Unlinke the 90-degree rotations, rotating 180 degrees can be viewed as a simple rigid\n       transformation, and there is no reason to destress afterward.\n \n\n Graph::rotate90cw\n \n\n Graph::rotate90acw\n\nC++: dialect::Graph::rotate180() --> void");
+		cl.def("translate", (void (dialect::Graph::*)(double, double)) &dialect::Graph::translate, "Translate the entire layout by a given amount in each dimension.\n \n\n  The amount by which to translate in the x-dimension.\n \n\n  The amount by which to translate in the y-dimension.\n\nC++: dialect::Graph::translate(double, double) --> void", pybind11::arg("dx"), pybind11::arg("dy"));
+		cl.def("putInBasePosition", (void (dialect::Graph::*)()) &dialect::Graph::putInBasePosition, "Put the Graph into a basic position useful for making unit test inputs.\n         The Nodes are put in a row, all Edge routes are cleared, and all constraints\n         are cleared.\n\n         The criteria are: (1) all nodes have distinct positions, and (2) the\n         layout is a bad one. Condition (1) is needed so that Cola doesn't generate\n         random starting positions.\n\nC++: dialect::Graph::putInBasePosition() --> void");
+		cl.def("hasSameLayoutAs", [](dialect::Graph const &o, const class dialect::Graph & a0) -> bool { return o.hasSameLayoutAs(a0); }, "", pybind11::arg("other"));
+		cl.def("hasSameLayoutAs", [](dialect::Graph const &o, const class dialect::Graph & a0, double const & a1) -> bool { return o.hasSameLayoutAs(a0, a1); }, "", pybind11::arg("other"), pybind11::arg("tol"));
+		cl.def("hasSameLayoutAs", (bool (dialect::Graph::*)(const class dialect::Graph &, double, int *) const) &dialect::Graph::hasSameLayoutAs, "Check whether this Graph has the same layout as another, up to a given\n         tolerance.\n \n\n   Checks Node positions and Edge routes, but not constraints.\n \n\n  The other Graph.\n \n\n  Tolerance for checking equality of floats.\n \n\n  Optional mapping from the IDs of the other Graph to the IDs of\n                   the corresponding Nodes of this Graph. If not provided, the\n                   correspondence is by the Nodes' external IDs.\n\nC++: dialect::Graph::hasSameLayoutAs(const class dialect::Graph &, double, int *) const --> bool", pybind11::arg("other"), pybind11::arg("tol"), pybind11::arg("idMap"));
+		cl.def("getEdgeBySrcIdTgtIdLookup", (int (dialect::Graph::*)() const) &dialect::Graph::getEdgeBySrcIdTgtIdLookup, "Get a lookup for the Edges of this Graph by the IDs of their source and\n         target Nodes, in that order.\n\nC++: dialect::Graph::getEdgeBySrcIdTgtIdLookup() const --> int");
+		cl.def("destress", (void (dialect::Graph::*)(const struct dialect::ColaOptions &)) &dialect::Graph::destress, "Reduce stress via libcola's gradient-descent procedures.\n\n \n  options to control the layout.\n\n \n  In opts, set the idealEdgeLength to 0 if you want the Graph to automatically\n        supply a reasonable ideal edge length.\n\nC++: dialect::Graph::destress(const struct dialect::ColaOptions &) --> void", pybind11::arg("opts"));
+		cl.def("destress", (void (dialect::Graph::*)()) &dialect::Graph::destress, "Convenience method to destress with default options.\n\nC++: dialect::Graph::destress() --> void");
+		cl.def("solidifyAlignedEdges", (void (dialect::Graph::*)(int, const struct dialect::ColaOptions &)) &dialect::Graph::solidifyAlignedEdges, "Add Nodes to represent aligned Edges in one dimension, constraining them to stay aligned.\n \n\n  Solidify only those aligned Edges whose variable coordinate is in this dimension.\n                 Thus, horizontally aligned edges for XDIM; vertically aligned for YDIM.\n \n\n  Here you can set Edge exemptions, i.e. a set of Edges that should not be solidified.\n\nC++: dialect::Graph::solidifyAlignedEdges(int, const struct dialect::ColaOptions &) --> void", pybind11::arg("dim"), pybind11::arg("opts"));
+		cl.def("makeFeasible", (void (dialect::Graph::*)(const struct dialect::ColaOptions &)) &dialect::Graph::makeFeasible, "Make feasible. This means that, among those constraints that offer alternatives,\n         we look for satisfiable alternatives in order of increasing cost (cost = separation violation).\n This is useful with nonoverlap constraints.\n\n \n  The usual ColaOptions.\n \n\n  Simply uses the method by the same name in the cola::ConstrainedFDLayout class.\n\nC++: dialect::Graph::makeFeasible(const struct dialect::ColaOptions &) --> void", pybind11::arg("opts"));
+		cl.def("project", [](dialect::Graph &o, const struct dialect::ColaOptions & a0, int const & a1) -> int { return o.project(a0, a1); }, "", pybind11::arg("opts"), pybind11::arg("dim"));
+		cl.def("project", (int (dialect::Graph::*)(const struct dialect::ColaOptions &, int, int)) &dialect::Graph::project, "Project onto cola constraints.\n \n\n  Options, including any additional constraints onto which to project\n                  (in addition to the Graph's existing SepMatrix).\n \n\n            All options relating to edge length are ignored, since this is only a projection.\n \n\n  The dimension in which to project.\n \n\n  Acceptance level. See doctext for cola::projectOntoCCs.\n \n\n  Error level. See cola::projectOntoCCs.\n\nC++: dialect::Graph::project(const struct dialect::ColaOptions &, int, int) --> int", pybind11::arg("opts"), pybind11::arg("dim"), pybind11::arg("accept"));
+		cl.def("projectOntoSepCo", [](dialect::Graph &o, const struct dialect::ColaOptions & a0, int const & a1) -> int { return o.projectOntoSepCo(a0, a1); }, "", pybind11::arg("opts"), pybind11::arg("sepco"));
+		cl.def("projectOntoSepCo", (int (dialect::Graph::*)(const struct dialect::ColaOptions &, int, int)) &dialect::Graph::projectOntoSepCo, "Convenience method to project onto a single SepCo object.\n Apart from the SepCo, parameters and return value are as for the ordinary project method.\n \n\n Graph::project.\n\nC++: dialect::Graph::projectOntoSepCo(const struct dialect::ColaOptions &, int, int) --> int", pybind11::arg("opts"), pybind11::arg("sepco"), pybind11::arg("accept"));
+		cl.def("applyProjSeq", [](dialect::Graph &o, const struct dialect::ColaOptions & a0, class dialect::ProjSeq & a1) -> bool { return o.applyProjSeq(a0, a1); }, "", pybind11::arg("opts"), pybind11::arg("ps"));
+		cl.def("applyProjSeq", (bool (dialect::Graph::*)(const struct dialect::ColaOptions &, class dialect::ProjSeq &, int)) &dialect::Graph::applyProjSeq, "Attempt to apply the projections given by a ProjSeq object.\n         Give up as soon as any of them fails.\n \n\n  Options.\n \n\n  The ProjSeq to be applied.\n \n\n  Acceptance level. See doctext for cola::projectOntoCCs.\n\n \n  In addition to the zero idealEdgeLength convention employed by the destress\n        method, here a negative idealEdgeLength in the opts parameter may be used\n        to indicate that you do not want the stress changes induced by the projections\n        to be evaluated. Otherwise they will be.\n \n\n boolean, saying whether all the projections were successful, at the given\n         acceptance level.\n\nC++: dialect::Graph::applyProjSeq(const struct dialect::ColaOptions &, class dialect::ProjSeq &, int) --> bool", pybind11::arg("opts"), pybind11::arg("ps"), pybind11::arg("accept"));
+		cl.def("updateNodesFromRects", [](dialect::Graph &o) -> void { return o.updateNodesFromRects(); }, "");
+		cl.def("updateNodesFromRects", [](dialect::Graph &o, bool const & a0) -> void { return o.updateNodesFromRects(a0); }, "", pybind11::arg("xAxis"));
+		cl.def("updateNodesFromRects", (void (dialect::Graph::*)(bool, bool)) &dialect::Graph::updateNodesFromRects, "For use with various layout actions, this method asks the Graph\n         to update Node positions based on its internal vpsc Rectangles that\n         were used in the layout operation.\n \n\n  Set true iff the x-coordinates of the nodes should be updated.\n \n\n  Set true iff the y-coordinates of the nodes should be updated.\n\nC++: dialect::Graph::updateNodesFromRects(bool, bool) --> void", pybind11::arg("xAxis"), pybind11::arg("yAxis"));
+		cl.def("updateColaGraphRep", (struct dialect::ColaGraphRep & (dialect::Graph::*)()) &dialect::Graph::updateColaGraphRep, "Refresh, as needed, the data structures necessary for applying the\n         methods of libcola to this Graph.\n\n \n  If Nodes have been added to or removed from the Graph since the\n           last time this method was called, the old Rectangles will be\n           deleted.\n\n           Clients are therefore advised to utilise methods like Graph::destress\n           instead of creating their own instances of ConstrainedFDLayout. At the\n           least, they must not reuse layout objects that were created before\n           adding or removing Nodes from the Graph (which makes sense anyway).\n\n \n  A reference to the (updated) ColaGraphRep.\n\nC++: dialect::Graph::updateColaGraphRep() --> struct dialect::ColaGraphRep &", pybind11::return_value_policy::automatic);
+		cl.def("buildRootCluster", (int * (dialect::Graph::*)(const struct dialect::ColaOptions &)) &dialect::Graph::buildRootCluster, "Build a cola::RootCluster based on the node clusters specified in a ColaOptions\n         object.\n \n\n  The RootCluster will also be stored in the Graph's ColaGraphRep.\n \n\n The old RootCluster stored in the Graph's ColaGraphRep (if any) will be deleted.\n \n\n The RootCluster.\n\nC++: dialect::Graph::buildRootCluster(const struct dialect::ColaOptions &) --> int *", pybind11::return_value_policy::automatic, pybind11::arg("opts"));
+		cl.def("getColaGraphRep", (struct dialect::ColaGraphRep & (dialect::Graph::*)()) &dialect::Graph::getColaGraphRep, "Access the cola graph rep for this Graph.\n\nC++: dialect::Graph::getColaGraphRep() --> struct dialect::ColaGraphRep &", pybind11::return_value_policy::automatic);
+		cl.def("getSepMatrix", (class dialect::SepMatrix & (dialect::Graph::*)()) &dialect::Graph::getSepMatrix, "Access the separation matrix for this Graph.\n\nC++: dialect::Graph::getSepMatrix() --> class dialect::SepMatrix &", pybind11::return_value_policy::automatic);
+		cl.def("buildUniqueBendPoints", (int (dialect::Graph::*)()) &dialect::Graph::buildUniqueBendPoints, "Build and return Nodes representing every point at which any Edge\n         has a bend in its connector route. Importantly, for any given point\n         in the plane, at most one Node will built to represent that point,\n         even if different edges have a bend there. While perhaps counterintuitive,\n         this is most helpful in the operation of planarising a given Graph.\n\n \n  The new Nodes are /not/ added to the Graph.\n\n \n  As an important side effect, the sequence of Nodes representing\n        the bend points of each Edge is set as the \"bend nodes\" of that Edge.\n\nC++: dialect::Graph::buildUniqueBendPoints() --> int");
+		cl.def("pushNodePositions", (void (dialect::Graph::*)()) &dialect::Graph::pushNodePositions, "Save node positions on internal stack.\n\nC++: dialect::Graph::pushNodePositions() --> void");
+		cl.def("popNodePositions", (bool (dialect::Graph::*)()) &dialect::Graph::popNodePositions, "Restore node positions from internal stack.\n \n\n  true if positions were restored; false if stack was empty\n\nC++: dialect::Graph::popNodePositions() --> bool");
+		cl.def("setEdgeThickness", (void (dialect::Graph::*)(double)) &dialect::Graph::setEdgeThickness, "Set the edge thickness.\n\nC++: dialect::Graph::setEdgeThickness(double) --> void", pybind11::arg("t"));
+		cl.def("getEdgeThickness", (double (dialect::Graph::*)()) &dialect::Graph::getEdgeThickness, "Get the edge thickness.\n\nC++: dialect::Graph::getEdgeThickness() --> double");
+		cl.def("padAllNodes", (void (dialect::Graph::*)(double, double)) &dialect::Graph::padAllNodes, "Add padding to all ndoes.\n\nC++: dialect::Graph::padAllNodes(double, double) --> void", pybind11::arg("dw"), pybind11::arg("dh"));
+		cl.def("setPosesInCorrespNodes", (void (dialect::Graph::*)(class dialect::Graph &)) &dialect::Graph::setPosesInCorrespNodes, "Update positions of Nodes in a given Graph to equal those of the\n         corresponding Nodes (same ID) in this Graph.\n \n\n  The Graph whose Node positions are to be updated.\n\nC++: dialect::Graph::setPosesInCorrespNodes(class dialect::Graph &) --> void", pybind11::arg("H"));
+		cl.def("padCorrespNodes", [](dialect::Graph &o, class dialect::Graph & a0, double const & a1, double const & a2) -> void { return o.padCorrespNodes(a0, a1, a2); }, "", pybind11::arg("H"), pybind11::arg("dw"), pybind11::arg("dh"));
+		cl.def("padCorrespNodes", (void (dialect::Graph::*)(class dialect::Graph &, double, double, const int &)) &dialect::Graph::padCorrespNodes, "Add padding to those Nodes in a given Graph that\n         correspond to Nodes (same ID) in this Graph.\n \n\n  The Graph whose corresp. Nodes are to be padded.\n \n\n  width padding\n \n\n  height padding\n \n\n  Nodes in *this* graph (not H) that should be skipped.\n\nC++: dialect::Graph::padCorrespNodes(class dialect::Graph &, double, double, const int &) --> void", pybind11::arg("H"), pybind11::arg("dw"), pybind11::arg("dh"), pybind11::arg("ignore"));
+		cl.def("setRoutesInCorrespEdges", [](dialect::Graph &o, class dialect::Graph & a0) -> void { return o.setRoutesInCorrespEdges(a0); }, "", pybind11::arg("H"));
+		cl.def("setRoutesInCorrespEdges", (void (dialect::Graph::*)(class dialect::Graph &, bool)) &dialect::Graph::setRoutesInCorrespEdges, "Update routes of Edges in a given Graph to equal those of the\n         corresponding Edges (same source and target) in this Graph.\n \n\n  The Graph whose Edge routes are to be updated.\n \n\n  Set true if Edges are to be understood as directed, i.e. if\n                      in order to match the Edges have to have the same source and\n                      the same target. Otherwise only the set {source ID, target ID}\n                      has to be the same. Default: false (i.e. undirected edges).\n\nC++: dialect::Graph::setRoutesInCorrespEdges(class dialect::Graph &, bool) --> void", pybind11::arg("H"), pybind11::arg("directed"));
+		cl.def("route", (void (dialect::Graph::*)(int)) &dialect::Graph::route, "Do a libavoid connector routing on all Edges in the Graph.\n \n\n  The type of routing you want (orthogonal or polyline).\n\nC++: dialect::Graph::route(int) --> void", pybind11::arg("routingType"));
+		cl.def("clearAllRoutes", (void (dialect::Graph::*)()) &dialect::Graph::clearAllRoutes, "Clear all Edge routes.\n\nC++: dialect::Graph::clearAllRoutes() --> void");
+		cl.def("buildRoutes", (void (dialect::Graph::*)()) &dialect::Graph::buildRoutes, "Ask all Edges to build their routes based on their bend nodes.\n\nC++: dialect::Graph::buildRoutes() --> void");
+		cl.def("addBendlessSubnetworkToRoutingAdapter", (void (dialect::Graph::*)(int &)) &dialect::Graph::addBendlessSubnetworkToRoutingAdapter, "Add all Nodes, and all those Edges having no bend nodes within them, to a given\n        RoutingAdapter. This is useful when precisely those Edges are viewed as needing\n        a route which do not already have any bend nodes.\n \n\n  The RoutingAdapter to which the Nodes and Edges are to be added.\n\nC++: dialect::Graph::addBendlessSubnetworkToRoutingAdapter(int &) --> void", pybind11::arg("ra"));
+		cl.def("clearAllConstraints", (void (dialect::Graph::*)()) &dialect::Graph::clearAllConstraints, "Clear all constraints in this Graph's SepMatrix.\n\nC++: dialect::Graph::clearAllConstraints() --> void");
+		cl.def("setCorrespondingConstraints", (void (dialect::Graph::*)(class dialect::Graph &)) &dialect::Graph::setCorrespondingConstraints, "Set corresponding constraints in another Graph.\n         This means that for each constraint between nodes of IDs id1 and id2 in this\n         Graph's SepMatrix, we set that constraint in the other Graph if and only if it too\n         contains Nodes of IDs id1 and id2.\n \n\n  The other Graph.\n\nC++: dialect::Graph::setCorrespondingConstraints(class dialect::Graph &) --> void", pybind11::arg("H"));
+		cl.def("transformClosedSubset", (void (dialect::Graph::*)(enum dialect::SepTransform, const int &)) &dialect::Graph::transformClosedSubset, "Apply a transformation to a closed subset of all Nodes.\n\n \n  the transformation to be performed\n \n\n  the set of IDs of all Nodes to which the transformation\n                  should be applied. /Both/ Nodes must be in the set.\n \n\n transformOpenSubset\n\nC++: dialect::Graph::transformClosedSubset(enum dialect::SepTransform, const int &) --> void", pybind11::arg("tf"), pybind11::arg("ids"));
+		cl.def("transformOpenSubset", (void (dialect::Graph::*)(enum dialect::SepTransform, const int &)) &dialect::Graph::transformOpenSubset, "Apply a transformation to an open subset of all Nodes.\n\n \n  the transformation to be performed\n \n\n  the set of IDs of all Nodes to which the transformation\n                  should be applied. /At least one/ Node must be in the set.\n \n\n transformClosedSubset\n\nC++: dialect::Graph::transformOpenSubset(enum dialect::SepTransform, const int &) --> void", pybind11::arg("tf"), pybind11::arg("ids"));
+	}
 }

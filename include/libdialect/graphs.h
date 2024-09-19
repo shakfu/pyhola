@@ -34,17 +34,17 @@
 #include <deque>
 #include <functional>
 
-#include <libvpsc/rectangle.h>
-#include <libcola/compound_constraints.h>
-#include <libcola/cluster.h>
-#include <libcola/cola.h>
-#include <libavoid/libavoid.h>
+#include <libdialect/libvpsc/rectangle.h>
+#include <libdialect/libcola/compound_constraints.h>
+#include <libdialect/libcola/cluster.h>
+#include <libdialect/libcola/cola.h>
+#include <libdialect/libavoid/libavoid.h>
 
-#include <libdialect/commontypes.h>
-#include <libdialect/constraints.h>
-#include <libdialect/routing.h>
-#include <libdialect/ortho.h>
-#include <libdialect/logging.h>
+#include <libdialect/libdialect/commontypes.h>
+#include <libdialect/libdialect/constraints.h>
+#include <libdialect/libdialect/routing.h>
+#include <libdialect/libdialect/ortho.h>
+#include <libdialect/libdialect/logging.h>
 
 namespace dialect {
 
@@ -618,6 +618,14 @@ public:
     //! @param[out] H  The Graph whose Node positions are to be updated.
     void setPosesInCorrespNodes(Graph &H);
 
+    //! @brief  Add padding to those Nodes in a given Graph that
+    //!         correspond to Nodes (same ID) in this Graph.
+    //! @param[out] H  The Graph whose corresp. Nodes are to be padded.
+    //! @param[in] dw  width padding
+    //! @param[in] dh  height padding
+    //! @param[in] ignore  Nodes in *this* graph (not H) that should be skipped.
+    void padCorrespNodes(Graph &H, double dw, double dh, const NodesById &ignore = {});
+
     //! @brief  Update routes of Edges in a given Graph to equal those of the
     //!         corresponding Edges (same source and target) in this Graph.
     //! @param[out] H  The Graph whose Edge routes are to be updated.
@@ -652,6 +660,22 @@ public:
     //!         contains Nodes of IDs id1 and id2.
     //! @param[out] H  The other Graph.
     void setCorrespondingConstraints(Graph &H);
+
+    //! @brief  Apply a transformation to a closed subset of all Nodes.
+    //!
+    //! @param[in]  tf  the transformation to be performed
+    //! @param[in]  ids  the set of IDs of all Nodes to which the transformation
+    //!                  should be applied. /Both/ Nodes must be in the set.
+    //! @sa transformOpenSubset
+    void transformClosedSubset(SepTransform tf, const std::set<id_type> &ids);
+    
+    //! @brief  Apply a transformation to an open subset of all Nodes.
+    //!
+    //! @param[in]  tf  the transformation to be performed
+    //! @param[in]  ids  the set of IDs of all Nodes to which the transformation
+    //!                  should be applied. /At least one/ Node must be in the set.
+    //! @sa transformClosedSubset
+    void transformOpenSubset(SepTransform tf, const std::set<id_type> &ids);
 
     // For debugging:
     std::string m_debugOutputPath = "";

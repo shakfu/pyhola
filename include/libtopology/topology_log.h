@@ -33,7 +33,6 @@ Description: Unpublished source code accompanying the article by Petru Marginean
 #include <cstdio>
 #include <iomanip>
 
-
 namespace topology {
 inline std::string NowTime();
 
@@ -202,7 +201,7 @@ inline std::string NowTime()
     tm r;
     strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
     struct timeval tv;
-    //gettimeofday(&tv, 0);
+    gettimeofday(&tv, 0);
     std::stringstream result;
     result << buffer << "." << std::setfill('0') << std::setw(3) << ((long)tv.tv_usec / 1000);
     return result.str();

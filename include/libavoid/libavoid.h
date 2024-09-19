@@ -36,19 +36,19 @@
 #ifndef AVOID_LIBAVOID_H
 #define AVOID_LIBAVOID_H
 
-#include <libavoid/geomtypes.h>
-#include <libavoid/shape.h>
-#include <libavoid/connector.h>
-#include <libavoid/connend.h>
-#include <libavoid/graph.h>
-#include <libavoid/debug.h>
-#include <libavoid/timer.h>
-#include <libavoid/vertices.h>
-#include <libavoid/visibility.h>
-#include <libavoid/router.h>
-#include <libavoid/connectionpin.h>
-#include <libavoid/junction.h>
-#include <libavoid/viscluster.h>
+#include <libavoid/libavoid/geomtypes.h>
+#include <libavoid/libavoid/shape.h>
+#include <libavoid/libavoid/connector.h>
+#include <libavoid/libavoid/connend.h>
+#include <libavoid/libavoid/graph.h>
+#include <libavoid/libavoid/debug.h>
+#include <libavoid/libavoid/timer.h>
+#include <libavoid/libavoid/vertices.h>
+#include <libavoid/libavoid/visibility.h>
+#include <libavoid/libavoid/router.h>
+#include <libavoid/libavoid/connectionpin.h>
+#include <libavoid/libavoid/junction.h>
+#include <libavoid/libavoid/viscluster.h>
 
 #endif
 

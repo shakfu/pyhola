@@ -31,7 +31,7 @@
 #include <set>
 #include <utility>
 
-#include <libavoid/geomtypes.h>
+#include <libavoid/libavoid/geomtypes.h>
 
 //#define MAJOR_HYPEREDGE_IMPROVEMENT_DEBUG
 

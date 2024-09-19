@@ -25,7 +25,7 @@
 #ifndef DIALECT_OPTS_H
 #define DIALECT_OPTS_H
 
-#include <libdialect/ortho.h>
+#include <libdialect/libdialect/ortho.h>
 
 namespace dialect {
 
@@ -113,6 +113,8 @@ struct HolaOpts {
     //! a scalar, set here.
     double routingScalar_crossingPenalty = 2;
     double routingScalar_segmentPenalty = 0.5;
+    //! Other routing parameters take an absolute value.
+    double routingAbs_nudgingDistance = 4.0;
 
 
     //! Tree Placement

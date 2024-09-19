@@ -1,22 +1,14 @@
-#include <functional>
-#include <ios>
-#include <iterator>
 #include <libvpsc/constraint.h>
 #include <libvpsc/rectangle.h>
+#include <libvpsc/solve_VPSC.h>
 #include <libvpsc/variable.h>
-#include <locale>
-#include <memory>
-#include <ostream>
-#include <set>
 #include <sstream> // __str__
-#include <streambuf>
-#include <string>
-#include <utility>
-#include <vector>
 
 #include <functional>
 #include <pybind11/pybind11.h>
 #include <string>
+#include <cstdlib>
+
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -25,90 +17,132 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
+// vpsc::Solver file:libvpsc/solve_VPSC.h line:60
+struct PyCallBack_vpsc_Solver : public vpsc::Solver {
+	using vpsc::Solver::Solver;
+
+	bool satisfy() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const vpsc::Solver *>(this), "satisfy");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return Solver::satisfy();
+	}
+	bool solve() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const vpsc::Solver *>(this), "solve");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return Solver::solve();
+	}
+};
+
+// vpsc::IncSolver file:libvpsc/solve_VPSC.h line:105
+struct PyCallBack_vpsc_IncSolver : public vpsc::IncSolver {
+	using vpsc::IncSolver::IncSolver;
+
+	bool satisfy() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const vpsc::IncSolver *>(this), "satisfy");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return IncSolver::satisfy();
+	}
+	bool solve() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const vpsc::IncSolver *>(this), "solve");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return IncSolver::solve();
+	}
+};
+
 void bind_libvpsc_rectangle(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	// vpsc::Dim file:libvpsc/rectangle.h line:41
-	pybind11::enum_<vpsc::Dim>(M("vpsc"), "Dim", pybind11::arithmetic(), "Indicates the x- or y-dimension.")
-		.value("HORIZONTAL", vpsc::HORIZONTAL)
-		.value("XDIM", vpsc::XDIM)
-		.value("VERTICAL", vpsc::VERTICAL)
-		.value("YDIM", vpsc::YDIM)
-		.value("UNSET", vpsc::UNSET)
-		.export_values();
+	// vpsc::generateXConstraints(const int &, const int &, int &, const bool) file:libvpsc/rectangle.h line:252
+	M("vpsc").def("generateXConstraints", (void (*)(const int &, const int &, int &, const bool)) &vpsc::generateXConstraints, "C++: vpsc::generateXConstraints(const int &, const int &, int &, const bool) --> void", pybind11::arg("rs"), pybind11::arg("vars"), pybind11::arg("cs"), pybind11::arg("useNeighbourLists"));
 
-;
+	// vpsc::generateYConstraints(const int &, const int &, int &) file:libvpsc/rectangle.h line:254
+	M("vpsc").def("generateYConstraints", (void (*)(const int &, const int &, int &)) &vpsc::generateYConstraints, "C++: vpsc::generateYConstraints(const int &, const int &, int &) --> void", pybind11::arg("rs"), pybind11::arg("vars"), pybind11::arg("cs"));
 
-	// vpsc::conjugate(enum vpsc::Dim) file:libvpsc/rectangle.h line:54
-	M("vpsc").def("conjugate", (enum vpsc::Dim (*)(enum vpsc::Dim)) &vpsc::conjugate, "C++: vpsc::conjugate(enum vpsc::Dim) --> enum vpsc::Dim", pybind11::arg("d"));
+	// vpsc::removeoverlaps(int &) file:libvpsc/rectangle.h line:265
+	M("vpsc").def("removeoverlaps", (void (*)(int &)) &vpsc::removeoverlaps, "Uses VPSC to remove overlaps between rectangles.\n\n Moves rectangles to remove all overlaps.  Heuristic attempts to move \n shapes by as little as possible.\n\n \n  The rectangles which will be moved to remove overlap\n\nC++: vpsc::removeoverlaps(int &) --> void", pybind11::arg("rs"));
 
-	{ // vpsc::RectangleIntersections file:libvpsc/rectangle.h line:59
-		pybind11::class_<vpsc::RectangleIntersections, std::shared_ptr<vpsc::RectangleIntersections>> cl(M("vpsc"), "RectangleIntersections", "");
-		cl.def( pybind11::init( [](){ return new vpsc::RectangleIntersections(); } ) );
-		cl.def_readwrite("intersects", &vpsc::RectangleIntersections::intersects);
-		cl.def_readwrite("top", &vpsc::RectangleIntersections::top);
-		cl.def_readwrite("bottom", &vpsc::RectangleIntersections::bottom);
-		cl.def_readwrite("left", &vpsc::RectangleIntersections::left);
-		cl.def_readwrite("right", &vpsc::RectangleIntersections::right);
-		cl.def_readwrite("topX", &vpsc::RectangleIntersections::topX);
-		cl.def_readwrite("topY", &vpsc::RectangleIntersections::topY);
-		cl.def_readwrite("bottomX", &vpsc::RectangleIntersections::bottomX);
-		cl.def_readwrite("bottomY", &vpsc::RectangleIntersections::bottomY);
-		cl.def_readwrite("leftX", &vpsc::RectangleIntersections::leftX);
-		cl.def_readwrite("leftY", &vpsc::RectangleIntersections::leftY);
-		cl.def_readwrite("rightX", &vpsc::RectangleIntersections::rightX);
-		cl.def_readwrite("rightY", &vpsc::RectangleIntersections::rightY);
-		cl.def("countIntersections", (int (vpsc::RectangleIntersections::*)()) &vpsc::RectangleIntersections::countIntersections, "C++: vpsc::RectangleIntersections::countIntersections() --> int");
-		cl.def("printIntersections", (void (vpsc::RectangleIntersections::*)()) &vpsc::RectangleIntersections::printIntersections, "C++: vpsc::RectangleIntersections::printIntersections() --> void");
-		cl.def("nearest", (void (vpsc::RectangleIntersections::*)(double, double, double &, double &)) &vpsc::RectangleIntersections::nearest, "C++: vpsc::RectangleIntersections::nearest(double, double, double &, double &) --> void", pybind11::arg("x"), pybind11::arg("y"), pybind11::arg("xi"), pybind11::arg("yi"));
-	}
-	{ // vpsc::Rectangle file:libvpsc/rectangle.h line:78
-		pybind11::class_<vpsc::Rectangle, std::shared_ptr<vpsc::Rectangle>> cl(M("vpsc"), "Rectangle", "A rectangle represents a fixed-size shape in the diagram that may\n         be moved to prevent overlaps and satisfy constraints.");
-		cl.def( pybind11::init( [](double const & a0, double const & a1, double const & a2, double const & a3){ return new vpsc::Rectangle(a0, a1, a2, a3); } ), "doc" , pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y"));
-		cl.def( pybind11::init<double, double, double, double, bool>(), pybind11::arg("x"), pybind11::arg("X"), pybind11::arg("y"), pybind11::arg("Y"), pybind11::arg("allowOverlap") );
+	// vpsc::removeoverlaps(int &, const int &, bool) file:libvpsc/rectangle.h line:286
+	M("vpsc").def("removeoverlaps", [](int & a0, const int & a1) -> void { return vpsc::removeoverlaps(a0, a1); }, "", pybind11::arg("rs"), pybind11::arg("fixed"));
+	M("vpsc").def("removeoverlaps", (void (*)(int &, const int &, bool)) &vpsc::removeoverlaps, "Uses VPSC to remove overlaps between rectangles, excluding some \n        that should not be moved.\n\n Moves rectangles to remove all overlaps.  A heuristic attempts to move \n shapes by as little as possible.  The heuristic is that the overlaps \n are removed horizontally and then vertically, each pass being a \n quadratic program in which the total squared movement is minimised \n subject to non-overlap constraints.  \n\n An optional third horizontal pass (in addition to the first horizontal\n pass and the second vertical pass) can be applied wherein the \n x-positions of rectangles are reset to their original positions and \n overlap removal repeated.  This may avoid some unnecessary movement. \n\n \n    The rectangles which will be moved to remove overlap\n \n\n     A set of indices to rectangles which should not be moved.\n \n\n Optionally run the third horizontal pass described above.\n\nC++: vpsc::removeoverlaps(int &, const int &, bool) --> void", pybind11::arg("rs"), pybind11::arg("fixed"), pybind11::arg("thirdPass"));
 
-		cl.def( pybind11::init( [](vpsc::Rectangle const &o){ return new vpsc::Rectangle(o); } ) );
-		cl.def( pybind11::init( [](){ return new vpsc::Rectangle(); } ) );
-		cl.def("isValid", (bool (vpsc::Rectangle::*)() const) &vpsc::Rectangle::isValid, "C++: vpsc::Rectangle::isValid() const --> bool");
-		cl.def("unionWith", (class vpsc::Rectangle (vpsc::Rectangle::*)(const class vpsc::Rectangle &) const) &vpsc::Rectangle::unionWith, "C++: vpsc::Rectangle::unionWith(const class vpsc::Rectangle &) const --> class vpsc::Rectangle", pybind11::arg("rhs"));
-		cl.def("reset", (void (vpsc::Rectangle::*)(const unsigned int, double, double)) &vpsc::Rectangle::reset, "C++: vpsc::Rectangle::reset(const unsigned int, double, double) --> void", pybind11::arg("d"), pybind11::arg("x"), pybind11::arg("X"));
-		cl.def("getMaxX", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getMaxX, "C++: vpsc::Rectangle::getMaxX() const --> double");
-		cl.def("getMaxY", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getMaxY, "C++: vpsc::Rectangle::getMaxY() const --> double");
-		cl.def("getMinX", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getMinX, "C++: vpsc::Rectangle::getMinX() const --> double");
-		cl.def("getMinY", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getMinY, "C++: vpsc::Rectangle::getMinY() const --> double");
-		cl.def("getMinD", (double (vpsc::Rectangle::*)(const unsigned int) const) &vpsc::Rectangle::getMinD, "C++: vpsc::Rectangle::getMinD(const unsigned int) const --> double", pybind11::arg("d"));
-		cl.def("getMaxD", (double (vpsc::Rectangle::*)(const unsigned int) const) &vpsc::Rectangle::getMaxD, "C++: vpsc::Rectangle::getMaxD(const unsigned int) const --> double", pybind11::arg("d"));
-		cl.def("setMinD", (void (vpsc::Rectangle::*)(const unsigned int, const double)) &vpsc::Rectangle::setMinD, "C++: vpsc::Rectangle::setMinD(const unsigned int, const double) --> void", pybind11::arg("d"), pybind11::arg("val"));
-		cl.def("setMaxD", (void (vpsc::Rectangle::*)(const unsigned int, const double)) &vpsc::Rectangle::setMaxD, "C++: vpsc::Rectangle::setMaxD(const unsigned int, const double) --> void", pybind11::arg("d"), pybind11::arg("val"));
-		cl.def("getCentreX", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getCentreX, "C++: vpsc::Rectangle::getCentreX() const --> double");
-		cl.def("getCentreY", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::getCentreY, "C++: vpsc::Rectangle::getCentreY() const --> double");
-		cl.def("getCentreD", (double (vpsc::Rectangle::*)(const unsigned int) const) &vpsc::Rectangle::getCentreD, "C++: vpsc::Rectangle::getCentreD(const unsigned int) const --> double", pybind11::arg("d"));
-		cl.def("width", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::width, "C++: vpsc::Rectangle::width() const --> double");
-		cl.def("height", (double (vpsc::Rectangle::*)() const) &vpsc::Rectangle::height, "C++: vpsc::Rectangle::height() const --> double");
-		cl.def("length", (double (vpsc::Rectangle::*)(const unsigned int) const) &vpsc::Rectangle::length, "C++: vpsc::Rectangle::length(const unsigned int) const --> double", pybind11::arg("d"));
-		cl.def("set_width", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::set_width, "C++: vpsc::Rectangle::set_width(double) --> void", pybind11::arg("w"));
-		cl.def("set_height", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::set_height, "C++: vpsc::Rectangle::set_height(double) --> void", pybind11::arg("h"));
-		cl.def("moveCentreD", (void (vpsc::Rectangle::*)(const unsigned int, double)) &vpsc::Rectangle::moveCentreD, "C++: vpsc::Rectangle::moveCentreD(const unsigned int, double) --> void", pybind11::arg("d"), pybind11::arg("p"));
-		cl.def("moveCentreX", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::moveCentreX, "C++: vpsc::Rectangle::moveCentreX(double) --> void", pybind11::arg("x"));
-		cl.def("moveCentreY", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::moveCentreY, "C++: vpsc::Rectangle::moveCentreY(double) --> void", pybind11::arg("y"));
-		cl.def("moveCentre", (void (vpsc::Rectangle::*)(double, double)) &vpsc::Rectangle::moveCentre, "C++: vpsc::Rectangle::moveCentre(double, double) --> void", pybind11::arg("x"), pybind11::arg("y"));
-		cl.def("moveMinX", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::moveMinX, "C++: vpsc::Rectangle::moveMinX(double) --> void", pybind11::arg("x"));
-		cl.def("moveMinY", (void (vpsc::Rectangle::*)(double)) &vpsc::Rectangle::moveMinY, "C++: vpsc::Rectangle::moveMinY(double) --> void", pybind11::arg("y"));
-		cl.def("overlapD", (double (vpsc::Rectangle::*)(const unsigned int, class vpsc::Rectangle *)) &vpsc::Rectangle::overlapD, "C++: vpsc::Rectangle::overlapD(const unsigned int, class vpsc::Rectangle *) --> double", pybind11::arg("d"), pybind11::arg("r"));
-		cl.def("overlapX", (double (vpsc::Rectangle::*)(class vpsc::Rectangle *) const) &vpsc::Rectangle::overlapX, "C++: vpsc::Rectangle::overlapX(class vpsc::Rectangle *) const --> double", pybind11::arg("r"));
-		cl.def("overlapY", (double (vpsc::Rectangle::*)(class vpsc::Rectangle *) const) &vpsc::Rectangle::overlapY, "C++: vpsc::Rectangle::overlapY(class vpsc::Rectangle *) const --> double", pybind11::arg("r"));
-		cl.def("allowOverlap", (bool (vpsc::Rectangle::*)()) &vpsc::Rectangle::allowOverlap, "C++: vpsc::Rectangle::allowOverlap() --> bool");
-		cl.def("offset", (void (vpsc::Rectangle::*)(double, double)) &vpsc::Rectangle::offset, "C++: vpsc::Rectangle::offset(double, double) --> void", pybind11::arg("dx"), pybind11::arg("dy"));
-		cl.def("lineIntersections", (void (vpsc::Rectangle::*)(double, double, double, double, struct vpsc::RectangleIntersections &) const) &vpsc::Rectangle::lineIntersections, "C++: vpsc::Rectangle::lineIntersections(double, double, double, double, struct vpsc::RectangleIntersections &) const --> void", pybind11::arg("x1"), pybind11::arg("y1"), pybind11::arg("x2"), pybind11::arg("y2"), pybind11::arg("ri"));
-		cl.def("inside", (bool (vpsc::Rectangle::*)(double, double) const) &vpsc::Rectangle::inside, "C++: vpsc::Rectangle::inside(double, double) const --> bool", pybind11::arg("x"), pybind11::arg("y"));
-		cl.def("overlaps", (bool (vpsc::Rectangle::*)(double, double, double, double)) &vpsc::Rectangle::overlaps, "C++: vpsc::Rectangle::overlaps(double, double, double, double) --> bool", pybind11::arg("x1"), pybind11::arg("y1"), pybind11::arg("x2"), pybind11::arg("y2"));
-		cl.def_static("setXBorder", (void (*)(double)) &vpsc::Rectangle::setXBorder, "C++: vpsc::Rectangle::setXBorder(double) --> void", pybind11::arg("x"));
-		cl.def_static("setYBorder", (void (*)(double)) &vpsc::Rectangle::setYBorder, "C++: vpsc::Rectangle::setYBorder(double) --> void", pybind11::arg("y"));
-		cl.def("assign", (class vpsc::Rectangle & (vpsc::Rectangle::*)(const class vpsc::Rectangle &)) &vpsc::Rectangle::operator=, "C++: vpsc::Rectangle::operator=(const class vpsc::Rectangle &) --> class vpsc::Rectangle &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	// vpsc::noRectangleOverlaps(const int &) file:libvpsc/rectangle.h line:290
+	M("vpsc").def("noRectangleOverlaps", (bool (*)(const int &)) &vpsc::noRectangleOverlaps, "C++: vpsc::noRectangleOverlaps(const int &) --> bool", pybind11::arg("rs"));
 
-		cl.def("__str__", [](vpsc::Rectangle const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
-	}
-	{ // vpsc::delete_object file:libvpsc/rectangle.h line:295
+	{ // vpsc::delete_object file:libvpsc/rectangle.h line:292
 		pybind11::class_<vpsc::delete_object, std::shared_ptr<vpsc::delete_object>> cl(M("vpsc"), "delete_object", "");
 		cl.def( pybind11::init( [](){ return new vpsc::delete_object(); } ) );
+	}
+	{ // vpsc::Solver file:libvpsc/solve_VPSC.h line:60
+		pybind11::class_<vpsc::Solver, std::shared_ptr<vpsc::Solver>, PyCallBack_vpsc_Solver> cl(M("vpsc"), "Solver", "Static solver for Variable Placement with Separation Constraints \n        problem instance\n\n This class attempts to solve a least-squares problem subject to a set \n of separation constraints.  The solve() and satisfy() methods return true \n if any constraints are active, in both cases false means an unconstrained \n optimum has been found.\n\n \n IncSolver");
+		cl.def( pybind11::init<const int &, const int &>(), pybind11::arg("vs"), pybind11::arg("cs") );
+
+		cl.def( pybind11::init( [](PyCallBack_vpsc_Solver const &o){ return new PyCallBack_vpsc_Solver(o); } ) );
+		cl.def( pybind11::init( [](vpsc::Solver const &o){ return new vpsc::Solver(o); } ) );
+		cl.def("satisfy", (bool (vpsc::Solver::*)()) &vpsc::Solver::satisfy, "Results in an approximate solution subject to the constraints.\n \n\n true if any constraints are active, or false if an unconstrained \n         optimum has been found.\n\nC++: vpsc::Solver::satisfy() --> bool");
+		cl.def("solve", (bool (vpsc::Solver::*)()) &vpsc::Solver::solve, "Results in an optimum solution subject to the constraints\n \n\n true if any constraints are active, or false if an unconstrained \n         optimum has been found.\n\nC++: vpsc::Solver::solve() --> bool");
+		cl.def("getVariables", (const int & (vpsc::Solver::*)()) &vpsc::Solver::getVariables, "Returns the Variables in this problem instance.\n \n\n A vector of Variable objects.\n\nC++: vpsc::Solver::getVariables() --> const int &", pybind11::return_value_policy::automatic);
+		cl.def("assign", (class vpsc::Solver & (vpsc::Solver::*)(const class vpsc::Solver &)) &vpsc::Solver::operator=, "C++: vpsc::Solver::operator=(const class vpsc::Solver &) --> class vpsc::Solver &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
+	{ // vpsc::IncSolver file:libvpsc/solve_VPSC.h line:105
+		pybind11::class_<vpsc::IncSolver, std::shared_ptr<vpsc::IncSolver>, PyCallBack_vpsc_IncSolver, vpsc::Solver> cl(M("vpsc"), "IncSolver", "Incremental solver for Variable Placement with Separation Constraints \n        problem instance\n\n This class attempts to solve a least-squares problem subject to a set \n of sepation constraints.  The solve() and satisfy() methods return true \n if any constraints are active, in both cases false means an unconstrained \n optimum has been found.  This is an incremental version of that allows \n refinement after blocks are moved.  This version is preferred if you are \n using VPSC in an interactive context.\n\n \n Solver");
+		cl.def( pybind11::init<const int &, const int &>(), pybind11::arg("vs"), pybind11::arg("cs") );
+
+		cl.def( pybind11::init( [](PyCallBack_vpsc_IncSolver const &o){ return new PyCallBack_vpsc_IncSolver(o); } ) );
+		cl.def( pybind11::init( [](vpsc::IncSolver const &o){ return new vpsc::IncSolver(o); } ) );
+		cl.def("satisfy", (bool (vpsc::IncSolver::*)()) &vpsc::IncSolver::satisfy, "Results in an approximate solution subject to the constraints.\n \n\n true if any constraints are active, or false if an unconstrained \n\nC++: vpsc::IncSolver::satisfy() --> bool");
+		cl.def("solve", (bool (vpsc::IncSolver::*)()) &vpsc::IncSolver::solve, "Results in an optimum solution subject to the constraints\n \n\n true if any constraints are active, or false if an unconstrained \n         optimum has been found.\n\nC++: vpsc::IncSolver::solve() --> bool");
+		cl.def("addConstraint", (void (vpsc::IncSolver::*)(class vpsc::Constraint *)) &vpsc::IncSolver::addConstraint, "Adds a constraint to the existing VPSC solver.\n\n \n The new additional constraint to add. \n\nC++: vpsc::IncSolver::addConstraint(class vpsc::Constraint *) --> void", pybind11::arg("constraint"));
+		cl.def("assign", (class vpsc::IncSolver & (vpsc::IncSolver::*)(const class vpsc::IncSolver &)) &vpsc::IncSolver::operator=, "C++: vpsc::IncSolver::operator=(const class vpsc::IncSolver &) --> class vpsc::IncSolver &", pybind11::return_value_policy::automatic, pybind11::arg(""));
+	}
+	{ // vpsc::Variable file:libvpsc/variable.h line:44
+		pybind11::class_<vpsc::Variable, std::shared_ptr<vpsc::Variable>> cl(M("vpsc"), "Variable", "A variable is comprised of an ideal position, final position and \n        a weight.\n\n When creating a variable you specify an ideal value, and a weight---how \n much the variable wants to be at its ideal position.  After solving the \n problem you can read back the final position for the variable.");
+		cl.def( pybind11::init( [](const int & a0){ return new vpsc::Variable(a0); } ), "doc" , pybind11::arg("id"));
+		cl.def( pybind11::init( [](const int & a0, const double & a1){ return new vpsc::Variable(a0, a1); } ), "doc" , pybind11::arg("id"), pybind11::arg("desiredPos"));
+		cl.def( pybind11::init( [](const int & a0, const double & a1, const double & a2){ return new vpsc::Variable(a0, a1, a2); } ), "doc" , pybind11::arg("id"), pybind11::arg("desiredPos"), pybind11::arg("weight"));
+		cl.def( pybind11::init<const int, const double, const double, const double>(), pybind11::arg("id"), pybind11::arg("desiredPos"), pybind11::arg("weight"), pybind11::arg("scale") );
+
+		cl.def_readwrite("id", &vpsc::Variable::id);
+		cl.def_readwrite("desiredPosition", &vpsc::Variable::desiredPosition);
+		cl.def_readwrite("finalPosition", &vpsc::Variable::finalPosition);
+		cl.def_readwrite("weight", &vpsc::Variable::weight);
+		cl.def_readwrite("scale", &vpsc::Variable::scale);
+		cl.def_readwrite("offset", &vpsc::Variable::offset);
+		cl.def_readwrite("visited", &vpsc::Variable::visited);
+		cl.def_readwrite("fixedDesiredPosition", &vpsc::Variable::fixedDesiredPosition);
+		cl.def_readwrite("in", &vpsc::Variable::in);
+		cl.def_readwrite("out", &vpsc::Variable::out);
+		cl.def("toString", (char * (vpsc::Variable::*)()) &vpsc::Variable::toString, "C++: vpsc::Variable::toString() --> char *", pybind11::return_value_policy::automatic);
+		cl.def("dfdv", (double (vpsc::Variable::*)() const) &vpsc::Variable::dfdv, "C++: vpsc::Variable::dfdv() const --> double");
 	}
 }

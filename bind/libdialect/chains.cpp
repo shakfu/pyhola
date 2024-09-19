@@ -1,22 +1,13 @@
-#include <__memory/shared_ptr.h>
-#include <libavoid/geomtypes.h>
 #include <libdialect/chains.h>
 #include <libdialect/constraints.h>
-#include <libdialect/faces.h>
 #include <libdialect/graphs.h>
-#include <libdialect/opts.h>
-#include <libdialect/ortho.h>
-#include <libdialect/treeplacement.h>
-#include <libdialect/trees.h>
-#include <libvpsc/rectangle.h>
-#include <memory>
 #include <sstream> // __str__
-#include <string>
-#include <utility>
 
 #include <functional>
 #include <pybind11/pybind11.h>
 #include <string>
+#include <cstdlib>
+
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -41,11 +32,17 @@ void bind_libdialect_chains(std::function< pybind11::module &(std::string const 
 	// dialect::bentLinkShapeCwFromStartingPt(enum dialect::LinkShape) file:libdialect/chains.h line:62
 	M("dialect").def("bentLinkShapeCwFromStartingPt", (int (*)(enum dialect::LinkShape)) &dialect::bentLinkShapeCwFromStartingPt, "Get the bent LinkShapes, in clockwise order, starting from a given one.\n\nC++: dialect::bentLinkShapeCwFromStartingPt(enum dialect::LinkShape) --> int", pybind11::arg("start"));
 
+	// dialect::possibleCardinalDirections(int, int) file:libdialect/chains.h line:102
+	M("dialect").def("possibleCardinalDirections", (int (*)(int, int)) &dialect::possibleCardinalDirections, "List the possible cardinal directions from node1 to node2, if they were to be\n         aligned non-aggressively.\n\nC++: dialect::possibleCardinalDirections(int, int) --> int", pybind11::arg("node1"), pybind11::arg("node2"));
+
+	// dialect::shapeOfLink(int) file:libdialect/chains.h line:109
+	M("dialect").def("shapeOfLink", (enum dialect::LinkShape (*)(int)) &dialect::shapeOfLink, "Determine the LinkShape for a given Node of degree 2.\n \n\n  The link whose shape is to be determined.\n \n\n  The LinkShape for the given node.\n \n\n  Runtime error if the given node is not of degree 2.\n\nC++: dialect::shapeOfLink(int) --> enum dialect::LinkShape", pybind11::arg("link"));
+
 	{ // dialect::BendSequence file:libdialect/chains.h line:115
 		pybind11::class_<dialect::BendSequence, std::shared_ptr<dialect::BendSequence>> cl(M("dialect"), "BendSequence", "A data structure for managing sequences of bend types, points at which these\n bends should occur (in a given Chain), cost of such a sequence of bends\n (for a given Chain), and incoming and outgoing Compass directions, for non-cycles.");
 		cl.def( pybind11::init<int &>(), pybind11::arg("shapes") );
 
-		cl.def( pybind11::init<int &, enum dialect::CardinalDir, enum dialect::CardinalDir>(), pybind11::arg("shapes"), pybind11::arg("inDir"), pybind11::arg("outDir") );
+		cl.def( pybind11::init<int &, int, int>(), pybind11::arg("shapes"), pybind11::arg("inDir"), pybind11::arg("outDir") );
 
 		cl.def_readwrite("bendTypes", &dialect::BendSequence::bendTypes);
 		cl.def_readwrite("bendPoints", &dialect::BendSequence::bendPoints);
@@ -56,6 +53,9 @@ void bind_libdialect_chains(std::function< pybind11::module &(std::string const 
 	}
 	{ // dialect::AestheticBend file:libdialect/chains.h line:149
 		pybind11::class_<dialect::AestheticBend, std::shared_ptr<dialect::AestheticBend>> cl(M("dialect"), "AestheticBend", "A bend point deliberately added to a connector route, for aesthetic reasons.");
+		cl.def( pybind11::init( [](){ return new dialect::AestheticBend(); } ) );
+		cl.def( pybind11::init<int, int, int, int>(), pybind11::arg("edge"), pybind11::arg("bendNode"), pybind11::arg("nbrNode1"), pybind11::arg("nbrNode2") );
+
 		cl.def_readwrite("edge", &dialect::AestheticBend::edge);
 		cl.def_readwrite("bendNode", &dialect::AestheticBend::bendNode);
 		cl.def_readwrite("nbrNode1", &dialect::AestheticBend::nbrNode1);
@@ -65,65 +65,101 @@ void bind_libdialect_chains(std::function< pybind11::module &(std::string const 
 	{ // dialect::Chain file:libdialect/chains.h line:173
 		pybind11::class_<dialect::Chain, std::shared_ptr<dialect::Chain>> cl(M("dialect"), "Chain", "A Chain is a sequence of degree-2 Nodes, possibly forming a cycle.\n\n This class, like everything defined in this header, is intended for use only with\n 4-planar orthogonal layouts.");
 		cl.def( pybind11::init( [](){ return new dialect::Chain(); } ) );
+		cl.def( pybind11::init( [](int const & a0, int const & a1){ return new dialect::Chain(a0, a1); } ), "doc" , pybind11::arg("G"), pybind11::arg("nodes"));
+		cl.def( pybind11::init<int, int, bool>(), pybind11::arg("G"), pybind11::arg("nodes"), pybind11::arg("isCycle") );
+
+		cl.def("getNode", (int (dialect::Chain::*)(int) const) &dialect::Chain::getNode, "Get a Node according to its \"place\" in the Chain.\n\n Together with the getEdge function, this function allows us to have the indices\n 0, 1, 2, 3, ... refer to the first node in the chain, then the first edge, next node,\n next edge, and so on. Negative integers refer to left anchors.\n \n\n  An even integer from -2 to 2n, where n is the number of nodes in this chain.\n \n\n  Left anchor node for i == -2, self.nodes[i/2] for i from 0 to 2n-2, and right\n          anchor node for i == 2n.\n\nC++: dialect::Chain::getNode(int) const --> int", pybind11::arg("i"));
+		cl.def("getEdge", (int (dialect::Chain::*)(int) const) &dialect::Chain::getEdge, "Get an Edge according to its \"place\" in the Chain.\n\n Together with the getNode function, this function allows us to have the indices\n 0, 1, 2, 3, ... refer to the first node in the chain, then the first edge, next node,\n next edge, and so on. Negative integers refer to left anchors.\n \n\n  An odd integer from -1 to 2n-1, where n is the number of nodes in this chain.\n \n\n  Left anchor edge for i == -1, self.edges[(i-1)/2] for i from 1 to 2n-3, and right\n          anchor edge for i == 2n-1.\n\nC++: dialect::Chain::getEdge(int) const --> int", pybind11::arg("i"));
 		cl.def("bendCost", (double (dialect::Chain::*)(enum dialect::LinkShape, unsigned long) const) &dialect::Chain::bendCost, "Compute the cost of making a given bend shape at a given position in the chain,\n         given the current geometry.\n\n         If this chain is a cycle, the cost takes into account that the nodes are in\n         clockwise order.\n\n \n  A bent LinkShape.\n \n\n  A position in the chain from 0 to 2n-2 -- evens for nodes, odds for edges --\n                where n is the number of nodes in this chain.\n\nC++: dialect::Chain::bendCost(enum dialect::LinkShape, unsigned long) const --> double", pybind11::arg("bendType"), pybind11::arg("i0"));
 		cl.def("size", (unsigned long (dialect::Chain::*)() const) &dialect::Chain::size, "Check how many nodes are in the chain.\n\nC++: dialect::Chain::size() const --> unsigned long");
 		cl.def("computePossibleBendSequences", (int (dialect::Chain::*)() const) &dialect::Chain::computePossibleBendSequences, "Compute the possible bend sequences that this chain could have.\n\n         If \"no bends\" is a possibility, then we return a single BendSequence with\n         empty list of bend types.\n \n\n Vector of BendSequences indicating all the possibilites.\n\nC++: dialect::Chain::computePossibleBendSequences() const --> int");
+		cl.def("evaluateBendSequence", (void (dialect::Chain::*)(int) const) &dialect::Chain::evaluateBendSequence, "For a given BendSequence, determine the best places for those bends to occur\n         in this Chain, and the costs of applying those constraints.\n \n\n  The BendSequence to be considered.\n                          Sequence of best places to make the bends is recorded in here,\n                          along with the total cost.\n\nC++: dialect::Chain::evaluateBendSequence(int) const --> void", pybind11::arg("bendSeq"));
+		cl.def("writeConfigSeq", (int (dialect::Chain::*)(int) const) &dialect::Chain::writeConfigSeq, "Determine the direction in which each edge in this chain should be configured,\n         in order to enforce a given bend sequence.\n \n\n  The desired bend sequence. Its bendpoints are indices into this\n Chain's sequence of nodes AND edges -- thus even indices for nodes and odd indices for\n edges. Its corresponding bendtypes are the types of bends that should occur at those indices.\n \n\n  A \"chain configuration sequence,\" which looks like\n                                 [ c0, c1, ..., cm-1 ]\n where m is the number of edges to be configured, which is n - 1 if this is not a cycle,\n and n if it is -- n the number of nodes in the chain -- and each ci is a pair of CardinalDirs.\n\n When ci == [ d, d ], then edge i is simply to be configured in direction d.\n When ci == [d1, d2] with d1 != d2, then edge i is to be replaced by a bend point, which we go\n into in direction d1, and come out of in direction d2.\n\nC++: dialect::Chain::writeConfigSeq(int) const --> int", pybind11::arg("bendSeq"));
 		cl.def("takeShapeBasedConfiguration", (void (dialect::Chain::*)()) &dialect::Chain::takeShapeBasedConfiguration, "Give this chain an orthogonal configuration best fitting its present geometric shape.\n\n         This means we put the bend points in the most natural places, including the possibility\n         that they go where edges are (meaning a new bend point is constructed).\n\n         Thus, constraints at least are added to the underlying Graph's SepMatrix.\n         New Nodes (bend points) may also be added.\n\nC++: dialect::Chain::takeShapeBasedConfiguration() --> void");
 		cl.def("addAestheticBendsToEdges", (void (dialect::Chain::*)()) &dialect::Chain::addAestheticBendsToEdges, "Add any aesthetic bends that were chosen during shape-based configuration, to the\n         Edges to which they belong.\n\nC++: dialect::Chain::addAestheticBendsToEdges() --> void");
 	}
-	{ // dialect::Side file:libdialect/faces.h line:43
-		pybind11::class_<dialect::Side, std::shared_ptr<dialect::Side>> cl(M("dialect"), "Side", "A side of a Face. E.g. a rectangular Face has four Sides: north, south, east, and west.");
-		cl.def( pybind11::init<int, enum dialect::CardinalDir>(), pybind11::arg("nodeSeq"), pybind11::arg("direc") );
-
-		cl.def("getNodeSeq", (int (dialect::Side::*)() const) &dialect::Side::getNodeSeq, "Get a copy of the node sequence.\n\nC++: dialect::Side::getNodeSeq() const --> int");
-		cl.def("containsNode", (bool (dialect::Side::*)(unsigned int) const) &dialect::Side::containsNode, "Check whether this Side contains a Node of the given ID.\n\nC++: dialect::Side::containsNode(unsigned int) const --> bool", pybind11::arg("id"));
-		cl.def("findNodeIndex", (unsigned long (dialect::Side::*)(unsigned int) const) &dialect::Side::findNodeIndex, "Get the index of a Node in this Side's node sequence.\n \n\n  The ID of the Node to be found.\n \n\n  The index where the given ID occurs, or -1 if not found.\n\nC++: dialect::Side::findNodeIndex(unsigned int) const --> unsigned long", pybind11::arg("id"));
-		cl.def("getForwardDirec", (enum dialect::CardinalDir (dialect::Side::*)() const) &dialect::Side::getForwardDirec, "Check the forward direction of this Side.\n\nC++: dialect::Side::getForwardDirec() const --> enum dialect::CardinalDir");
-		cl.def("getAlignmentDimension", (enum vpsc::Dim (dialect::Side::*)() const) &dialect::Side::getAlignmentDimension, "Check the dimension in which this Side is aligned.\n\nC++: dialect::Side::getAlignmentDimension() const --> enum vpsc::Dim");
-		cl.def("getCentreCoord", (double (dialect::Side::*)() const) &dialect::Side::getCentreCoord, "Check the centre coordinate of this Side.\n \n\n  We are working under the assumption that all Nodes belonging to a given\n        Side are centre-aligned!\n\nC++: dialect::Side::getCentreCoord() const --> double");
-		cl.def("getNumRootNodes", (unsigned long (dialect::Side::*)() const) &dialect::Side::getNumRootNodes, "Check how many of the Nodes on this Side are marked as root nodes.\n\nC++: dialect::Side::getNumRootNodes() const --> unsigned long");
-		cl.def("liesOppositeSegment", [](dialect::Side const &o, struct dialect::LineSegment & a0) -> bool { return o.liesOppositeSegment(a0); }, "", pybind11::arg("seg"));
-		cl.def("liesOppositeSegment", (bool (dialect::Side::*)(struct dialect::LineSegment &, bool) const) &dialect::Side::liesOppositeSegment, "Check whether the closed interval spanned by this Side runs in the same\n         dimension as a given line segment, and overlaps it in projection onto\n         that dimension.\n \n\n  The LineSegment in question.\n \n\n  Set true if you want to instead intersect this Side's closed\n                          interval with the LineSegment's open interval.\n \n\n boolean\n\nC++: dialect::Side::liesOppositeSegment(struct dialect::LineSegment &, bool) const --> bool", pybind11::arg("seg"), pybind11::arg("openInterval"));
-		cl.def("getFirstPtOppositeSegment", (class Avoid::Point (dialect::Side::*)(struct dialect::LineSegment &) const) &dialect::Side::getFirstPtOppositeSegment, "Compute the first point of the interval of this Side that lies opposite\n         a given line segment.\n \n\n  The LineSegment in question.\n \n\n  The Point.\n \n\n  Runtime error if this Side does not lie opposite the given segment.\n \n\n Side::liesOppositeSegment\n\nC++: dialect::Side::getFirstPtOppositeSegment(struct dialect::LineSegment &) const --> class Avoid::Point", pybind11::arg("seg"));
-		cl.def("halfWidthOppositeSegment", (double (dialect::Side::*)(struct dialect::LineSegment &) const) &dialect::Side::halfWidthOppositeSegment, "Given a LineSegment, find that portion of this Side that lies opposite it,\n         (if any) and report the maximum half-width of the near half.\n \n\n  The LineSegment in question.\n \n\n  The desired half-width. Will be equal to -1 if the Side's interval does not intersect\n          that of the segment, or if it does but the two are in-line with one another.\n \n\n  The Edges of the Side are given the thickness value set for aligned edges in the underlying Graph.\n\nC++: dialect::Side::halfWidthOppositeSegment(struct dialect::LineSegment &) const --> double", pybind11::arg("seg"));
-		cl.def("getTreePlacements", (const int & (dialect::Side::*)() const) &dialect::Side::getTreePlacements, "Read-only access to the set of TreePlacements that have been attached to this Side.\n\nC++: dialect::Side::getTreePlacements() const --> const int &", pybind11::return_value_policy::automatic);
-	}
-	// dialect::NexusPolarity file:libdialect/faces.h line:164
-	pybind11::enum_<dialect::NexusPolarity>(M("dialect"), "NexusPolarity", "")
-		.value("ENTER_FROM", dialect::NexusPolarity::ENTER_FROM)
-		.value("EXIT_TO", dialect::NexusPolarity::EXIT_TO);
+	// dialect::GapType file:libdialect/constraints.h line:48
+	pybind11::enum_<dialect::GapType>(M("dialect"), "GapType", "")
+		.value("CENTRE", dialect::GapType::CENTRE)
+		.value("BDRY", dialect::GapType::BDRY);
 
 ;
 
-	{ // dialect::Nexus file:libdialect/faces.h line:182
-		pybind11::class_<dialect::Nexus, std::shared_ptr<dialect::Nexus>> cl(M("dialect"), "Nexus", "Regarded as a member of a Face F, a Node u belongs to certain Sides si\n of F. As we traverse the face in the clockwise direction (i.e. so that the\n interior of the face is always to the /right/), each Side si gets a direction,\n and therefore may stand in one of eight relations to Node u: it may be /entering/\n or /exiting/, and this may be from or to any of the four cardinal compass directions.\n\n A single Side may stand in two such relations, as when the Node lies along\n the middle of the Side, or else in just one such relation, as when a Node\n lies at one end or the other.\n\n A Nexus represents a Node in this capacity as a \"joining point\" of several\n Sides of a Face. It stores eight \"slots\" that are either empty or else occupied by\n a Side object.");
-		cl.def("getNeighboursOfADirection", (int (dialect::Nexus::*)(enum dialect::CompassDir)) &dialect::Nexus::getNeighboursOfADirection, "Find out what are the first objects you hit as you try sweeping both\n         clockwise and anticlockwise, starting from a given direction.\n \n\n  The given direction.\n \n\n  Set of Sides.\n \n\n  The size of the returned set will be either 0, 1, or 2, according to whether\n        the number of filled slots in this Nexus is 0, 1, or more, respectively.\n\nC++: dialect::Nexus::getNeighboursOfADirection(enum dialect::CompassDir) --> int", pybind11::arg("direc"));
-	}
-	{ // dialect::FaceSet file:libdialect/faces.h line:251
-		pybind11::class_<dialect::FaceSet, std::shared_ptr<dialect::FaceSet>> cl(M("dialect"), "FaceSet", "Holds all the Face objects for a given 4-planar, orthogonal layout,\n and provides methods to use and manage them.");
-		cl.def("getNumFaces", (unsigned long (dialect::FaceSet::*)()) &dialect::FaceSet::getNumFaces, "Check how many faces there are.\n\nC++: dialect::FaceSet::getNumFaces() --> unsigned long");
-		cl.def("getAllTreePlacements", (int (dialect::FaceSet::*)()) &dialect::FaceSet::getAllTreePlacements, "After tree placements have actually been chosen and performed (i.e. trees have\n         been placed into faces), obtain a vector of all those TreePlacements that were\n         actually chosen.\n\nC++: dialect::FaceSet::getAllTreePlacements() --> int");
-		cl.def("getFaces", (int (dialect::FaceSet::*)()) &dialect::FaceSet::getFaces, "Get a copy of the vector of Faces_SP's.\n\nC++: dialect::FaceSet::getFaces() --> int");
-		cl.def("getNumTreesByGrowthDir", [](dialect::FaceSet const &o) -> int { return o.getNumTreesByGrowthDir(); }, "");
-		cl.def("getNumTreesByGrowthDir", (int (dialect::FaceSet::*)(bool) const) &dialect::FaceSet::getNumTreesByGrowthDir, "After tree placements have been chosen and performed, get a count of trees\n         by growth direction.\n \n\n  Set true if for each tree you actually want to count its number\n                         of nodes. In other words, the final counts you get actually indicate\n                         the number of nodes in trees that grow in the given directions.\n\nC++: dialect::FaceSet::getNumTreesByGrowthDir(bool) const --> int", pybind11::arg("scaleBySize"));
-	}
-	{ // dialect::Face file:libdialect/faces.h line:306
-		pybind11::class_<dialect::Face, std::shared_ptr<dialect::Face>> cl(M("dialect"), "Face", "Represents a single face of a 4-planar, orthogonal layout.");
-		cl.def("initWithEdgeSeq", (void (dialect::Face::*)(const int &)) &dialect::Face::initWithEdgeSeq, "A method to build the Face, based on the clockwise sequence of \"edges\"\n         of which it is made up; here an \"edge\" is a mere IdPair.\n\nC++: dialect::Face::initWithEdgeSeq(const int &) --> void", pybind11::arg("edges"));
-		cl.def("getNodeSeq", (int (dialect::Face::*)()) &dialect::Face::getNodeSeq, "Access the sequence (vector) of Nodes belonging to the Face,\n         in clockwise order.\n\nC++: dialect::Face::getNodeSeq() --> int");
-		cl.def("getSides", (int (dialect::Face::*)()) &dialect::Face::getSides, "Get a copy of the vector of Sides.\n\nC++: dialect::Face::getSides() --> int");
-		cl.def("getNexusLookup", (int (dialect::Face::*)()) &dialect::Face::getNexusLookup, "Get a copy of the Nexus lookup.\n\nC++: dialect::Face::getNexusLookup() --> int");
-		cl.def("containsNodeIdSeq", (bool (dialect::Face::*)(int) const) &dialect::Face::containsNodeIdSeq, "Utility method, to test whether the Face contains a given sequence\n         of Node IDs, in clockwise cyclic order.\n\nC++: dialect::Face::containsNodeIdSeq(int) const --> bool", pybind11::arg("idSeq"));
-		cl.def("id", (unsigned int (dialect::Face::*)() const) &dialect::Face::id, "Access the unique ID of a given instance.\n\n \n  The ID.\n\nC++: dialect::Face::id() const --> unsigned int");
-		cl.def("isExternal", (bool (dialect::Face::*)() const) &dialect::Face::isExternal, "Check whether this is the external face or not.\n\nC++: dialect::Face::isExternal() const --> bool");
-		cl.def("getNbrPairs", (int (dialect::Face::*)()) &dialect::Face::getNbrPairs, "Access the neighbour pairs.\n\nC++: dialect::Face::getNbrPairs() --> int");
-		cl.def("applyProjSeq", (bool (dialect::Face::*)(class dialect::ProjSeq &)) &dialect::Face::applyProjSeq, "Convenience function for applying a ProjSeq with all the appropriate options.\n \n\n  The ProjSeq to be applied.\n \n\n boolean, saying whether all the projections were successful.\n\nC++: dialect::Face::applyProjSeq(class dialect::ProjSeq &) --> bool", pybind11::arg("ps"));
-		cl.def("getAllSidesOppositeSegment", [](dialect::Face const &o, struct dialect::LineSegment & a0) -> int { return o.getAllSidesOppositeSegment(a0); }, "", pybind11::arg("seg"));
-		cl.def("getAllSidesOppositeSegment", (int (dialect::Face::*)(struct dialect::LineSegment &, bool) const) &dialect::Face::getAllSidesOppositeSegment, "Get all the Sides of this Face that lie opposite a given LineSegment.\n \n\n  The LineSegment in question.\n \n\n  Set true if you want to consider the overlap with the LineSegment's\n                          open interval instead of closed (the default).\n \n\n  Vector of Sides.\n\nC++: dialect::Face::getAllSidesOppositeSegment(struct dialect::LineSegment &, bool) const --> int", pybind11::arg("seg"), pybind11::arg("openInterval"));
-		cl.def("getAllTreePlacements", (int (dialect::Face::*)() const) &dialect::Face::getAllTreePlacements, "Get all TreePlacements that have been added to this Face.\n \n\n  Vector of TreePlacements.\n\nC++: dialect::Face::getAllTreePlacements() const --> int");
-		cl.def("getSetOfAllTreePlacements", (int (dialect::Face::*)() const) &dialect::Face::getSetOfAllTreePlacements, "Get the set of all TreePlacements that have been added to this Face.\n \n\n  Set of TreePlacements.\n\nC++: dialect::Face::getSetOfAllTreePlacements() const --> int");
-		cl.def("getAllTreePlacements", (void (dialect::Face::*)(int &) const) &dialect::Face::getAllTreePlacements, "Get all TreePlacements that have been added to this Face.\n \n\n  Vector of TreePlacements to which those belonging to this\n                  Face should be added.\n\nC++: dialect::Face::getAllTreePlacements(int &) const --> void", pybind11::arg("tps"));
-		cl.def("getNumTreesByGrowthDir", [](dialect::Face const &o, int & a0) -> void { return o.getNumTreesByGrowthDir(a0); }, "", pybind11::arg("counts"));
-		cl.def("getNumTreesByGrowthDir", (void (dialect::Face::*)(int &, bool) const) &dialect::Face::getNumTreesByGrowthDir, "After tree placements have been chosen and performed, get a count of trees\n         by growth direction.\n \n\n  Map into which the counts should be added.\n \n\n  Set true if for each tree you actually want to count its number\n                         of nodes. In other words, the final counts you get actually indicate\n                         the number of nodes in trees that grow in the given directions.\n\nC++: dialect::Face::getNumTreesByGrowthDir(int &, bool) const --> void", pybind11::arg("counts"), pybind11::arg("scaleBySize"));
+	// dialect::SepDir file:libdialect/constraints.h line:55
+	pybind11::enum_<dialect::SepDir>(M("dialect"), "SepDir", "")
+		.value("EAST", dialect::SepDir::EAST)
+		.value("SOUTH", dialect::SepDir::SOUTH)
+		.value("WEST", dialect::SepDir::WEST)
+		.value("NORTH", dialect::SepDir::NORTH)
+		.value("RIGHT", dialect::SepDir::RIGHT)
+		.value("DOWN", dialect::SepDir::DOWN)
+		.value("LEFT", dialect::SepDir::LEFT)
+		.value("UP", dialect::SepDir::UP);
+
+;
+
+	// dialect::SepType file:libdialect/constraints.h line:62
+	pybind11::enum_<dialect::SepType>(M("dialect"), "SepType", "")
+		.value("NONE", dialect::SepType::NONE)
+		.value("EQ", dialect::SepType::EQ)
+		.value("INEQ", dialect::SepType::INEQ);
+
+;
+
+	// dialect::negateSepDir(enum dialect::SepDir) file:libdialect/constraints.h line:71
+	M("dialect").def("negateSepDir", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::negateSepDir, "C++: dialect::negateSepDir(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
+
+	// dialect::sepDirIsCardinal(enum dialect::SepDir) file:libdialect/constraints.h line:73
+	M("dialect").def("sepDirIsCardinal", (bool (*)(enum dialect::SepDir)) &dialect::sepDirIsCardinal, "C++: dialect::sepDirIsCardinal(enum dialect::SepDir) --> bool", pybind11::arg("sd"));
+
+	// dialect::sepDirToCardinalDir(enum dialect::SepDir) file:libdialect/constraints.h line:75
+	M("dialect").def("sepDirToCardinalDir", (int (*)(enum dialect::SepDir)) &dialect::sepDirToCardinalDir, "C++: dialect::sepDirToCardinalDir(enum dialect::SepDir) --> int", pybind11::arg("sd"));
+
+	// dialect::cardinalDirToSepDir(int) file:libdialect/constraints.h line:77
+	M("dialect").def("cardinalDirToSepDir", (enum dialect::SepDir (*)(int)) &dialect::cardinalDirToSepDir, "C++: dialect::cardinalDirToSepDir(int) --> enum dialect::SepDir", pybind11::arg("dir"));
+
+	// dialect::lateralWeakening(enum dialect::SepDir) file:libdialect/constraints.h line:79
+	M("dialect").def("lateralWeakening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::lateralWeakening, "C++: dialect::lateralWeakening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
+
+	// dialect::cardinalStrengthening(enum dialect::SepDir) file:libdialect/constraints.h line:81
+	M("dialect").def("cardinalStrengthening", (enum dialect::SepDir (*)(enum dialect::SepDir)) &dialect::cardinalStrengthening, "C++: dialect::cardinalStrengthening(enum dialect::SepDir) --> enum dialect::SepDir", pybind11::arg("sd"));
+
+	// dialect::SepTransform file:libdialect/constraints.h line:83
+	pybind11::enum_<dialect::SepTransform>(M("dialect"), "SepTransform", "")
+		.value("ROTATE90CW", dialect::SepTransform::ROTATE90CW)
+		.value("ROTATE90ACW", dialect::SepTransform::ROTATE90ACW)
+		.value("ROTATE180", dialect::SepTransform::ROTATE180)
+		.value("FLIPV", dialect::SepTransform::FLIPV)
+		.value("FLIPH", dialect::SepTransform::FLIPH)
+		.value("FLIPMD", dialect::SepTransform::FLIPMD)
+		.value("FLIPOD", dialect::SepTransform::FLIPOD);
+
+;
+
+	{ // dialect::SepPair file:libdialect/constraints.h line:104
+		pybind11::class_<dialect::SepPair, std::shared_ptr<dialect::SepPair>> cl(M("dialect"), "SepPair", "");
+		cl.def( pybind11::init( [](){ return new dialect::SepPair(); } ) );
+		cl.def_readwrite("src", &dialect::SepPair::src);
+		cl.def_readwrite("tgt", &dialect::SepPair::tgt);
+		cl.def_readwrite("xgt", &dialect::SepPair::xgt);
+		cl.def_readwrite("ygt", &dialect::SepPair::ygt);
+		cl.def_readwrite("xst", &dialect::SepPair::xst);
+		cl.def_readwrite("yst", &dialect::SepPair::yst);
+		cl.def_readwrite("xgap", &dialect::SepPair::xgap);
+		cl.def_readwrite("ygap", &dialect::SepPair::ygap);
+		cl.def_readwrite("tglfPrecision", &dialect::SepPair::tglfPrecision);
+		cl.def_readwrite("flippedRetrieval", &dialect::SepPair::flippedRetrieval);
+		cl.def("addSep", (void (dialect::SepPair::*)(enum dialect::GapType, enum dialect::SepDir, enum dialect::SepType, double)) &dialect::SepPair::addSep, "Add a constraint.\n \n\n  addSep method of SepMatrix class\n\nC++: dialect::SepPair::addSep(enum dialect::GapType, enum dialect::SepDir, enum dialect::SepType, double) --> void", pybind11::arg("gt"), pybind11::arg("sd"), pybind11::arg("st"), pybind11::arg("gap"));
+		cl.def("transform", (void (dialect::SepPair::*)(enum dialect::SepTransform)) &dialect::SepPair::transform, "Apply a transformation.\n\nC++: dialect::SepPair::transform(enum dialect::SepTransform) --> void", pybind11::arg("tf"));
+		cl.def("isVerticalCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isVerticalCardinal, "Check whether this SepPair represents a separation in a vertical cardinal compass direction.\n\nC++: dialect::SepPair::isVerticalCardinal() const --> bool");
+		cl.def("isHorizontalCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isHorizontalCardinal, "Check whether this SepPair represents a separation in a horizontal cardinal compass direction.\n\nC++: dialect::SepPair::isHorizontalCardinal() const --> bool");
+		cl.def("isVAlign", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isVAlign, "Check whether this SepPair represents a vertical alignment.\n\nC++: dialect::SepPair::isVAlign() const --> bool");
+		cl.def("isHAlign", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isHAlign, "Check whether this SepPair represents a horizontal alignment.\n\nC++: dialect::SepPair::isHAlign() const --> bool");
+		cl.def("isCardinal", (bool (dialect::SepPair::*)() const) &dialect::SepPair::isCardinal, "Check whether this SepPair represents a separation in a cardinal compass direction.\n\nC++: dialect::SepPair::isCardinal() const --> bool");
+		cl.def("getCardinalDir", (int (dialect::SepPair::*)() const) &dialect::SepPair::getCardinalDir, "Get the cardinal direction of this separation.\n \n\n  Runtime exception if this separation is not cardinal.\n \n\n The cardinal direction.\n\nC++: dialect::SepPair::getCardinalDir() const --> int");
+		cl.def("roundGapsUpAbs", (void (dialect::SepPair::*)()) &dialect::SepPair::roundGapsUpAbs, "Round gaps upward in absolute value. Useful when trying to move nodes to integer coords.\n\n E.g., -2.3 goes to -3.0; 2.3 goes to 3.0.\n\nC++: dialect::SepPair::roundGapsUpAbs() --> void");
+		cl.def("writeTglf", (int (dialect::SepPair::*)(int, const class dialect::SepMatrix &) const) &dialect::SepPair::writeTglf, "Write a representation of this constraint in the format of\n         the SEPCO'S section of the TGLF file format.\n \n\n  Mapping from internal Node IDs to external IDs for the TGLF output.\n\nC++: dialect::SepPair::writeTglf(int, const class dialect::SepMatrix &) const --> int", pybind11::arg("id2ext"), pybind11::arg("m"));
+		cl.def("hasConstraintInDim", (bool (dialect::SepPair::*)(int) const) &dialect::SepPair::hasConstraintInDim, "Check whether there is a constraint in a given dimension.\n\nC++: dialect::SepPair::hasConstraintInDim(int) const --> bool", pybind11::arg("dim"));
+		cl.def("generateSeparationConstraint", (int * (dialect::SepPair::*)(const int, const struct dialect::ColaGraphRep &, class dialect::SepMatrix *, int &)) &dialect::SepPair::generateSeparationConstraint, "Write the VPSC constraint in one dimension.\n\nC++: dialect::SepPair::generateSeparationConstraint(const int, const struct dialect::ColaGraphRep &, class dialect::SepMatrix *, int &) --> int *", pybind11::return_value_policy::automatic, pybind11::arg("dim"), pybind11::arg("cgr"), pybind11::arg("m"), pybind11::arg("vs"));
 	}
 }

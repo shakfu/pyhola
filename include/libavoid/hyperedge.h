@@ -33,7 +33,7 @@
 #include <vector>
 #include <set>
 
-#include <libavoid/dllexport.h>
+#include <libavoid/libavoid/dllexport.h>
 
 namespace Avoid {
 

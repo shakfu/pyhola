@@ -25,16 +25,16 @@
 #include <cmath>
 #include <valarray>
 
-#include <libvpsc/solve_VPSC.h>
-#include <libvpsc/variable.h>
-#include <libvpsc/constraint.h>
-#include <libvpsc/rectangle.h>
-#include <libcola/commondefs.h>
-#include <libcola/compound_constraints.h>
-#include <libcola/cluster.h>
-#include <libcola/sparse_matrix.h>
+#include <libcola/libvpsc/solve_VPSC.h>
+#include <libcola/libvpsc/variable.h>
+#include <libcola/libvpsc/constraint.h>
+#include <libcola/libvpsc/rectangle.h>
+#include <libcola/libcola/commondefs.h>
+#include <libcola/libcola/compound_constraints.h>
+#include <libcola/libcola/cluster.h>
+#include <libcola/libcola/sparse_matrix.h>
 #ifdef MOSEK_AVAILABLE
-#include <libvpsc/mosek_quad_solve.h>
+#include <libcola/libvpsc/mosek_quad_solve.h>
 #endif
 
 namespace straightener {

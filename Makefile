@@ -17,6 +17,10 @@ CONFIG_FILE=config.txt
 NAMESPACE_TO_BIND=dialect
 NAMESPACE_TO_SKIP='std'
 
+export CPLUS_INCLUDE_PATH := $(SYS_CPP_INCLUDE)
+export C_INCLUDE_PATH := $(SYS_C_INCLUDE)
+export PATH := $(PWD)/bin:$(PATH)
+
 .PHONY: all build nano pyhola_binder bind test clean regen
 
 all: build
@@ -24,28 +28,43 @@ all: build
 build:
 	@mkdir -p build && cd build && cmake .. && cmake --build . --config Release
 
-nano: # build with pyhola_nano
-	@mkdir -p build && cd build && cmake .. -DBUILD_PYHOLA_NANO=ON && cmake --build . --config Release
-
 pyhola_binder: # build with pyhola_binder
 	@mkdir -p build && cd build && cmake .. -DBUILD_PYHOLA_BINDER=ON && cmake --build . --config Release
 
 bind:
+	@rm -rf bind
 	@mkdir -p bind
 	@binder \
 		--root-module $(NAME) \
 		--prefix $(PWD)/bind \
 		--config=$(CONFIG_FILE) \
 		--bind $(NAMESPACE_TO_BIND) \
-		--skip $(NAMESPACE_TO_SKIP) \
 		$(ALL_INCLUDES) \
 		-- $(STDVER) \
-		-isystem $(SYS_C_INCLUDE) \
-		-I/usr/local/include \
 		-I$(SYS_C_INCLUDE) \
 		-I$(SYS_CPP_INCLUDE) \
 		-I$(PWD)/include \
+		-isysroot$(MACOS_SDK) \
 		-DNDEBUG
+
+
+# bind:
+# 	@rm -rf bind
+# 	@mkdir -p bind
+# 	@binder \
+# 		--root-module $(NAME) \
+# 		--prefix $(PWD)/bind \
+# 		--config=$(CONFIG_FILE) \
+# 		--bind $(NAMESPACE_TO_BIND) \
+# 		--skip $(NAMESPACE_TO_SKIP) \
+# 		$(ALL_INCLUDES) \
+# 		-- $(STDVER) \
+# 		-isystem $(SYS_C_INCLUDE) \
+# 		-I/usr/local/include \
+# 		-I$(SYS_C_INCLUDE) \
+# 		-I$(SYS_CPP_INCLUDE) \
+# 		-I$(PWD)/include \
+# 		-DNDEBUG
 
 test:
 	@pytest

@@ -32,7 +32,7 @@
 #include <malloc.h>     // Contains _alloca
 #endif
 
-#include <libvpsc/assertions.h>
+#include <libcola/libvpsc/assertions.h>
 #include <valarray>
 
 namespace cola {

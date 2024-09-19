@@ -29,7 +29,7 @@
 #include <set>
 #include <list>
 
-#include <libavoid/geomtypes.h>
+#include <libavoid/libavoid/geomtypes.h>
 
 
 namespace Avoid {
