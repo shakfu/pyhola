@@ -28,8 +28,8 @@
 #ifndef AVOID_DEBUGHANDLER_H
 #define AVOID_DEBUGHANDLER_H
 
-#include <libavoid/assertions.h>
-#include <libavoid/dllexport.h>
+#include <libavoid/libavoid/assertions.h>
+#include <libavoid/libavoid/dllexport.h>
 
 // Add -DDEBUGHANDLER to compile in debug handler with optimisations enabled.
 #ifndef NDEBUG

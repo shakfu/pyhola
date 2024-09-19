@@ -25,7 +25,7 @@
 
 #include <cstdio>
 
-#include <libvpsc/rectangle.h>
+#include <libcola/libvpsc/rectangle.h>
 
 
 namespace cola {

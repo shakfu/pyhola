@@ -26,10 +26,10 @@
 #include <set>
 #include <utility>
 
-#include <libvpsc/rectangle.h>
-#include <libvpsc/constraint.h>
-#include <libcola/sparse_matrix.h>
-#include <libcola/unused.h>
+#include <libcola/libvpsc/rectangle.h>
+#include <libcola/libvpsc/constraint.h>
+#include <libcola/libcola/sparse_matrix.h>
+#include <libcola/libcola/unused.h>
 
 namespace vpsc {
     class Constraint;

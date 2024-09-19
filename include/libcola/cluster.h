@@ -25,13 +25,13 @@
 
 #include <cstdio>
 
-#include <libvpsc/rectangle.h>
-#include <libvpsc/variable.h>
+#include <libcola/libvpsc/rectangle.h>
+#include <libcola/libvpsc/variable.h>
 
-#include <libcola/compound_constraints.h>
-#include <libcola/commondefs.h>
-#include <libcola/box.h>
-#include <libcola/shapepair.h>
+#include <libcola/libcola/compound_constraints.h>
+#include <libcola/libcola/commondefs.h>
+#include <libcola/libcola/box.h>
+#include <libcola/libcola/shapepair.h>
 
 namespace cola {
 

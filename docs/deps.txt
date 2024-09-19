@@ -1,0 +1,70 @@
+yhola_pybind11/pyhola.pybind11.cpp should add these lines:
+#include <functional>                          // for less
+#include <map>                                 // for map
+#include <memory>                              // for shared_ptr, allocator
+#include <set>                                 // for set
+#include <string>                              // for basic_string, string
+#include <utility>                             // for pair, move
+#include <vector>                              // for vector
+#include "abstract.h"                          // for PyIndex_Check, PyNumbe...
+#include "floatobject.h"                       // for PyFloat_AsDouble
+#include "libdialect/commontypes.h"            // for Node_SP, Edge_SP, Grap...
+#include "libvpsc/rectangle.h"                 // for Dim
+#include "longobject.h"                        // for PyLong_AsLong, PyLong_...
+#include "moduleobject.h"                      // for PyModuleDef
+#include "pybind11/attr.h"                     // for arithmetic
+#include "pybind11/cast.h"                     // for arg, cast_ref, cast_safe
+#include "pybind11/detail/common.h"            // for return_value_policy
+#include "pybind11/detail/descr.h"             // for operator+
+#include "pybind11/detail/internals.h"         // for is_function_record_cap...
+#include "pybind11/detail/type_caster_base.h"  // for get_type_info, instanc...
+#include "pybind11/gil.h"                      // for gil_scoped_acquire
+#include "pybind11/pytypes.h"                  // for function, handle, get_...
+#include "pyerrors.h"                          // for PyErr_Clear
+namespace Avoid { class Router; }
+namespace cola { class ConstrainedFDLayout; }
+namespace cola { class RootCluster; }
+namespace dialect { struct Logger; }
+
+pyhola_pybind11/pyhola.pybind11.cpp should remove these lines:
+- #include <pybind11/stl.h>  // lines 3-3
+- #include <string.h>  		 // lines 1-1
+
+he full include-list for pyhola_pybind11/pyhola.pybind11.cpp:
+#include <libavoid/geomtypes.h>                // for Point, Polygon, Refere...
+#include <libcola/compound_constraints.h>      // for CompoundConstraint
+#include <libdialect/aca.h>                    // for ACALayout, OrderedAlig...
+#include <libdialect/constraints.h>            // for SepMatrix
+#include <libdialect/graphs.h>                 // for Graph, Node, Edge, Bou...
+#include <libdialect/hola.h>                   // for doHOLA
+#include <libdialect/io.h>                     // for buildGraphFromTglfFile
+#include <libdialect/opts.h>                   // for HolaOpts
+#include <libdialect/trees.h>                  // for Tree
+#include <pybind11/pybind11.h>                 // for class_, init, get_over...
+#include <functional>                          // for less
+#include <map>                                 // for map
+#include <memory>                              // for shared_ptr, allocator
+#include <set>                                 // for set
+#include <string>                              // for basic_string, string
+#include <utility>                             // for pair, move
+#include <vector>                              // for vector
+#include "abstract.h"                          // for PyIndex_Check, PyNumbe...
+#include "floatobject.h"                       // for PyFloat_AsDouble
+#include "libdialect/commontypes.h"            // for Node_SP, Edge_SP, Grap...
+#include "libvpsc/rectangle.h"                 // for Dim
+#include "longobject.h"                        // for PyLong_AsLong, PyLong_...
+#include "moduleobject.h"                      // for PyModuleDef
+#include "pybind11/attr.h"                     // for arithmetic
+#include "pybind11/cast.h"                     // for arg, cast_ref, cast_safe
+#include "pybind11/detail/common.h"            // for return_value_policy
+#include "pybind11/detail/descr.h"             // for operator+
+#include "pybind11/detail/internals.h"         // for is_function_record_cap...
+#include "pybind11/detail/type_caster_base.h"  // for get_type_info, instanc...
+#include "pybind11/gil.h"                      // for gil_scoped_acquire
+#include "pybind11/pytypes.h"                  // for function, handle, get_...
+#include "pyerrors.h"                          // for PyErr_Clear
+namespace Avoid { class Router; }
+namespace cola { class ConstrainedFDLayout; }
+namespace cola { class RootCluster; }
+namespace dialect { struct Logger; }
+---

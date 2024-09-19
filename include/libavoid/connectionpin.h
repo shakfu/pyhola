@@ -34,9 +34,9 @@
 #include <climits>
 #include <utility>
 
-#include <libavoid/dllexport.h>
-#include <libavoid/connend.h>
-#include <libavoid/geomtypes.h>
+#include <libavoid/libavoid/dllexport.h>
+#include <libavoid/libavoid/connend.h>
+#include <libavoid/libavoid/geomtypes.h>
 
 namespace Avoid {
 

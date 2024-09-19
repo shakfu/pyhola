@@ -19,7 +19,7 @@ make
 
 ## Status
 
-- HOLA algorithm in `pyhola_pybind11` build is functional  other builds, `pyhola_bind`, and `pyhola_nano` are not functional.
+- HOLA algorithm in `pyhola_pybind11` build is functional  other builds, `pyhola_bind` (generated) is not functional.
 
 
 ## Usage
@@ -71,8 +71,6 @@ You can compile your own more recent libs and just drop them into this project.
 ## Future Directions:
 
 - [ ] Wrap all of adaptagrms libs: after manually wrapping the core HOLA algorithm, there is an ongoing effort to use [binder](https://github.com/RosettaCommons/binder) (see below) to wrap the whole of the adaptagrams libs automatically.  While a decent portion is wrapped, there are still a few errors which remain. (see `bind/remaining-errors.diff`)
-
-- [ ] Complete nanobind wrapper for a miminal binding.
 
 
 ## Binder Usage

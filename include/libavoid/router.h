@@ -34,14 +34,14 @@
 #include <utility>
 #include <string>
 
-#include <libavoid/dllexport.h>
-#include <libavoid/connector.h>
-#include <libavoid/vertices.h>
-#include <libavoid/graph.h>
-#include <libavoid/timer.h>
-#include <libavoid/hyperedge.h>
-#include <libavoid/actioninfo.h>
-#include <libavoid/hyperedgeimprover.h>
+#include <libavoid/libavoid/dllexport.h>
+#include <libavoid/libavoid/connector.h>
+#include <libavoid/libavoid/vertices.h>
+#include <libavoid/libavoid/graph.h>
+#include <libavoid/libavoid/timer.h>
+#include <libavoid/libavoid/hyperedge.h>
+#include <libavoid/libavoid/actioninfo.h>
+#include <libavoid/libavoid/hyperedgeimprover.h>
 
 
 namespace Avoid {

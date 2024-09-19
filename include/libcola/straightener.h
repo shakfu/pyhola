@@ -26,8 +26,8 @@
 #include <iostream>
 #include <iterator>
 
-#include <libvpsc/rectangle.h>
-#include <libcola/commondefs.h>
+#include <libcola/libvpsc/rectangle.h>
+#include <libcola/libcola/commondefs.h>
 
 namespace cola {
     class Cluster;

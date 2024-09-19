@@ -31,7 +31,7 @@
 #include <vector>
 #include <functional>
 
-#include <libavoid/geomtypes.h>
+#include <libdialect/libavoid/geomtypes.h>
 
 namespace dialect {
 

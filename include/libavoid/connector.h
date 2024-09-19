@@ -33,10 +33,10 @@
 #include <list>
 #include <vector>
 
-#include <libavoid/dllexport.h>
-#include <libavoid/vertices.h>
-#include <libavoid/geometry.h>
-#include <libavoid/connend.h>
+#include <libavoid/libavoid/dllexport.h>
+#include <libavoid/libavoid/vertices.h>
+#include <libavoid/libavoid/geometry.h>
+#include <libavoid/libavoid/connend.h>
 
 
 namespace Avoid {

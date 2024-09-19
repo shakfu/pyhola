@@ -30,12 +30,12 @@
 #include <vector>
 #include <utility>
 
-#include <libavoid/libavoid.h>
+#include <libdialect/libavoid/libavoid.h>
 
-#include <libdialect/commontypes.h>
-#include <libdialect/opts.h>
-#include <libdialect/ortho.h>
-#include <libdialect/logging.h>
+#include <libdialect/libdialect/commontypes.h>
+#include <libdialect/libdialect/opts.h>
+#include <libdialect/libdialect/ortho.h>
+#include <libdialect/libdialect/logging.h>
 
 namespace dialect {
 
@@ -152,7 +152,7 @@ private:
     //! @brief  Say whether a set of connection directions denotes just a
     //!         sole direction.
     inline bool isSoleDirec(Avoid::ConnDirFlags dirs) const {
-        return dirs == Avoid::ConnDirUp || dirs == Avoid::ConnDirUp || dirs == Avoid::ConnDirLeft || dirs == Avoid::ConnDirRight;
+        return dirs == Avoid::ConnDirUp || dirs == Avoid::ConnDirDown || dirs == Avoid::ConnDirLeft || dirs == Avoid::ConnDirRight;
     }
 
     Graph_SP m_graph;

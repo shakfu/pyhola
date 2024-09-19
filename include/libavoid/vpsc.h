@@ -50,10 +50,10 @@
 // base libvpsc Constraint classes.
 
 // Include necessary headers from libvpsc.
-#include <libvpsc/variable.h>
-#include <libvpsc/constraint.h>
-#include <libvpsc/rectangle.h>
-#include <libvpsc/solve_VPSC.h>
+#include <libavoid/libvpsc/variable.h>
+#include <libavoid/libvpsc/constraint.h>
+#include <libavoid/libvpsc/rectangle.h>
+#include <libavoid/libvpsc/solve_VPSC.h>
 
 // Use the libvpsc versions of things needed by libavoid.
 using vpsc::Variable;
@@ -72,7 +72,7 @@ using vpsc::delete_object;
 #include <iostream>
 #include <cfloat>
 
-#include <libavoid/assertions.h>
+#include <libavoid/libavoid/assertions.h>
 
 namespace Avoid {
 

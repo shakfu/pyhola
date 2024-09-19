@@ -35,8 +35,8 @@
 #include <vector>
 #include <utility>
 
-#include <libavoid/dllexport.h>
-#include <libavoid/geometry.h>
+#include <libavoid/libavoid/dllexport.h>
+#include <libavoid/libavoid/geometry.h>
 
 
 namespace Avoid {

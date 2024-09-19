@@ -1,15 +1,11 @@
-#include <_ctermid.h>
-#include <_ctype.h>
 #include <_stdio.h>
-#include <cwchar>
-#include <cwctype>
 #include <sstream> // __str__
-#include <stdio.h>
-#include <time.h>
 
 #include <functional>
 #include <pybind11/pybind11.h>
 #include <string>
+#include <cstdlib>
+
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -20,7 +16,7 @@
 
 void bind__stdio(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // __sFILE file:_stdio.h line:126
+	{ // __sFILE file:_stdio.h line:128
 		pybind11::class_<__sFILE, std::shared_ptr<__sFILE>> cl(M(""), "__sFILE", "");
 		cl.def( pybind11::init( [](){ return new __sFILE(); } ) );
 		cl.def_readwrite("_r", &__sFILE::_r);

@@ -28,8 +28,8 @@
 #include <memory>
 #include <vector>
 
-#include <libdialect/commontypes.h>
-#include <libdialect/graphs.h>
+#include <libdialect/libdialect/commontypes.h>
+#include <libdialect/libdialect/graphs.h>
 
 namespace dialect {
 

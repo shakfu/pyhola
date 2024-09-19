@@ -31,7 +31,7 @@
 #include <vector>
 #include <sstream>
 
-#include <libvpsc/variable.h>
+#include <libvpsc/libvpsc/variable.h>
 
 namespace vpsc {
 

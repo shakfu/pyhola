@@ -31,11 +31,11 @@
 #include <cmath>
 #include <iostream>
 
-#include <libcola/gradient_projection.h>
-#include <libcola/cluster.h>
-#include <libcola/straightener.h>
-#include <libcola/exceptions.h>
-#include <libcola/pseudorandom.h>
+#include <libcola/libcola/gradient_projection.h>
+#include <libcola/libcola/cluster.h>
+#include <libcola/libcola/straightener.h>
+#include <libcola/libcola/exceptions.h>
+#include <libcola/libcola/pseudorandom.h>
 
 namespace vpsc { class Rectangle; }
 namespace topology { 

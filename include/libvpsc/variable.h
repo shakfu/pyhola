@@ -25,8 +25,8 @@
 #include <vector>
 #include <iostream>
 
-#include <libvpsc/block.h>
-#include <libvpsc/assertions.h>
+#include <libvpsc/libvpsc/block.h>
+#include <libvpsc/libvpsc/assertions.h>
 
 namespace vpsc {
 

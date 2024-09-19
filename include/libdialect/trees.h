@@ -30,14 +30,14 @@
 #include <vector>
 #include <string>
 
-#include <libavoid/geomtypes.h>
+#include <libdialect/libavoid/geomtypes.h>
 
-#include <libdialect/graphs.h>
-#include <libdialect/commontypes.h>
-#include <libdialect/ortho.h>
-#include <libdialect/opts.h>
-#include <libdialect/util.h>
-#include <libdialect/routing.h>
+#include <libdialect/libdialect/graphs.h>
+#include <libdialect/libdialect/commontypes.h>
+#include <libdialect/libdialect/ortho.h>
+#include <libdialect/libdialect/opts.h>
+#include <libdialect/libdialect/util.h>
+#include <libdialect/libdialect/routing.h>
 
 namespace dialect {
 
@@ -152,6 +152,9 @@ public:
     //! @param[out] bufferNodes  A place to record the buffer nodes that are constructred.
     //! @note  This Tree's addNetworkAndConstraints should have been called first, for the same Graph G.
     void addBufferNodesAndConstraints(Graph &G, NodesById &bufferNodes);
+
+    //! @brief  Add padding to nodes of another graph, corresponding to (same ID) non-root nodes in this tree.
+    void padCorrespNonRootNodes(Graph &H, double dw, double dh);
 
 private:
 

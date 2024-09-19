@@ -32,11 +32,11 @@
 #include <utility>
 #include <memory>
 
-#include <libvpsc/rectangle.h>
-#include <libcola/compound_constraints.h>
+#include <libdialect/libvpsc/rectangle.h>
+#include <libdialect/libcola/compound_constraints.h>
 
-#include <libdialect/commontypes.h>
-#include <libdialect/ortho.h>
+#include <libdialect/libdialect/commontypes.h>
+#include <libdialect/libdialect/ortho.h>
 
 namespace dialect {
 
@@ -391,7 +391,7 @@ private:
     //!         ygap == 0
     //!
     //! This means that Node 17 is configured to lie due West of Node 4,
-    //! at a distance of 200.
+    //! at a distance of at least 200.
     SparseIdMatrix2d<SepPair_SP>::type m_sparseLookup;
 };
 

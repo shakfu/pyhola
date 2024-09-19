@@ -22,7 +22,7 @@
 #ifndef AVOID_ORTHOGLAYOUT_H
 #define AVOID_ORTHOGLAYOUT_H
 
-#include <libcola/cola.h>
+#include <libtopology/libcola/cola.h>
 
 namespace topology {
 

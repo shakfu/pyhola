@@ -36,7 +36,7 @@
 #include <map>
 #include <cstdio>
 
-#include <libvpsc/assertions.h>
+#include <libcola/libvpsc/assertions.h>
 
 namespace cola {
 struct SparseMap {

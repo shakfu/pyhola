@@ -34,9 +34,9 @@
 
 #include <cstdio>
 
-#include <libavoid/dllexport.h>
-#include <libavoid/geometry.h>
-#include <libavoid/obstacle.h>
+#include <libavoid/libavoid/dllexport.h>
+#include <libavoid/libavoid/geometry.h>
+#include <libavoid/libavoid/obstacle.h>
 
 namespace topology {
     class LayoutObstacle;
