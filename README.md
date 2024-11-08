@@ -77,8 +77,10 @@ make clean
 
 All rights reserved to the original respective authors:
 
->>Steve Kieffer, Tim Dwyer, Kim Marriott, and Michael Wybrow.
+```text
+Steve Kieffer, Tim Dwyer, Kim Marriott, and Michael Wybrow.
 HOLA: Human-like Orthogonal Network Layout. In Visualization and Computer Graphics, IEEE Transactions on, Volume 22, Issue 1, pages 349 - 358. IEEE, 2016. DOI
+```
 
 Thanks to [Wenzel Jakob](https://github.com/wjakob), developer of pybind11 and nanobind for making this project possible.
 
