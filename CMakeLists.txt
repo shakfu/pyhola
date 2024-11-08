@@ -23,6 +23,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # add subprojects
 add_subdirectory(pyhola_pybind11)
+add_subdirectory(pyhola_binder)
 
 if(BUILD_PYHOLA_BINDER)
 add_subdirectory(bind)

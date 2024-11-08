@@ -1,6 +1,7 @@
 
-set(PYHOLA_LIBS ${CMAKE_SOURCE_DIR}/libs)
-set(PYHOLA_INCLUDE ${CMAKE_SOURCE_DIR}/include)
+set(ADAPTAGRAMS ${CMAKE_SOURCE_DIR}/thirdparty/adaptagrams)
+set(PYHOLA_LIB ${ADAPTAGRAMS}/lib)
+set(PYHOLA_INCLUDE ${ADAPTAGRAMS}/include)
 
 
 find_package(pybind11 REQUIRED)
@@ -73,15 +74,15 @@ target_include_directories(pyhola_binder
 
 target_link_directories(pyhola_binder
     PUBLIC
-    ${PYHOLA_LIBS}
+    ${PYHOLA_LIB}
 )
 
 target_link_libraries(pyhola_binder
     PUBLIC
-    ${PYHOLA_LIBS}/libavoid.a 
-    ${PYHOLA_LIBS}/libcola.a
-    ${PYHOLA_LIBS}/libdialect.a
-    ${PYHOLA_LIBS}/libtopology.a
-    ${PYHOLA_LIBS}/libvpsc.a
+    ${PYHOLA_LIB}/libavoid.a 
+    ${PYHOLA_LIB}/libcola.a
+    ${PYHOLA_LIB}/libdialect.a
+    ${PYHOLA_LIB}/libtopology.a
+    ${PYHOLA_LIB}/libvpsc.a
 )
 

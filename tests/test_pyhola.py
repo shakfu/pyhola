@@ -1,21 +1,24 @@
 import sys
 import os
 from os.path import exists, join
-parentdir = os.path.dirname(__file__)
+PARENT_DIR = os.path.dirname(__file__)
+BUILD_DIR = join(os.path.dirname(PARENT_DIR), 'build')
+OUTPUTS_DIR = join(BUILD_DIR, 'test-outputs')
 
 try:
     import pyhola
 except ImportError:
     # assumes pyhola has just been built in the project directory
-    sys.path.insert(0, join(os.path.dirname(parentdir), 'build'))
+    sys.path.insert(0, BUILD_DIR)
 
 from pyhola import Graph, Node, Edge, graph_from_tglf_file, do_hola
 
+# OUTPUTS = 
 
 def output(g, name):
-    os.makedirs('outputs', exist_ok=True)
-    tglf = f'outputs/{name}.tglf'
-    svg = f'outputs/{name}.svg'
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+    tglf = f'{OUTPUTS_DIR}/{name}.tglf'
+    svg = f'{OUTPUTS_DIR}/{name}.svg'
     with open(tglf, 'w') as f:
         f.write(g.to_tglf())
     assert exists(tglf)
@@ -24,7 +27,7 @@ def output(g, name):
     assert exists(svg)
 
 def get_test_graph():
-    return graph_from_tglf_file(os.path.join(parentdir, 'test_graph.tglf'))
+    return graph_from_tglf_file(os.path.join(PARENT_DIR, 'test_graph.tglf'))
 
 
 def test_graph_from_tglf_file():

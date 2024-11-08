@@ -7,6 +7,8 @@ EXTENSION_SUFFIX := $(shell python3-config --extension-suffix)
 PY_INCLUDES := $(shell python3-config --includes)
 EXTENSION := $(NAME)$(EXTENSION_SUFFIX)
 
+ADAPTAGRAMS := thirdparty/adaptagrams/lib/libdialect.a
+
 MACOS_SDK=$(shell xcrun --show-sdk-path)
 SYS_CPP_INCLUDE=$(MACOS_SDK)/usr/include/c++/v1
 SYS_C_INCLUDE=$(MACOS_SDK)/usr/include
@@ -21,14 +23,17 @@ export CPLUS_INCLUDE_PATH := $(SYS_CPP_INCLUDE)
 export C_INCLUDE_PATH := $(SYS_C_INCLUDE)
 export PATH := $(PWD)/bin:$(PATH)
 
-.PHONY: all build nano pyhola_binder bind test clean regen
+.PHONY: all build build_bind bind test clean regen
 
 all: build
 
-build:
+$(ADAPTAGRAMS):
+	@scripts/setup.sh
+
+build: $(ADAPTAGRAMS)
 	@mkdir -p build && cd build && cmake .. && cmake --build . --config Release
 
-pyhola_binder: # build with pyhola_binder
+build_bind: $(ADAPTAGRAMS) # build with pyhola_binder option
 	@mkdir -p build && cd build && cmake .. -DBUILD_PYHOLA_BINDER=ON && cmake --build . --config Release
 
 bind:
