@@ -1,0 +1,48 @@
+[project]
+name = "pyhola"
+version = "0.1.0"
+description = "A pybind11 wrapper to adaptagrams HOLA: Human-like Orthogonal Layout Algorithm."
+readme = "README.md"
+authors = [
+    { name = "Shakeeb Alireza", email = "sa@example.org" }
+]
+requires-python = ">=3.7"
+# dependencies = []
+
+[project.optional-dependencies]
+# development dependency groups
+test = [
+    'pytest>=4.6',
+]
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "pybind11>=2.10.0",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.cibuildwheel]
+test-command = "python {project}/tests/test.py"
+test-skip = "*universal2:arm64"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "build"]
+testpaths = ["tests"]
+# addopts = "--cov=cyllama --cov-report html"
+# addopts = "-ra -q"
+
+[tool.ruff]
+target-version = "py37"
+
+[tool.ruff.lint]
+extend-select = [
+  "B",   # flake8-bugbear
+  "I",   # isort
+  "PGH", # pygrep-hooks
+  "RUF", # Ruff-specific
+  "UP",  # pyupgrade
+]
