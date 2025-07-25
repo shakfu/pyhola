@@ -12,7 +12,7 @@ get_adaptagrams() {
 			git clone --depth 1 https://github.com/shakfu/adaptagrams.git
 		fi && \
 		cd ${NAME} && \
-		make && \
+		make install && \
 		mv build/install ${PREFIX}
 		cd ${CWD}
 }
