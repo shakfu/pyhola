@@ -4,11 +4,14 @@ This project wraps a key part of the [adaptagrams](https://github.com/mjwybrow/a
 
 The HOLA algorithm is part of the [libdialect](http://www.adaptagrams.org/documentation/libdialect.html) module of the adaptagrams library.
 
-Note that the the adaptagrams library provides a comprehensive swig-based python wrapper which is likely useful for most use-cases.
-
 This project provide a targeted pybind11 wrapper for the HOLA algorithm, and tries to provide a pythonic api along the way.
 
+Note that the the adaptagrams library provides a comprehensive swig-based python wrapper which is likely useful for most use-cases. This also can be built in this project if `swig` is available. 
+
 `pyhola` and the adaptagrams swig-based python wrapper have been used successfully in the [py2max project](https://github.com/shakfu/py2max), to provide auto-layout capability of programmatically generated Max patches.
+
+Note that this project builds against [my fork of the adaptagrams project]
+(https://github.com/shakfu/adaptagrams) which provides cmake-based building. 
 
 
 ## Status
@@ -47,6 +50,14 @@ mkdir -p build && cd build && cmake .. && cmake --build . --config Release
 ```
 
 In both cases, the [adaptagrams](https://github.com/shakfu/adaptagrams) dependencies will be downloaded and built and installed in a newly created `thirdparty` folder, and these will be used to build `pyhola`, with the resulting compiled extension to be placed in the `src` folder.
+
+If `swig` is available, the swig-based python extension can be build via:
+
+```sh
+make swig-python
+```
+
+In this case, the extension and its python wrapper will be found in `buid/adaptagrams/build`.
 
 
 To test (requires `pytest`)

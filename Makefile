@@ -13,7 +13,7 @@ cmake: $(ADAPTAGRAMS)
 build:
 	python3 setup.py build_ext --inplace
 
-swig_python: $(ADAPTAGRAMS)
+swig-python: $(ADAPTAGRAMS)
 	@cd build/adaptagrams && make python
 
 test:
